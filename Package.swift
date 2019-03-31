@@ -5,18 +5,20 @@ import PackageDescription
 let package = Package(
     name: "PrismCore",
     products: [
-        .executable(name: "Prism",
-                    targets: ["Prism"]),
+        .executable(name: "prism",
+                    targets: ["prism"]),
         .library(
             name: "PrismCore",
             targets: ["PrismCore"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6")
+    ],
     targets: [
         .target(
-            name: "Prism",
-            dependencies: ["PrismCore"],
-            path: "Run"
+            name: "prism",
+            dependencies: ["PrismCore", "Commander"],
+            path: "CLI"
         ),
         .target(
             name: "PrismCore",

@@ -50,7 +50,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
                     )
                 """
             }
-            .joined(separator: "\n")
+            .joined(separator: "\n\n")
         return """
         public extension TextStyle {
         \(fontOutput)
