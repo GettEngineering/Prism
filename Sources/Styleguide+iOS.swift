@@ -89,24 +89,3 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
         return styles + "\n\n" + styleNames
     }
 }
-
-// - MARK: - macOS Color Pallette
-public extension IOSStyleguideFileProvider {
-    func writeColorPalette(for colors: [Prism.Project.Color],
-                           to url: URL) throws {
-        let colorList = colors
-            .sorted(by: { $0.identity.iOS < $1.identity.iOS })
-            .enumerated()
-            .reduce(into: NSColorList(name: "Gett RiderCore")) { list, idxAndColor in
-                let (idx, color) = idxAndColor
-                list.insertColor(NSColor(red: CGFloat(color.r) / 255,
-                                         green: CGFloat(color.g) / 255,
-                                         blue: CGFloat(color.b) / 255,
-                                         alpha: CGFloat(color.a)),
-                                 key: color.identity.iOS,
-                                 at: idx)
-            }
-
-        try colorList.write(to: url)
-    }
-}
