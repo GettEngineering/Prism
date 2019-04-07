@@ -7,8 +7,7 @@
 //
 
 public struct IOSStyleguideFileProvider: StyleguideFileProviding {
-    public init() {
-    }
+    public init() { }
 
     public func colorsFileContents(for colors: [Prism.Project.Color]) -> String {
         let colorOutput = colors
@@ -25,7 +24,9 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
     }
 
     public func textStylesFileContents(for project: Prism.Project) -> String {
-        let fontOutput = project.textStyles
+        let sortedStyles = project.textStyles.sorted(by: { $0.identity.iOS < $1.identity.iOS })
+
+        let fontOutput = sortedStyles
             .map { textStyle in
                 let textColor: String = {
                     if let matchedColor = project.colors.first(where: { $0.hexValue == textStyle.color.hexValue }) {
@@ -51,10 +52,36 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
                 """
             }
             .joined(separator: "\n\n")
-        return """
-        public extension TextStyle {
+
+        let styles = """
+        // MARK: - Text Styles
+
+        extension TextStyle {
         \(fontOutput)
         }
         """
+
+        let namesOutput = sortedStyles.reduce(into: "") { string, style in
+            string.append("case \"\(style.identity.iOS)\": self = .\(style.identity.iOS)\n            ")
+        }
+
+        let styleNames = """
+        // MARK: - Text Styles Name (Storyboard Support)
+        extension TextStyle {
+            /// Returns a TextStyle object based on its string-name.
+            /// Can be used by Storyboards to set a Text Style without code.
+            ///
+            /// - parameter styleName: A String Text Style name.
+            ///
+            /// - returns: a `TextStyle` object, or `nil` if none matches the name.
+            init?(styleName: String) {
+                switch styleName {
+                    \(namesOutput)default: return nil
+                }
+            }
+        }
+        """
+
+        return styles + "\n\n" + styleNames
     }
 }
