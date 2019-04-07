@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "PrismCore",
+    platforms: [
+     .macOS(.v10_11)
+    ],
     products: [
         .executable(name: "prism",
                     targets: ["prism"]),

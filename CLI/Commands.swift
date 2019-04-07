@@ -113,6 +113,60 @@ struct GenerateCommand: CommandRepresentable {
     }
 }
 
+// MARK: - Generate macOS Color Palette Command
+struct GenerateCocoaPalette: CommandRepresentable {
+    struct Options: OptionsRepresentable {
+        enum CodingKeys: String, CodingKeysRepresentable {
+            case projectId
+            case filePath
+        }
+
+        static var keys: [Options.CodingKeys: Character] {
+            return [.projectId: "i",
+                    .filePath: "f"]
+        }
+
+        static var descriptions: [Options.CodingKeys : OptionDescription] {
+            return [
+                .projectId: .usage("Zeplin Project ID to generate macOS Color Palette for"),
+                .filePath: .usage("Path to save generated CLR file to")
+            ]
+        }
+
+        let projectId: String
+        let filePath: String
+    }
+
+    static var symbol = "generate-palette-ios"
+    static var usage = "Generate a macOS-compliant color palette (clr) to be used in Storyboard (iOS Only)"
+
+    static func main(_ options: Options) throws {
+        guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
+            throw CommandError.missingToken
+        }
+
+        let prism = Prism(jwtToken: jwtToken)
+        let sema = DispatchSemaphore(value: 0)
+
+        let paletteURL = URL(fileURLWithPath: options.filePath)
+
+        prism.getProject(id: options.projectId) { result in
+            do {
+                let project = try result.get()
+                let styleguide = IOSStyleguideFileProvider()
+                try styleguide.writeColorPalette(for: project.colors, to: paletteURL)
+
+                sema.signal()
+            } catch let err {
+                print("Failed getting project: \(err)")
+                exit(1)
+            }
+        }
+
+        sema.wait()
+    }
+}
+
 // MARK: - Generic Console Output Command
 struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
     struct Options: OptionsRepresentable {

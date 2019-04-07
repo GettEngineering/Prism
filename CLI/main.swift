@@ -16,7 +16,8 @@ public final class PrismCLI {
         commander.commands = [
             ColorsCommand.self,
             TextStylesCommand.self,
-            GenerateCommand.self
+            GenerateCommand.self,
+            GenerateCocoaPalette.self
         ]
 
         do {
