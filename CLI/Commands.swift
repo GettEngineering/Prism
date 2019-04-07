@@ -182,10 +182,21 @@ struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
     }
 }
 
-enum CommandError: Swift.Error {
+enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidCommand
     case missingToken
     case failedDataConversion
+
+    var description: String {
+        switch self {
+        case .invalidCommand:
+            return "Invalid command provided"
+        case .missingToken:
+            return "Missing ZEPLIN_TOKEN environment variable"
+        case .failedDataConversion:
+            return "Failed converting Data to unicode string"
+        }
+    }
 }
 
 typealias ColorsCommand = AssetCommand<GenerateColors>
