@@ -12,6 +12,16 @@ public struct AndroidStyleguideFileProvider: StyleguideFileProviding {
     public init() {
     }
 
+    public var fileHeader: String {
+        return """
+        <!--
+        This file was generated using Prism, Gett's Design System code generator.
+        https://github.com/gtforge/prism
+        -->
+
+        """
+    }
+
     public func colorsFileContents(for colors: [Prism.Project.Color]) -> String {
         let colorOutput = colors
             .map { color in 
@@ -38,14 +48,20 @@ public struct AndroidStyleguideFileProvider: StyleguideFileProviding {
                     textColor = textStyle.color.hexValue
                 }
 
-                let lineHeight = textStyle.lineHeight ?? 0
-                
+                let fontParts = textStyle.fontFace.components(separatedBy: "-")
+
+                guard fontParts.count == 2,
+                      let fontFamily = fontParts.first,
+                      let fontStyle = fontParts.last?.lowercased() else {
+                    fatalError("Invalid font face \(textStyle.fontFace). Can't determine style")
+                }
+
                 return """
                     <style name=\"\(textStyle.identity.android)\">
                         <item name="android:textSize">\(Int(textStyle.fontSize))sp</item>
-                        <item name="android:fontFamily">\(textStyle.fontFace)</item>
+                        <item name="android:fontFamily">\(fontFamily)</item>
                         <item name="android:textColor">\(textColor)</item>
-                        <item name="android:textStyle">normal</item>\(lineHeight != 0 ? "\n        <item name=\"android:lineHeight\">\(lineHeight)sp</item>" : "")
+                        <item name="android:textStyle">\(fontStyle)</item>
                     </style>
                 """
 

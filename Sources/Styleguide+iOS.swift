@@ -12,18 +12,29 @@ import AppKit
 public struct IOSStyleguideFileProvider: StyleguideFileProviding {
     public init() { }
 
+    public var fileHeader: String {
+        return """
+        /// This file was generated using Prism, Gett's Design System code generator.
+        /// https://github.com/gtforge/prism
+
+
+        """
+    }
+
     public func colorsFileContents(for colors: [Prism.Project.Color]) -> String {
         let colorOutput = colors
             .sorted(by: { $0.identity.iOS < $1.identity.iOS })
             .map { color in 
-                "    static let \(color.identity.iOS) = UIColor(r: \(color.r), g: \(color.g), b: \(color.b), a: \(color.a))"
+                "    static let \(color.identity.iOS) = UIColor(r: \(color.r), g: \(color.g), b: \(color.b), alpha: \(color.a))"
             }
             .joined(separator: "\n")
         
         return """
+        // swiftlint:disable colors
         public extension UIColor {
         \(colorOutput)
         }
+        // swiftlint:enable colors
         """
     }
 
@@ -66,7 +77,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
         """
 
         let namesOutput = sortedStyles.reduce(into: "") { string, style in
-            string.append("case \"\(style.identity.iOS)\": self = .\(style.identity.iOS)\n            ")
+            string.append("case \"\(style.identity.iOS)\": self = .\(style.identity.iOS)\n        ")
         }
 
         let styleNames = """
@@ -80,7 +91,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
             /// - returns: a `TextStyle` object, or `nil` if none matches the name.
             init?(styleName: String) {
                 switch styleName {
-                    \(namesOutput)default: return nil
+                \(namesOutput)default: return nil
                 }
             }
         }

@@ -16,15 +16,6 @@ protocol AssetCommandType {
     static var usage: String { get }
 }
 
-var generatedHeader: String {
-    return """
-    /// This file was generated using Prism, Gett's Design System code generator.
-    /// https://github.com/gtforge/prism
-
-
-    """
-}
-
 // MARK: - Generate Colors Command
 struct GenerateColors: AssetCommandType {
     static var platformUsage = "Platform to generate colors for [iOS, Android]"
@@ -91,8 +82,8 @@ struct GenerateCommand: CommandRepresentable {
             do {
                 let project = try result.get()
                 let styleguide = options.platform.styleguide
-                let colors = generatedHeader + project.generateColorsFile(from: styleguide)
-                let textStyles = generatedHeader + project.generateTextStyleFile(from: styleguide)
+                let colors = styleguide.fileHeader + project.generateColorsFile(from: styleguide)
+                let textStyles = styleguide.fileHeader + project.generateTextStyleFile(from: styleguide)
 
                 guard let colorsData = colors.data(using: .utf8),
                       let textStylesData = textStyles.data(using: .utf8) else {
@@ -164,9 +155,9 @@ struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
 
                 switch Command.symbol {
                 case ColorsCommand.symbol:
-                    print(generatedHeader + project.generateColorsFile(from: styleguide))
+                    print(styleguide.fileHeader + project.generateColorsFile(from: styleguide))
                 case TextStylesCommand.symbol:
-                    print(generatedHeader + project.generateTextStyleFile(from: styleguide))
+                    print(styleguide.fileHeader + project.generateTextStyleFile(from: styleguide))
                 default:
                     throw CommandError.invalidCommand
                 }
