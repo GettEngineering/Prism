@@ -51,11 +51,19 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
                     }
                 }()
 
-                var attributes = [String]()
+                let attributes = [String]()
 
-                if let lineHeight = textStyle.lineHeight {
-                    attributes.append(".lineHeight(\(lineHeight))")
-                }
+                // NOTE: We've decided not supporting Attributes for now.
+                // There's no real design-use as the line-height / kerning is
+                // already baked into the font, and using custom values will
+                // require using NSAttributedString(s) which is quite hairy.
+                //
+                // Feel free to uncomment this if you want to add support
+                // in the future.
+                //
+                //if let lineHeight = textStyle.lineHeight {
+                //    attributes.append(".lineHeight(\(lineHeight))")
+                //}
 
                 return """
                     static let \(textStyle.identity.iOS) = TextStyle(
