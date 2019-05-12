@@ -8,21 +8,21 @@
 
 import Foundation
 
-protocol AssetIdentifiable {
+public protocol AssetIdentifiable {
     var name: String { get }
     var identity: Prism.Project.AssetIdentity { get }
 }
 
-extension AssetIdentifiable {
+public extension AssetIdentifiable {
     var identity: Prism.Project.AssetIdentity {
         return .init(name: name)
     }
 }
 
-extension Prism.Project {
+public extension Prism.Project {
     struct AssetIdentity {
-        let iOS: String
-        let android: String
+        public let iOS: String
+        public let android: String
 
         init(name: String) {
             // Seperate name to words

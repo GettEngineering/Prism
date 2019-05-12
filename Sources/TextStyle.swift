@@ -10,10 +10,10 @@ import Foundation
 
 public extension Prism.Project {
     struct TextStyle: Codable, AssetIdentifiable {
-        let fontFace: String
-        let fontSize: Float
-        let name: String
-        let color: RawColor
-        let lineHeight: Float?
+        public let fontFace: String
+        public let fontSize: Float
+        public let name: String
+        public let color: RawColor
+        public let lineHeight: Float?
     }
 }

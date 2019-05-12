@@ -85,6 +85,13 @@ struct GenerateCommand: CommandRepresentable {
                 let colors = styleguide.fileHeader + project.generateColorsFile(from: styleguide)
                 let textStyles = styleguide.fileHeader + project.generateTextStyleFile(from: styleguide)
 
+                let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
+                let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
+
+                guard usedReservedColors.isEmpty else {
+                    throw CommandError.prohibitedColorNames(colorNames: usedReservedColors.joined(separator: ", "))
+                }
+
                 guard let colorsData = colors.data(using: .utf8),
                       let textStylesData = textStyles.data(using: .utf8) else {
                     throw CommandError.failedDataConversion
@@ -153,6 +160,13 @@ struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
                 let project = try result.get()
                 let styleguide = options.platform.styleguide
 
+                let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
+                let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
+
+                guard usedReservedColors.isEmpty else {
+                    throw CommandError.prohibitedColorNames(colorNames: usedReservedColors.joined(separator: ", "))
+                }
+
                 switch Command.symbol {
                 case ColorsCommand.symbol:
                     print(styleguide.fileHeader + project.generateColorsFile(from: styleguide))
@@ -177,6 +191,7 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidCommand
     case missingToken
     case failedDataConversion
+    case prohibitedColorNames(colorNames: String)
 
     var description: String {
         switch self {
@@ -186,9 +201,15 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Missing ZEPLIN_TOKEN environment variable"
         case .failedDataConversion:
             return "Failed converting Data to unicode string"
+        case .prohibitedColorNames(let colorNames):
+            return "The following color names are reserved: \(colorNames)"
         }
     }
 }
 
 typealias ColorsCommand = AssetCommand<GenerateColors>
 typealias TextStylesCommand = AssetCommand<GenerateTextStyles>
+
+/// A list of color names that are reserved by the Mobile OSs and cannot be used
+/// for our custom color names.
+private let reservedColorNames = Set(["black", "darkGray", "lightGray", "white", "gray", "red", "green", "blue", "cyan", "yellow", "magenta", "orange", "purple", "brown", "clear"])
