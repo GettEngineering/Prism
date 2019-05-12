@@ -30,6 +30,8 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
             .joined(separator: "\n")
         
         return """
+        import UIKit
+
         // swiftlint:disable colors
         public extension UIColor {
         \(colorOutput)
@@ -77,6 +79,8 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
             .joined(separator: "\n\n")
 
         let styles = """
+        import UIKit
+
         // MARK: - Text Styles
 
         extension TextStyle {
