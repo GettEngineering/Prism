@@ -30,7 +30,8 @@ extension Prism.Project {
             var currentWord = ""
             let cleanName = name.trimmingCharacters(in: .whitespacesAndNewlines)
                                 .replacingOccurrences(of: " ", with: "")
-                                .replacingOccurrences(of: #"\"#, with: "")
+                                .replacingOccurrences(of: "\\", with: "")
+                                .replacingOccurrences(of: "/", with: "")
 
             for (idx, char) in cleanName.enumerated() {
                 guard idx > 0 else {
