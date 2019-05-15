@@ -8,6 +8,7 @@
 
 import Cocoa
 import os
+import ServiceManagement
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -29,6 +30,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         constructMenu()
+        copyLaunchAgent()
+    }
+
+    private func copyLaunchAgent() {
+        if !SMLoginItemSetEnabled("com.gett.PrismHelper" as CFString, true) {
+            os_log("Failed enabled Login Item", log: log, type: .error)
+        } else {
+            os_log("Added Prism Login Item", log: log, type: .info)
+        }
     }
 
     private func showError(message: String) {
@@ -182,4 +192,4 @@ enum Platform: String {
 }
 
 private let alertGoToBuild = NSApplication.ModalResponse(rawValue: 1001)
-private let log = OSLog(subsystem: "com.gett.PrismAgent", category: "networking")
+private let log = OSLog(subsystem: "com.gett.PrismAgent", category: "general")
