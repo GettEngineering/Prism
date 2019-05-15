@@ -1,24 +1,25 @@
 #!/usr/bin/env ruby
 
+###########################################
+# notify_slack.rb                         #
+# May 12th, 2019                          #
+#                                         #
+# @freak4pc | shai.mishali@gett.com       #
+#                                         #
+# This script pushes a slack status       #
+# update to #designsystem about a Design  #
+# System generation step, based on some   #
+# runtime flags.                          #
+###########################################
+
+require_relative "lib/arguments"
 require 'net/http'
 require 'json'
 
-def parse(args)
-    parsed = {}
-  
-    args.each do |arg|
-      match = /^-?-(?<key>.*?)(=(?<value>.*)|)$/.match(arg)
-      if match
-        parsed[match[:key].to_sym] = match[:value]
-      else
-        parsed[:text] = "#{parsed[:text]} #{arg}".strip
-      end
-    end
-  
-    parsed
-end
+include Arguments
 
-args = parse(ARGV)
+args = Arguments.parse(ARGV)
+
 if !args.key?(:platform) then
     print("Missing platform flag")
     exit 1
