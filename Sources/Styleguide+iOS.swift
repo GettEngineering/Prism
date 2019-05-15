@@ -17,7 +17,6 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
         /// This file was generated using Prism, Gett's Design System code generator.
         /// https://github.com/gtforge/prism
 
-
         """
     }
 
@@ -30,6 +29,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
             .joined(separator: "\n")
         
         return """
+        \(fileHeader)
         import UIKit
 
         // swiftlint:disable colors
@@ -79,6 +79,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
             .joined(separator: "\n\n")
 
         let styles = """
+        \(fileHeader)
         import UIKit
 
         // MARK: - Text Styles
