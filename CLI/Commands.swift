@@ -82,8 +82,8 @@ struct GenerateCommand: CommandRepresentable {
             do {
                 let project = try result.get()
                 let styleguide = options.platform.styleguide
-                let colors = styleguide.fileHeader + project.generateColorsFile(from: styleguide)
-                let textStyles = styleguide.fileHeader + project.generateTextStyleFile(from: styleguide)
+                let colors = project.generateColorsFile(from: styleguide)
+                let textStyles = project.generateTextStyleFile(from: styleguide)
 
                 let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
                 let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
@@ -169,9 +169,9 @@ struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
 
                 switch Command.symbol {
                 case ColorsCommand.symbol:
-                    print(styleguide.fileHeader + project.generateColorsFile(from: styleguide))
+                    print(project.generateColorsFile(from: styleguide))
                 case TextStylesCommand.symbol:
-                    print(styleguide.fileHeader + project.generateTextStyleFile(from: styleguide))
+                    print(project.generateTextStyleFile(from: styleguide))
                 default:
                     throw CommandError.invalidCommand
                 }

@@ -16,9 +16,7 @@ public protocol TextStylesFileProviding {
     func textStylesFileContents(for project: Prism.Project) -> String
 }
 
-public protocol StyleguideFileProviding: ColorsFileProviding, TextStylesFileProviding {
-    var fileHeader: String { get }
-}
+public protocol StyleguideFileProviding: ColorsFileProviding, TextStylesFileProviding {}
 
 public struct Styleguide {
     let provider: StyleguideFileProviding
