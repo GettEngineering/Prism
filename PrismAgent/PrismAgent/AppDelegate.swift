@@ -130,7 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
 
         menu.addItem(NSMenuItem(title: "Generate iOS Style Guide", action: #selector(AppDelegate.generate(_:)), keyEquivalent: "I"))
-//        menu.addItem(NSMenuItem(title: "Generate Android Style Guide", action: #selector(AppDelegate.generate(_:)), keyEquivalent: "A"))
+        menu.addItem(NSMenuItem(title: "Generate Android Style Guide", action: #selector(AppDelegate.generate(_:)), keyEquivalent: "A"))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "Q"))
 
@@ -177,7 +177,7 @@ enum Platform: String {
             ] as [String: Any]
 
             guard let bodyData = try? JSONSerialization.data(withJSONObject: body) else {
-                fatalError("Couldn't generate workflow request")
+                fatalError("Couldn't generate workflow request for iOS")
             }
 
             request.allHTTPHeaderFields = ["Content-Type": "application/json"]
@@ -186,7 +186,30 @@ enum Platform: String {
 
             return request
         case .android:
-            fatalError("Not implemented yet")
+            let url = URL(string: "https://app.bitrise.io/app/6fcc76912dba7b17/build/start.json")!
+            var request = URLRequest(url: url)
+
+            let body = [
+                "hook_info": [
+                    "type": "bitrise",
+                    "build_trigger_token": "7YcSvtxAht2dcSp8Wb3vog"
+                ],
+                "build_params": [
+                    "branch": "redesign",
+                    "workflow_id": "designsystem"
+                ],
+                "triggered_by": "prism"
+            ] as [String: Any]
+
+            guard let bodyData = try? JSONSerialization.data(withJSONObject: body) else {
+                fatalError("Couldn't generate workflow request for Android")
+            }
+
+            request.allHTTPHeaderFields = ["Content-Type": "application/json"]
+            request.httpBody = bodyData
+            request.httpMethod = "POST"
+
+            return request
         }
     }
 }
