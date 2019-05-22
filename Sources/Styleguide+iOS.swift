@@ -23,8 +23,9 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
     public func colorsFileContents(for colors: [Prism.Project.Color]) -> String {
         let colorOutput = colors
             .sorted(by: { $0.identity.iOS < $1.identity.iOS })
-            .map { color in 
-                "    static let \(color.identity.iOS) = UIColor(r: \(color.r), g: \(color.g), b: \(color.b), alpha: \(color.a))"
+            .map { color in
+                let alpha = String(format: "%.2f", color.a)
+                return "    static let \(color.identity.iOS) = UIColor(r: \(color.r), g: \(color.g), b: \(color.b), alpha: \(alpha))"
             }
             .joined(separator: "\n")
         
