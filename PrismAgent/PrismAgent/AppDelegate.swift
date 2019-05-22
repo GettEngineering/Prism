@@ -124,7 +124,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let button = statusItem.button else { return }
 
         button.image = NSImage(named: NSImage.Name("prism"))
-        activity.frame = button.frame
+        activity.frame = CGRect(x: button.frame.origin.x,
+                                y: button.frame.origin.y,
+                                width: button.frame.size.height,
+                                height: button.frame.size.height)
         button.addSubview(activity)
 
         let menu = NSMenu()
@@ -195,7 +198,7 @@ enum Platform: String {
                     "build_trigger_token": "7YcSvtxAht2dcSp8Wb3vog"
                 ],
                 "build_params": [
-                    "branch": "redesign",
+                    "branch": "develop",
                     "workflow_id": "designsystem"
                 ],
                 "triggered_by": "prism"
