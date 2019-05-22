@@ -18,7 +18,7 @@ public struct AndroidStyleguideFileProvider: StyleguideFileProviding {
     public func colorsFileContents(for colors: [Prism.Project.Color]) -> String {
         let colorOutput = colors
             .map { color in 
-                "    <color name=\"\(color.identity.android)\">\(color.hexValue)</color>"
+                "    <color name=\"\(color.identity.android)\">\(color.argbValue)</color>"
             }
             .joined(separator: "\n")
 
@@ -34,10 +34,10 @@ public struct AndroidStyleguideFileProvider: StyleguideFileProviding {
             .map { textStyle in 
                 let textColor: String
                 
-                if let matchedColor = project.colors.first(where: { $0.hexValue == textStyle.color.hexValue }) {
+                if let matchedColor = project.colors.first(where: { $0.argbValue == textStyle.color.argbValue }) {
                     textColor = "@color/\(matchedColor.identity.android)"
                 } else {
-                    textColor = textStyle.color.hexValue
+                    textColor = textStyle.color.argbValue
                 }
 
                 let normalizedFont = textStyle.fontFace.lowercased().replacingOccurrences(of: "-", with: "_")
