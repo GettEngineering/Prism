@@ -16,8 +16,13 @@ public protocol RawColorRepresentable: Codable {
 }
 
 public extension RawColorRepresentable {
-    var hexValue: String {
+    var rgbValue: String {
         return String(format: "#%02x%02x%02x", r, g, b)
+    }
+
+    var argbValue: String {
+        let alpha = Int(round(a * 255))
+        return String(format: "#%02x%02x%02x%02x", alpha, r, g, b)
     }
 }
 

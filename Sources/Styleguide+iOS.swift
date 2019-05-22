@@ -47,7 +47,7 @@ public struct IOSStyleguideFileProvider: StyleguideFileProviding {
         let fontOutput = sortedStyles
             .map { textStyle in
                 let textColor: String = {
-                    if let matchedColor = project.colors.first(where: { $0.hexValue == textStyle.color.hexValue }) {
+                    if let matchedColor = project.colors.first(where: { $0.argbValue == textStyle.color.argbValue }) {
                         return ".\(matchedColor.identity.iOS)"
                     } else {
                         return "UIColor(r: \(textStyle.color.r), g: \(textStyle.color.g), b: \(textStyle.color.b), a: \(textStyle.color.a))"
