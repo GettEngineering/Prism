@@ -9,7 +9,7 @@
 import Foundation
 
 public extension Prism.Project {
-    struct TextStyle: Codable, AssetIdentifiable {
+    struct TextStyle: Codable, Equatable, AssetIdentifiable {
         public let fontFace: String
         public let fontSize: Float
         public let name: String
