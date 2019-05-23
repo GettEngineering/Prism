@@ -9,10 +9,18 @@
 import Foundation
 
 public extension Prism {
-    struct Project: Codable {
+    struct Project: Codable, Equatable {
+        public let id: String
         public let name: String
         public let colors: [Prism.Project.Color]
         public let textStyles: [Prism.Project.TextStyle]
+
+        enum CodingKeys: String, CodingKey {
+            case id = "_id"
+            case name
+            case colors
+            case textStyles
+        }
     }
 }
 

@@ -8,7 +8,8 @@
 
 import Foundation
 
-public struct Prism {
+public class Prism {
+    public typealias ProjectResult = Result<Project, Swift.Error>
     private let jwtToken: String
 
     public init(jwtToken: String) {
@@ -24,24 +25,34 @@ public struct Prism {
     }
 
     public func getProject(id: String,
-                           completion: @escaping (Result<Project, Swift.Error>) -> Void) {
+                           completion: @escaping (ProjectResult) -> Void) {
         var request = URLRequest(url: apiURL(for: id))
         request.addValue(jwtToken, forHTTPHeaderField: Header.token.rawValue)
 
-        URLSession.shared
-            .dataTask(with: request) { data, resp, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
+        /// It's required to wait and block here when running in CLI.
+        /// Otherwise, Prism terminates without waiting for the result to
+        /// come back.
+        let wait = WaitForResult<ProjectResult> { done in
+            URLSession.shared
+                .dataTask(with: request) { data, resp, error in
+                    let result: ProjectResult
+                    defer { done(result) }
 
-                do {
-                    completion(.success(try Prism.Project.decode(from: data ?? Data())))
-                } catch let err {
-                    completion(.failure(err))
+                    if let error = error {
+                        result = .failure(error)
+                        return
+                    }
+
+                    do {
+                        result = .success(try Prism.Project.decode(from: data ?? Data()))
+                    } catch let err {
+                        result = .failure(err)
+                    }
                 }
-            }
-            .resume()
+                .resume()
+        }
+
+        completion(wait.result)
     }
 }
 

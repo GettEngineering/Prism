@@ -29,9 +29,10 @@ public extension Prism.Project {
             var words = [String]()
             var currentWord = ""
             let cleanName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                                .replacingOccurrences(of: " ", with: "")
                                 .replacingOccurrences(of: "\\", with: "")
                                 .replacingOccurrences(of: "/", with: "")
+                                .replacingOccurrences(of: "-", with: " ")
+                                .replacingOccurrences(of: "_", with: " ")
 
             for (idx, char) in cleanName.enumerated() {
                 guard idx > 0 else {
@@ -39,8 +40,12 @@ public extension Prism.Project {
                     continue
                 }
 
-                if char.unicodeScalars.allSatisfy(CharacterSet.uppercaseLetters.contains) {
-                    words.append(currentWord)
+                let wordCharacterSet = CharacterSet.uppercaseLetters
+                                                   .subtracting(CharacterSet.decimalDigits)
+                                                   .union(CharacterSet.whitespaces)
+
+                if char.unicodeScalars.allSatisfy(wordCharacterSet.contains) {
+                    words.append(currentWord.replacingOccurrences(of: " ", with: ""))
                     currentWord = ""
                     currentWord.append(char)
                 } else {
@@ -48,7 +53,8 @@ public extension Prism.Project {
                 }
             }
 
-            words.append(currentWord)
+            words.append(currentWord.replacingOccurrences(of: " ", with: ""))
+            words = words.compactMap { $0.isEmpty ? nil : $0 }
 
             self.iOS = (words.first?.lowercased() ?? "") + 
                         words.dropFirst()

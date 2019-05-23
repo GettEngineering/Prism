@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol RawColorRepresentable: Codable {
+public protocol RawColorRepresentable: Codable, Equatable {
     var r: Int { get }
     var g: Int { get }
     var b: Int { get }

@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "PrismCore",
+    platforms: [
+        .macOS(.v10_12), .iOS(.v10), .tvOS(.v10), .watchOS(.v4)
+    ],
     products: [
         .executable(name: "prism",
                     targets: ["prism"]),
@@ -12,7 +15,11 @@ let package = Package(
             targets: ["PrismCore"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6")
+        .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6"),
+        .package(url: "https://github.com/Quick/Quick", from: "2.0.0"),
+        .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
+        .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master"))
+
     ],
     targets: [
         .target(
@@ -24,9 +31,9 @@ let package = Package(
             name: "PrismCore",
             dependencies: [],
             path: "Sources"),
-//        .testTarget(
-//            name: "PrismTests",
-//            dependencies: ["Prism"],
-//            path: "Tests"),
+       .testTarget(
+           name: "PrismTests",
+           dependencies: ["prism", "Quick", "Nimble", "MockDuck"],
+           path: "Tests")
     ]
 )
