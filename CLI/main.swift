@@ -14,8 +14,6 @@ public final class PrismCLI {
         let commander = BuiltIn.Commander.self
 
         commander.commands = [
-            ColorsCommand.self,
-            TextStylesCommand.self,
             GenerateCommand.self
         ]
 

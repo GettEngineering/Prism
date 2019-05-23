@@ -21,16 +21,10 @@ public extension Prism {
             case colors
             case textStyles
         }
-    }
-}
 
-public extension Prism.Project {
-    func generateColorsFile(from provider: ColorsFileProviding) -> String {
-        return provider.colorsFileContents(for: colors)
-    }
-
-    func generateTextStyleFile(from provider: TextStylesFileProviding) -> String {
-        return provider.textStylesFileContents(for: self)
+        public func colorIdentity(for color: RawColor) -> AssetIdentity? {
+            return colors.first(where: { $0.argbValue == color.argbValue })?.identity
+        }
     }
 }
 
