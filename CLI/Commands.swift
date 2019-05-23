@@ -9,63 +9,40 @@ import Foundation
 import Commander
 import PrismCore
 
-protocol AssetCommandType {
-    static var platformUsage: String { get }
-    static var projectIdUsage: String { get }
-    static var symbol: String { get }
-    static var usage: String { get }
-}
-
-// MARK: - Generate Colors Command
-struct GenerateColors: AssetCommandType {
-    static var platformUsage = "Platform to generate colors for [iOS, Android]"
-    static var projectIdUsage = "Zeplin Project ID to generate colors from"
-    static var symbol = "colors"
-    static var usage = "Generate and output colors definitions for the provided platform"
-}
-
-// MARK: - Generate Text Styles Command
-struct GenerateTextStyles: AssetCommandType {
-    static var platformUsage = "Platform to generate text styles for [iOS, Android]"
-    static var projectIdUsage = "Zeplin Project ID to generate text styles from"
-    static var symbol = "textStyles"
-    static var usage = "Generate and output text style definitions for the provided platform"
-}
-
 // MARK: - Generate to File Command
 struct GenerateCommand: CommandRepresentable {
     struct Options: OptionsRepresentable {
         enum CodingKeys: String, CodingKeysRepresentable {
             case platform
             case projectId
-            case textStylesPath
-            case colorsPath
+            case templatesPath
+            case outputPath
         }
 
         static var keys: [Options.CodingKeys: Character] {
             return [.platform: "p",
                     .projectId: "i",
-                    .textStylesPath: "t",
-                    .colorsPath: "c"]
+                    .templatesPath: "t",
+                    .outputPath: "o"]
         }
 
         static var descriptions: [Options.CodingKeys : OptionDescription] {
             return [
                 .platform: .usage("Platform to generate text styles and colors for [iOS, Android]"),
                 .projectId: .usage("Zeplin Project ID to generate text styles and colors from"),
-                .textStylesPath: .usage("Path to save Text Styles to"),
-                .colorsPath: .usage("Path to save Colors to")
+                .templatesPath: .usage("Path to a folder containing *.prism template files"),
+                .outputPath: .usage("Path to save generated files to")
             ]
         }
 
-        let platform: Platform
+        let platform: Prism.Project.Platform
         let projectId: String
-        let textStylesPath: String
-        let colorsPath: String
+        let templatesPath: String
+        let outputPath: String
     }
 
     static var symbol = "generate"
-    static var usage = "Generate text style and colors definitions and store them to the provided paths"
+    static var usage = "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
 
     static func main(_ options: GenerateCommand.Options) throws {
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
@@ -75,16 +52,12 @@ struct GenerateCommand: CommandRepresentable {
         let prism = Prism(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
-        let colorsURL = URL(fileURLWithPath: options.colorsPath)
-        let textStylesURL = URL(fileURLWithPath: options.textStylesPath)
+        let templatesPath = options.templatesPath.last == "/" ? String(options.templatesPath.dropLast()) : options.templatesPath
+        let outputPath = options.outputPath.last == "/" ? String(options.outputPath.dropLast()) : options.outputPath
 
         prism.getProject(id: options.projectId) { result in
             do {
                 let project = try result.get()
-                let styleguide = options.platform.styleguide
-                let colors = project.generateColorsFile(from: styleguide)
-                let textStyles = project.generateTextStyleFile(from: styleguide)
-
                 let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
                 let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
 
@@ -92,93 +65,43 @@ struct GenerateCommand: CommandRepresentable {
                     throw CommandError.prohibitedColorNames(colorNames: usedReservedColors.joined(separator: ", "))
                 }
 
-                guard let colorsData = colors.data(using: .utf8),
-                      let textStylesData = textStyles.data(using: .utf8) else {
-                    throw CommandError.failedDataConversion
+                let fileManager = FileManager.default
+                let enumerator = fileManager.enumerator(atPath: templatesPath)
+
+                guard fileManager.fileExists(atPath: templatesPath) else {
+                    throw CommandError.templateFolderMissing(path: templatesPath)
                 }
 
-                try colorsData.write(to: colorsURL)
-                try textStylesData.write(to: textStylesURL)
+                var templateFiles = [String]()
 
-                sema.signal()
-            } catch let err {
-                print("Failed getting project: \(err)")
-                exit(1)
-            }
-        }
+                while let templateFile = enumerator?.nextObject() as? String {
+                    guard !templateFile.hasPrefix("."),
+                          templateFile.hasSuffix(".prism") else { continue }
 
-        sema.wait()
-    }
-}
-
-// MARK: - Generic Console Output Command
-struct AssetCommand<Command: AssetCommandType>: CommandRepresentable {
-    struct Options: OptionsRepresentable {
-        enum CodingKeys: String, CodingKeysRepresentable {
-            case platform
-            case projectId
-        }
-
-        static var keys: [Options.CodingKeys: Character] {
-            return [.platform: "p",
-                    .projectId: "i"]
-        }
-
-        static var descriptions: [Options.CodingKeys : OptionDescription] {
-            return [
-                .platform: .usage(Command.platformUsage),
-                .projectId: .usage(Command.projectIdUsage)
-            ]
-        }
-
-        let platform: Platform
-        let projectId: String
-    }
-
-    static var symbol: String {
-        return Command.symbol
-    }
-
-    static var usage: String {
-        return Command.usage
-    }
-
-    static func main(_ options: Options) throws {
-        guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
-            throw CommandError.missingToken
-        }
-
-        guard [GenerateColors.symbol, GenerateTextStyles.symbol].contains(Command.symbol) else {
-            throw CommandError.invalidCommand
-        }
-
-        let prism = Prism(jwtToken: jwtToken)
-        let sema = DispatchSemaphore(value: 0)
-
-        prism.getProject(id: options.projectId) { result in
-            do {
-                let project = try result.get()
-                let styleguide = options.platform.styleguide
-
-                let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
-                let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
-
-                guard usedReservedColors.isEmpty else {
-                    throw CommandError.prohibitedColorNames(colorNames: usedReservedColors.joined(separator: ", "))
+                    templateFiles.append("\(templatesPath)/\(templateFile)")
                 }
 
-                switch Command.symbol {
-                case ColorsCommand.symbol:
-                    print(project.generateColorsFile(from: styleguide))
-                case TextStylesCommand.symbol:
-                    print(project.generateTextStyleFile(from: styleguide))
-                default:
-                    throw CommandError.invalidCommand
+                guard !templateFiles.isEmpty else {
+                    throw CommandError.noTemplateFiles
+                }
+
+                let parser = TemplateParser(project: project)
+
+                for templateFile in templateFiles {
+                    let template = try? String(contentsOfFile: templateFile)
+                    let parsed = parser.parse(template: template ?? "")
+
+                    let parsedData = parsed.data(using: .utf8) ?? Data()
+                    let filename = templateFile.components(separatedBy: "/").last ?? ""
+                    let outFile = String(filename.dropLast(6))
+                    let outPath = "\(outputPath)/\(outFile)"
+
+                    try parsedData.write(to: URL(fileURLWithPath: outPath))
                 }
 
                 sema.signal()
             } catch let err {
-                print("Failed getting project: \(err)")
+                print("Something went wrong: \(err)")
                 exit(1)
             }
         }
@@ -192,6 +115,8 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case missingToken
     case failedDataConversion
     case prohibitedColorNames(colorNames: String)
+    case templateFolderMissing(path: String)
+    case noTemplateFiles
 
     var description: String {
         switch self {
@@ -203,13 +128,15 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Failed converting Data to unicode string"
         case .prohibitedColorNames(let colorNames):
             return "The following color names are reserved: \(colorNames)"
+        case .templateFolderMissing(let path):
+            return "The provided template folder doesn't exist: \(path)"
+        case .noTemplateFiles:
+            return "Can't find template files (*.prism) in provided folder"
         }
     }
 }
 
-typealias ColorsCommand = AssetCommand<GenerateColors>
-typealias TextStylesCommand = AssetCommand<GenerateTextStyles>
-
+#warning("Read these from external file")
 /// A list of color names that are reserved by the Mobile OSs and cannot be used
 /// for our custom color names.
 private let reservedColorNames = Set([
