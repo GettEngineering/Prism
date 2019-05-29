@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// Prism is the main class responsible for fetching the raw
+/// API data from Zeplin and decode it into a `Prism.Project`.
 public class Prism {
     public typealias ProjectResult = Result<Project, Swift.Error>
     private let jwtToken: String
