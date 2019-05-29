@@ -12,25 +12,36 @@ import MockDuck
 @testable import PrismCore
 
 extension Prism {
-    func mock() -> Project {
+    func mock(type: MockType) -> ProjectResult {
+        MockDuck.shouldFallbackToNetwork = type != .failure
+        MockDuck.unregisterAllRequestHandlers()
+
         MockDuck.registerRequestHandler { request in
             if request.url?.absoluteString == "https://api.zeplin.io/v2/projects/12345" {
-                return try? MockResponse(for: request, data: projectJSONMock.data(using: .utf8))
+                switch type {
+                case .successful:
+                    return try? MockResponse(for: request, data: projectJSONMock.data(using: .utf8))
+                case .faultyJSON:
+                    return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
+                case .failure:
+                    return nil
+                }
             } else {
                 return nil
             }
         }
 
-        return WaitForResult<Prism.Project> { done in
+        return WaitForResult<Prism.ProjectResult> { done in
             self.getProject(id: "12345") { result in
-                switch result {
-                case .success(let output):
-                    done(output)
-                case .failure(let error):
-                    fail("Failed with error: \(error)")
-                }
+                done(result)
             }
         }.result
+    }
+
+    enum MockType {
+        case successful
+        case failure
+        case faultyJSON
     }
 }
 

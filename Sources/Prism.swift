@@ -18,17 +18,14 @@ public class Prism {
         self.jwtToken = jwtToken
     }
 
-    private func apiURL(for projectID: String) -> URL {
-        guard let url = URL(string: "https://api.zeplin.io/v2/projects/\(projectID)") else {
-            fatalError("Invalid API Path")
-        }
-
-        return url
-    }
-
     public func getProject(id: String,
                            completion: @escaping (ProjectResult) -> Void) {
-        var request = URLRequest(url: apiURL(for: id))
+        guard let apiURL = URL(string: "https://api.zeplin.io/v2/projects/\(id)") else {
+            completion(.failure(Error.invalidProjectId))
+            return
+        }
+
+        var request = URLRequest(url: apiURL)
         request.addValue(jwtToken, forHTTPHeaderField: Header.token.rawValue)
 
         /// It's required to wait and block here when running in CLI.
@@ -61,5 +58,11 @@ public class Prism {
 private extension Prism {
     enum Header: String {
         case token = "Zeplin-Token"
+    }
+}
+
+extension Prism {
+    enum Error: Swift.Error {
+        case invalidProjectId
     }
 }
