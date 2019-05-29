@@ -1,6 +1,6 @@
 //
 //  Encodable+Ext.swift
-//  PrismCore
+//  Prism
 //
 //  Created by Shai Mishali on 22/05/2019.
 //

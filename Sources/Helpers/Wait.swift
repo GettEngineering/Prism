@@ -1,6 +1,6 @@
 //
 //  Wait.swift
-//  PrismCore
+//  Prism
 //
 //  Created by Shai Mishali on 23/05/2019.
 //
@@ -8,7 +8,7 @@
 import Foundation
 
 /// A helper to Wait for a specific asynchronous piece of work to
-/// be done and provider a specific result.
+/// be done and provide a specific result.
 ///
 /// The caller should invoke the `done()` closure argument with the
 /// result when the asynchronous work is done.

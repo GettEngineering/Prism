@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// Represents a raw color representable that provides
+/// red, green, blue and alpha colors (0-255, 0-255, 0-255, 0.0-1.0).
 public protocol RawColorRepresentable: Codable, Equatable {
     var r: Int { get }
     var g: Int { get }
@@ -16,10 +18,13 @@ public protocol RawColorRepresentable: Codable, Equatable {
 }
 
 public extension RawColorRepresentable {
+    /// A calculated RGB hex string (e.g. #FF0000)
     var rgbValue: String {
         return String(format: "#%02x%02x%02x", r, g, b)
     }
 
+    /// A Calculated ARGB hex string including an
+    /// alpha channel. (e.g. #FFFF0000).
     var argbValue: String {
         let alpha = Int(round(a * 255))
         return String(format: "#%02x%02x%02x%02x", alpha, r, g, b)
@@ -27,6 +32,7 @@ public extension RawColorRepresentable {
 }
 
 public extension Prism.Project {
+    /// A raw color with red, green, blue and alpha values.
     struct RawColor: RawColorRepresentable {
         public let r: Int
         public let g: Int
@@ -34,6 +40,8 @@ public extension Prism.Project {
         public let a: Double
     }
 
+    /// A color with a name (identity) as well as color values:
+    /// red, green, blue and alpha values.
     struct Color: RawColorRepresentable, AssetIdentifiable {
         public let name: String
         public let r: Int

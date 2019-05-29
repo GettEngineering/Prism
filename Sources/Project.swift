@@ -9,10 +9,19 @@
 import Foundation
 
 public extension Prism {
+    /// A Prism Project, providing a name along with its different
+    /// colors and text styles.
     struct Project: Codable, Equatable {
+        /// Project's ID.
         public let id: String
+
+        /// Project's Name.
         public let name: String
+
+        /// Project's Colors.
         public let colors: [Prism.Project.Color]
+
+        /// Project's Text Styles.
         public let textStyles: [Prism.Project.TextStyle]
 
         enum CodingKeys: String, CodingKey {
@@ -22,13 +31,27 @@ public extension Prism {
             case textStyles
         }
 
+        /// Match a provided Raw Color with a Color
+        /// from the project, returning its identity.
+        ///
+        /// - parameter for: Raw color to be matched in the project.
+        ///
+        /// - returns: Asset Identity for the matched color, if exists in the project.
         public func colorIdentity(for color: RawColor) -> AssetIdentity? {
             return colors.first(where: { $0.argbValue == color.argbValue })?.identity
         }
     }
 }
 
+extension Prism.Project: CustomStringConvertible {
+    /// A short description for the project.
+    public var description: String {
+        return #"Zeplin Project "\(name)" has \(colors.count) colors and \(textStyles.count) text styles"#
+    }
+}
+
 extension Prism.Project: CustomDebugStringConvertible {
+    /// A verbose description for the project, including its colors and text styles.
     public var debugDescription: String {
         let colorDesc = colors.map { "    🎨 \($0.name) \($0.identity) => R: \($0.r), G: \($0.g), B: \($0.b), alpha: \($0.a)" }
                               .joined(separator: "\n")

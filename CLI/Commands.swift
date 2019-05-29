@@ -13,29 +13,25 @@ import PrismCore
 struct GenerateCommand: CommandRepresentable {
     struct Options: OptionsRepresentable {
         enum CodingKeys: String, CodingKeysRepresentable {
-            case platform
             case projectId
             case templatesPath
             case outputPath
         }
 
         static var keys: [Options.CodingKeys: Character] {
-            return [.platform: "p",
-                    .projectId: "i",
+            return [.projectId: "i",
                     .templatesPath: "t",
                     .outputPath: "o"]
         }
 
         static var descriptions: [Options.CodingKeys : OptionDescription] {
             return [
-                .platform: .usage("Platform to generate text styles and colors for [iOS, Android]"),
                 .projectId: .usage("Zeplin Project ID to generate text styles and colors from"),
                 .templatesPath: .usage("Path to a folder containing *.prism template files"),
                 .outputPath: .usage("Path to save generated files to")
             ]
         }
 
-        let platform: Prism.Project.Platform
         let projectId: String
         let templatesPath: String
         let outputPath: String

@@ -8,18 +8,29 @@
 
 import Foundation
 
+/// Represents an Asset that can be identified with a name.
 public protocol AssetIdentifiable {
     var name: String { get }
-    var identity: Prism.Project.AssetIdentity { get }
 }
 
 public extension AssetIdentifiable {
+    /// A synthesized identity for iOS and Android styles based
+    /// on the provided Asset name.
     var identity: Prism.Project.AssetIdentity {
         return .init(name: name)
     }
 }
 
 public extension Prism.Project {
+    /// An Asset Identity containing iOS and Android flavored identity
+    /// styles base on the separate platforms.
+    ///
+    /// iOS naming is camel-cased for new words.
+    /// Android naming is lower cased and separated by underscores.
+    ///
+    /// * **Input**: An Asset 5
+    /// * **iOS**: anAsset5
+    /// * **Android**: an_asset_5
     struct AssetIdentity {
         public let iOS: String
         public let android: String
