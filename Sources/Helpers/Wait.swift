@@ -19,11 +19,10 @@ class WaitForResult<Result> {
     var result: Result {
         set { self._result = newValue }
         get {
-            guard let result = _result else {
-                preconditionFailure("Result is nil!")
-            }
-
-            return result
+            /// This can't fail, since if a result isn't returned,
+            /// the entire process is frozen until `done(Result)`
+            /// is invoked
+            return _result!
         }
     }
 

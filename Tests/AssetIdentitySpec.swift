@@ -11,7 +11,7 @@ import Nimble
 @testable import PrismCore
 
 class AssetIdentitySpec: QuickSpec {
-    let project = Prism(jwtToken: "fake").mock()
+    let project = try! Prism(jwtToken: "fake").mock(type: .successful).get()
 
     override func spec() {
         describe("raw identities") {
