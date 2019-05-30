@@ -30,16 +30,6 @@ public extension Prism {
             case colors
             case textStyles
         }
-
-        /// Match a provided Raw Color with a Color
-        /// from the project, returning its identity.
-        ///
-        /// - parameter for: Raw color to be matched in the project.
-        ///
-        /// - returns: Asset Identity for the matched color, if exists in the project.
-        public func colorIdentity(for color: RawColor) -> AssetIdentity? {
-            return colors.first(where: { $0.argbValue == color.argbValue })?.identity
-        }
     }
 }
 

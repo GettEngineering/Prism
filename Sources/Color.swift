@@ -50,3 +50,15 @@ public extension Prism.Project {
         public let a: Double
     }
 }
+
+extension Array where Element == Prism.Project.Color {
+    /// Match a provided Raw Color with a Color
+    /// from the project, returning its identity if exists.
+    ///
+    /// - parameter for: Raw color to be matched in the project.
+    ///
+    /// - returns: Asset Identity for the matched color, if exists in the project.
+    func identity<Color: RawColorRepresentable>(matching rawColor: Color) -> Prism.Project.AssetIdentity? {
+        return first(where: { $0.argbValue == rawColor.argbValue })?.identity
+    }
+}

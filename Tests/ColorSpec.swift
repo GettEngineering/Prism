@@ -50,5 +50,36 @@ class ColorSpec: QuickSpec {
                 expect(colors.map { $0.argbValue }) == expectedARGB
             }
         }
+
+        describe("identity(matching:)") {
+            context("no color match") {
+                it("should return nil") {
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let project = try! projectResult.get()
+
+                    let nonExistingColor = Prism.Project.RawColor(r: 255, g: 245, b: 200, a: 1.0)
+
+                    expect(project.colors.identity(matching: nonExistingColor)).to(beNil())
+                }
+            }
+
+            context("color matches") {
+                it("should return correct color with identity") {
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let project = try! projectResult.get()
+
+                    let existingColors = [
+                        Prism.Project.RawColor(r: 223, g: 99, b: 105, a: 0.79999995),
+                        Prism.Project.RawColor(r: 98, g: 182, b: 223, a: 1.0)
+                    ]
+
+                    let matchingColors = existingColors.compactMap { project.colors.identity(matching: $0) }
+
+                    expect(matchingColors.count) == 2
+                    expect(matchingColors[0].iOS) == "clearReddish"
+                    expect(matchingColors[1].iOS) == "blueSky"
+                }
+            }
+        }
     }
 }

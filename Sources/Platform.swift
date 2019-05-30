@@ -10,6 +10,6 @@ import Foundation
 /// A platform. For example: iOS or Android.
 /// Used mainly for Asset Identities naming.
 enum Platform: String {
-    case iOS = "ios"
+    case iOS
     case android
 }

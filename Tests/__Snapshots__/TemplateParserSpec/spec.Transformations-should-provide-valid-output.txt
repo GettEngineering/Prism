@@ -1,0 +1,12 @@
+body
+BODY
+MYCUSTOMFONT-REGULAR
+MyCustomFont_Regular
+mycustomfont_regular
+==============================================
+largeheading
+LARGE_HEADING
+MYCUSTOMFONT-LIGHT
+MyCustomFont_Light
+mycustomfont_light
+==============================================

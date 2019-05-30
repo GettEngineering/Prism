@@ -18,6 +18,7 @@ let package = Package(
         .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6"),
         .package(url: "https://github.com/Quick/Quick", from: "2.0.0"),
         .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
         .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master"))
 
     ],
@@ -33,7 +34,7 @@ let package = Package(
             path: "Sources"),
        .testTarget(
            name: "PrismTests",
-           dependencies: ["prism", "Quick", "Nimble", "MockDuck"],
+           dependencies: ["prism", "Quick", "Nimble", "MockDuck", "SnapshotTesting"],
            path: "Tests")
     ]
 )

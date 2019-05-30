@@ -85,7 +85,7 @@ struct GenerateCommand: CommandRepresentable {
 
                 for templateFile in templateFiles {
                     let template = try? String(contentsOfFile: templateFile)
-                    let parsed = parser.parse(template: template ?? "")
+                    let parsed = try! parser.parse(template: template ?? "")
 
                     let parsedData = parsed.data(using: .utf8) ?? Data()
                     let filename = templateFile.components(separatedBy: "/").last ?? ""

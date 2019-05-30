@@ -28,9 +28,9 @@ public class TemplateParser {
         self.project = project
     }
 
-    public func parse(template: String) -> String {
-        return recursivelyParse(lines: template.components(separatedBy: "\n"))
-                 .joined(separator: "\n")
+    public func parse(template: String) throws -> String {
+        return try recursivelyParse(lines: template.components(separatedBy: "\n"))
+                    .joined(separator: "\n")
     }
 
     /// Recursively parse an block of template lines, producing a processed
@@ -41,7 +41,7 @@ public class TemplateParser {
     /// style (or color) to the method.
     private func recursivelyParse(lines: [String],
                                   color: Prism.Project.Color? = nil,
-                                  textStyle: Prism.Project.TextStyle? = nil) -> [String] {
+                                  textStyle: Prism.Project.TextStyle? = nil) throws -> [String] {
         var output = [String]()
         var currentLineIdx = 0
 
@@ -49,53 +49,49 @@ public class TemplateParser {
             let currentLine = lines[currentLineIdx]
             let lineLength = currentLine.count
 
-            do {
-                // Find occurences of FOR loops in the template
-                let forRegex = try NSRegularExpression(pattern: #"^(\s{0,})\{\{% FOR (.*?) %\}\}$"#)
+            // Find occurences of FOR loops in the template
+            let forRegex = try NSRegularExpression(pattern: #"^(\s{0,})\{\{% FOR (.*?) %\}\}$"#)
 
-                // Detected a FOR loop
-                if let forMatch = forRegex.firstMatch(in: currentLine,
-                                                      options: .init(),
-                                                      range: NSRange(location: 0, length: lineLength)) {
-                    let nsLine = currentLine as NSString
-                    let indent = nsLine.substring(with: forMatch.range(at: 1))
-                    let identifier = nsLine.substring(with: forMatch.range(at: 2))
+            // Detected a FOR loop
+            if let forMatch = forRegex.firstMatch(in: currentLine,
+                                                  options: .init(),
+                                                  range: NSRange(location: 0, length: lineLength)) {
+                let nsLine = currentLine as NSString
+                let indent = nsLine.substring(with: forMatch.range(at: 1))
+                let identifier = nsLine.substring(with: forMatch.range(at: 2))
 
-                    // Find matching END
-                    guard let forEnd = lines[currentLineIdx..<lines.count]
-                                        .firstIndex(where: { $0 == "\(indent){{% END \(identifier) %}}" }) else {
-                        fatalError("Can't find FOR closing for \(identifier)")
-                    }
+                // Find matching END
+                guard let forEnd = lines[currentLineIdx..<lines.count]
+                                    .firstIndex(where: { $0 == "\(indent){{% END \(identifier) %}}" }) else {
+                    throw Error.openLoop(identifier: identifier)
+                }
 
-                    // Recurse over FOR-loop content
-                    let forBody = Array(lines[currentLineIdx + 1...forEnd - 1])
+                // Recurse over FOR-loop content
+                let forBody = Array(lines[currentLineIdx + 1...forEnd - 1])
 
-                    switch identifier {
-                    case "color":
-                        let colorLoop = project.colors
+                switch identifier {
+                case "color":
+                    let colorLoop = try project.colors
                                                .sorted(by: { $0.identity.iOS < $1.identity.iOS })
                                                .reduce(into: [String]()) { result, color in
-                            result.append(contentsOf: recursivelyParse(lines: forBody, color: color))
-                        }
-
-                        output.append(contentsOf: colorLoop)
-                    case "textStyle":
-                        let textStyleLoop = project.textStyles
-                                                   .sorted(by: { $0.identity.iOS < $1.identity.iOS })
-                                                   .reduce(into: [String]()) { result, textStyle in
-                            result.append(contentsOf: recursivelyParse(lines: forBody, textStyle: textStyle))
-                        }
-
-                        output.append(contentsOf: textStyleLoop)
-                    default:
-                        break
+                        result.append(contentsOf: try recursivelyParse(lines: forBody, color: color))
                     }
 
-                    currentLineIdx = forEnd + 1
-                    continue
+                    output.append(contentsOf: colorLoop)
+                case "textStyle":
+                    let textStyleLoop = try project.textStyles
+                                                   .sorted(by: { $0.identity.iOS < $1.identity.iOS })
+                                                   .reduce(into: [String]()) { result, textStyle in
+                        result.append(contentsOf: try recursivelyParse(lines: forBody, textStyle: textStyle))
+                    }
+
+                    output.append(contentsOf: textStyleLoop)
+                default:
+                    throw Error.unknownLoop(identifier: identifier)
                 }
-            } catch let err {
-                fatalError("Failed matching: \(err)")
+
+                currentLineIdx = forEnd + 1
+                continue
             }
 
             /// Make sure this line has some sort of Token.
@@ -158,7 +154,7 @@ public class TemplateParser {
                 if let color = color {
                     parsedToken = Token(rawToken: token, color: color)
                 } else if let textStyle = textStyle {
-                    parsedToken = Token(rawToken: token, textStyle: textStyle, project: project)
+                    parsedToken = Token(rawToken: token, textStyle: textStyle, colors: project.colors)
                 }
 
                 if let token = parsedToken {
@@ -172,5 +168,12 @@ public class TemplateParser {
         return tokens.reduce(output) { output, token in
             return output.replacingOccurrences(of: "{{%\(token.key)%}}", with: token.value)
         }
+    }
+}
+
+extension TemplateParser {
+    enum Error: Swift.Error {
+        case unknownLoop(identifier: String)
+        case openLoop(identifier: String)
     }
 }
