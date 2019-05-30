@@ -25,7 +25,6 @@ extension TemplateParser {
         case textStyleFontSize(Float)
         case textStyleIdentity(String, Platform)
         case textStyleColorIdentity(String, Platform)
-        case textStyleColor(String, Platform)
 
         /// A string token representation, same as the one used in
         /// a .prism template file.
@@ -47,8 +46,7 @@ extension TemplateParser {
                 return "textStyle.fontSize"
             case let .textStyleIdentity(_, platform):
                 return "textStyle.identity.\(platform.rawValue)"
-            case let .textStyleColorIdentity(_, platform),
-                 let .textStyleColor(_, platform):
+            case let .textStyleColorIdentity(_, platform):
                 return "textStyle.color.identity.\(platform.rawValue)"
             }
         }
@@ -76,7 +74,7 @@ extension TemplateParser {
 
         /// Parse a raw text style token, such as "textStyle.fontName", into its
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
-        init?(rawToken: String, textStyle: Prism.Project.TextStyle, project: Prism.Project) {
+        init?(rawToken: String, textStyle: Prism.Project.TextStyle, colors: [Prism.Project.Color]) {
             switch rawToken {
             case "textStyle.fontName":
                 self = .textStyleFontName(textStyle.fontFace)
@@ -87,19 +85,17 @@ extension TemplateParser {
             case "textStyle.identity.android":
                 self = .textStyleIdentity(textStyle.identity.android, .android)
             case "textStyle.color.identity.iOS":
-                guard let identity = project.colorIdentity(for: textStyle.color) else {
-                    self = .textStyleColor("UIColor(r: \(textStyle.color.r), g: \(textStyle.color.g), b: \(textStyle.color.b), alpha: \(textStyle.color.a))", .iOS)
-                    return
+                guard let identity = colors.identity(matching: textStyle.color) else {
+                    return nil
                 }
 
                 self = .textStyleColorIdentity(identity.iOS, .iOS)
             case "textStyle.color.identity.android":
-                guard let identity = project.colorIdentity(for: textStyle.color) else {
-                    self = .textStyleColor(textStyle.color.argbValue, .iOS)
-                    return
+                guard let identity = colors.identity(matching: textStyle.color) else {
+                    return nil
                 }
 
-                self = .colorIdentity(identity.android, .android)
+                self = .textStyleColorIdentity(identity.android, .android)
             default:
                 return nil
             }
@@ -122,8 +118,7 @@ extension TemplateParser {
                 baseString = "\(c)"
             case .colorIdentity(let id, _),
                  .textStyleIdentity(let id, _),
-                 .textStyleColorIdentity(let id, _),
-                 .textStyleColor(let id, _):
+                 .textStyleColorIdentity(let id, _):
                 baseString = id
             case .textStyleFontName(let name):
                 baseString = name
