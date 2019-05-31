@@ -133,13 +133,15 @@ class TemplateParserSpec: QuickSpec {
                 it("should have valid descriptions") {
                     let errors: [TemplateParser.Error] = [.openLoop(identifier: "color"),
                                                           .unknownLoop(identifier: "fake"),
-                                                          .unknownToken(token: "fake")]
+                                                          .unknownToken(token: "fake"),
+                                                          .prohibitedIdentities(identities: "fake1, fake2")]
 
                     let descriptions = errors.map { "\($0.localizedDescription)" }
                     let expectedDescriptions = [
                         "Detected FOR loop 'color' with no closing END",
                         "Illegal FOR loop identifier 'fake'",
-                        "Illegal token in template 'fake'"
+                        "Illegal token in template 'fake'",
+                        "Prohibited identities 'fake1, fake2' can't be used"
                     ]
 
                     expect(descriptions) == expectedDescriptions
@@ -199,6 +201,33 @@ class TemplateParserSpec: QuickSpec {
             context("unknown transformation") {
                 it("should return nil") {
                     expect(TemplateParser.Transformation(rawValue: UUID().uuidString)).to(beNil())
+                }
+            }
+        }
+
+        describe("Prohibited Identifiers") {
+            let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+            let project = try! projectResult.get()
+
+            context("camel cased") {
+                it("should throw an error") {
+                    let configuration = PrismCore.Configuration(reservedColors: ["blueSky", "clearReddish"],
+                                                                reservedTextStyles: ["body", "largeHeading"])
+                    let parser = TemplateParser(project: project, configuration: configuration)
+
+                    expect { try parser.parse(template: "") }
+                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blueSky, clearReddish, body, largeHeading")))
+                }
+            }
+
+            context("snake cased") {
+                it("should throw an error") {
+                    let configuration = PrismCore.Configuration(reservedColors: ["blue_sky", "clear_reddish"],
+                                                                reservedTextStyles: ["body", "large_heading"])
+                    let parser = TemplateParser(project: project, configuration: configuration)
+
+                    expect { try parser.parse(template: "") }
+                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blue_sky, clear_reddish, body, large_heading")))
                 }
             }
         }
