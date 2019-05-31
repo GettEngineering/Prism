@@ -64,5 +64,9 @@ private extension Prism {
 extension Prism {
     enum Error: Swift.Error {
         case invalidProjectId
+
+        var localizedDescription: String {
+            return "The provided project ID can't be used to construct a API URL"
+        }
     }
 }

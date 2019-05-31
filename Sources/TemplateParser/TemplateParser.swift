@@ -104,7 +104,7 @@ public class TemplateParser {
 
             /// The current line has at least a single token that
             /// should be resolved.
-            output.append(resolveTokens(line: currentLine, color: color, textStyle: textStyle))
+            output.append(try resolveTokens(line: currentLine, color: color, textStyle: textStyle))
 
             currentLineIdx += 1
         }
@@ -122,47 +122,45 @@ public class TemplateParser {
     /// - returns: Provided line with resolved tokens
     private func resolveTokens(line: String,
                                color: Prism.Project.Color?,
-                               textStyle: Prism.Project.TextStyle?) -> String {
+                               textStyle: Prism.Project.TextStyle?) throws -> String {
         let lineLength = line.count
         var output = line
         var tokens = [String: String]()
 
-        do {
-            let tokensRegex = try NSRegularExpression(pattern: #"\{\{%(.*?)%\}\}"#)
-            let tokenMatches = tokensRegex.matches(in: line, options: .init(),
-                                                   range: NSRange(location: 0, length: lineLength))
+        let tokensRegex = try NSRegularExpression(pattern: #"\{\{%(.*?)%\}\}"#)
+        let tokenMatches = tokensRegex.matches(in: line, options: .init(),
+                                               range: NSRange(location: 0, length: lineLength))
 
-            for tokenMatch in tokenMatches {
-                let fullToken = (line as NSString).substring(with: tokenMatch.range(at: 1))
-                let transformations: [Transformation]
-                let token: String
+        for tokenMatch in tokenMatches {
+            let fullToken = (line as NSString).substring(with: tokenMatch.range(at: 1))
+            let transformations: [Transformation]
+            let token: String
 
-                if fullToken.contains("|") {
-                    let tokenPieces = fullToken.components(separatedBy: "|")
-                    token = tokenPieces[0]
-                    transformations = tokenPieces[1...].compactMap(Transformation.init)
+            if fullToken.contains("|") {
+                let tokenPieces = fullToken.components(separatedBy: "|")
+                token = tokenPieces[0]
+                transformations = tokenPieces[1...].compactMap(Transformation.init)
 
-                    output = output.replacingOccurrences(of: fullToken,
-                                                         with: token)
-                } else {
-                    token = fullToken
-                    transformations = []
-                }
-
-                var parsedToken: Token?
-
-                if let color = color {
-                    parsedToken = Token(rawToken: token, color: color)
-                } else if let textStyle = textStyle {
-                    parsedToken = Token(rawToken: token, textStyle: textStyle, colors: project.colors)
-                }
-
-                if let token = parsedToken {
-                    tokens[token.stringToken] = token.stringValue(transformations: transformations)
-                }
+                output = output.replacingOccurrences(of: fullToken,
+                                                     with: token)
+            } else {
+                token = fullToken
+                transformations = []
             }
-        } catch let err {
-            fatalError("Unexpected failure: \(err)")
+
+            var parsedToken: Token?
+
+            if let color = color {
+                parsedToken = Token(rawToken: token, color: color)
+            } else if let textStyle = textStyle {
+                parsedToken = Token(rawToken: token, textStyle: textStyle, colors: project.colors)
+            }
+
+            if let token = parsedToken {
+                tokens[token.stringToken] = token.stringValue(transformations: transformations)
+            } else {
+                throw Error.unknownToken(token: token)
+            }
         }
 
         return tokens.reduce(output) { output, token in
@@ -175,5 +173,17 @@ extension TemplateParser {
     enum Error: Swift.Error {
         case unknownLoop(identifier: String)
         case openLoop(identifier: String)
+        case unknownToken(token: String)
+
+        var localizedDescription: String {
+            switch self {
+            case .unknownLoop(let identifier):
+                return "Illegal FOR loop identifier '\(identifier)'"
+            case .openLoop(let identifier):
+                return "Detected FOR loop '\(identifier)' with no closing END"
+            case .unknownToken(let token):
+                return "Illegal token in template '\(token)'"
+            }
+        }
     }
 }
