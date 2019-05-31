@@ -77,6 +77,7 @@ class ProjectSpec: QuickSpec {
                 switch result {
                 case .some(.failure(let error as Prism.Error)):
                     expect(error) == Prism.Error.invalidProjectId
+                    expect(error.localizedDescription) == "The provided project ID can't be used to construct a API URL"
                 default:
                     fail("Expected invalid project ID error, got \(String(describing: result))")
                 }

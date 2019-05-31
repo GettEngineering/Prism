@@ -114,6 +114,39 @@ class TemplateParserSpec: QuickSpec {
             }
         }
 
+        describe("Unknown Token") {
+            it("should throw error") {
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let project = try! projectResult.get()
+                let parser = TemplateParser(project: project)
+
+                let token = UUID().uuidString
+                let template = "{{%\(token)%}}"
+
+                expect { try parser.parse(template: template) }
+                    .to(throwError(TemplateParser.Error.unknownToken(token: token)))
+            }
+        }
+
+        describe("Errors") {
+            context("localized description") {
+                it("should have valid descriptions") {
+                    let errors: [TemplateParser.Error] = [.openLoop(identifier: "color"),
+                                                          .unknownLoop(identifier: "fake"),
+                                                          .unknownToken(token: "fake")]
+
+                    let descriptions = errors.map { "\($0.localizedDescription)" }
+                    let expectedDescriptions = [
+                        "Detected FOR loop 'color' with no closing END",
+                        "Illegal FOR loop identifier 'fake'",
+                        "Illegal token in template 'fake'"
+                    ]
+
+                    expect(descriptions) == expectedDescriptions
+                }
+            }
+        }
+
         describe("Token") {
             context("unknown token") {
                 it("should return nil") {
