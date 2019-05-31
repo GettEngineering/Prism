@@ -45,7 +45,7 @@ struct GenerateCommand: CommandRepresentable {
             throw CommandError.missingToken
         }
 
-        let prism = Prism(jwtToken: jwtToken)
+        let prism = PrismAPI(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
         let templatesPath = options.templatesPath.last == "/" ? String(options.templatesPath.dropLast()) : options.templatesPath
@@ -56,7 +56,7 @@ struct GenerateCommand: CommandRepresentable {
                 let project = try result.get()
 
                 let allColorIdentities = Set(project.colors.flatMap { color in
-                    Prism.Project.AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
+                    Project.AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
                 })
                 let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
 

@@ -19,7 +19,7 @@ class ColorSpec: QuickSpec {
             (4, 95, 123, 0.55),
             (71, 6, 23, 0.25),
             (51, 91, 210, 0)
-        ].map(Prism.Project.RawColor.init)
+        ].map(Project.RawColor.init)
 
         describe("rgbValue") {
             it("returns HEX RGB value") {
@@ -54,10 +54,10 @@ class ColorSpec: QuickSpec {
         describe("identity(matching:)") {
             context("no color match") {
                 it("should return nil") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
 
-                    let nonExistingColor = Prism.Project.RawColor(r: 255, g: 245, b: 200, a: 1.0)
+                    let nonExistingColor = Project.RawColor(r: 255, g: 245, b: 200, a: 1.0)
 
                     expect(project.colors.identity(matching: nonExistingColor)).to(beNil())
                 }
@@ -65,16 +65,16 @@ class ColorSpec: QuickSpec {
 
             context("color matches") {
                 it("should return correct color with identity") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
 
                     let existingColors = [
-                        Prism.Project.RawColor(r: 223, g: 99, b: 105, a: 0.79999995),
-                        Prism.Project.RawColor(r: 98, g: 182, b: 223, a: 1.0)
+                        Project.RawColor(r: 223, g: 99, b: 105, a: 0.79999995),
+                        Project.RawColor(r: 98, g: 182, b: 223, a: 1.0)
                     ]
 
                     let matchingColors = existingColors.compactMap { project.colors.identity(matching: $0) }
-                    let camelStyle = Prism.Project.AssetIdentity.Style.camelcase
+                    let camelStyle = Project.AssetIdentity.Style.camelcase
 
                     expect(matchingColors.count) == 2
                     expect(camelStyle.identifier(for: matchingColors[0])) == "clearReddish"

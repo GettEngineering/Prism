@@ -15,7 +15,7 @@ class ProjectSpec: QuickSpec {
     override func spec() {
         describe("project snapshot") {
             it("is valid") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
 
                 assertSnapshot(matching: "\(project.debugDescription)",
@@ -27,7 +27,7 @@ class ProjectSpec: QuickSpec {
         describe("project decoding from JSON") {
             context("successful") {
                 it("should suceed and return valid Project") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
 
                     expect(project.id) == "5xxad123dsadasxsaxsa"
@@ -36,7 +36,7 @@ class ProjectSpec: QuickSpec {
                     expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Large Heading, Body"
 
                     let encoded = try! project.encode()
-                    let decoded = try! Prism.Project.decode(from: encoded)
+                    let decoded = try! Project.decode(from: encoded)
 
                     expect(project) == decoded
                 }
@@ -44,7 +44,7 @@ class ProjectSpec: QuickSpec {
 
             context("failed") {
                 it("should fail decoding") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .faultyJSON)
+                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .faultyJSON)
 
                     guard case .failure = projectResult else {
                         fail("Expected error, got \(projectResult)")
@@ -58,7 +58,7 @@ class ProjectSpec: QuickSpec {
 
         describe("failed server response") {
             it("should return failed result") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .failure)
+                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .failure)
 
                 guard case .failure = projectResult else {
                     fail("Expected error, got \(projectResult)")
@@ -71,12 +71,12 @@ class ProjectSpec: QuickSpec {
 
         describe("invalid project ID causing invalid API URL") {
             it("should fail with error") {
-                var result: Prism.ProjectResult?
-                Prism(jwtToken: "dsadas").getProject(id: "|||") { res in result = res }
+                var result: PrismAPI.ProjectResult?
+                PrismAPI(jwtToken: "dsadas").getProject(id: "|||") { res in result = res }
 
                 switch result {
-                case .some(.failure(let error as Prism.Error)):
-                    expect(error) == Prism.Error.invalidProjectId
+                case .some(.failure(let error as PrismAPI.Error)):
+                    expect(error) == .invalidProjectId
                     expect(error.localizedDescription) == "The provided project ID can't be used to construct a API URL"
                 default:
                     fail("Expected invalid project ID error, got \(String(describing: result))")
@@ -86,7 +86,7 @@ class ProjectSpec: QuickSpec {
 
         describe("description") {
             it("should not be empty") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
 
                 expect(project.description).toNot(beEmpty())

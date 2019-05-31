@@ -11,7 +11,7 @@ import Nimble
 import MockDuck
 @testable import PrismCore
 
-extension Prism {
+extension PrismAPI {
     func mock(type: MockType) -> ProjectResult {
         MockDuck.shouldFallbackToNetwork = type != .failure
         MockDuck.unregisterAllRequestHandlers()
@@ -31,7 +31,7 @@ extension Prism {
             }
         }
 
-        return WaitForResult<Prism.ProjectResult> { done in
+        return WaitForResult<ProjectResult> { done in
             self.getProject(id: "12345") { result in
                 done(result)
             }

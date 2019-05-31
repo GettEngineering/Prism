@@ -11,7 +11,7 @@ import Nimble
 @testable import PrismCore
 
 class AssetIdentitySpec: QuickSpec {
-    let project = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+    let project = try! PrismAPI(jwtToken: "fake").mock(type: .successful).get()
 
     override func spec() {
         describe("raw identities") {
@@ -24,7 +24,7 @@ class AssetIdentitySpec: QuickSpec {
                 "My Color 2",
                 "My Color3",
                 "My-Awesome_Color"
-            ].map(Prism.Project.AssetIdentity.init)
+            ].map(Project.AssetIdentity.init)
 
             context("camel case") {
                 it("should return camel-cased identities") {
@@ -39,7 +39,7 @@ class AssetIdentitySpec: QuickSpec {
                         "myAwesomeColor"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -57,7 +57,7 @@ class AssetIdentitySpec: QuickSpec {
                         "my_awesome_color"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -67,7 +67,7 @@ class AssetIdentitySpec: QuickSpec {
             context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["clearReddish", "blueSky"]
-                    let proccessedIdentities = self.project.colors.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -76,7 +76,7 @@ class AssetIdentitySpec: QuickSpec {
             context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["clear_reddish", "blue_sky"]
-                    let proccessedIdentities = self.project.colors.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -87,7 +87,7 @@ class AssetIdentitySpec: QuickSpec {
             context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["largeHeading", "body"]
-                    let proccessedIdentities = self.project.textStyles.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -96,7 +96,7 @@ class AssetIdentitySpec: QuickSpec {
             context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["large_heading", "body"]
-                    let proccessedIdentities = self.project.textStyles.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
