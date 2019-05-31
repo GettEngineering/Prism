@@ -18,13 +18,16 @@ extension TemplateParser {
         case colorGreen(Int)
         case colorBlue(Int)
         case colorAlpha(Double)
-        case colorIdentity(String, Platform)
+        case colorIdentity(identity: Prism.Project.AssetIdentity,
+                           style: Prism.Project.AssetIdentity.Style)
 
         /// Text Style
         case textStyleFontName(String)
         case textStyleFontSize(Float)
-        case textStyleIdentity(String, Platform)
-        case textStyleColorIdentity(String, Platform)
+        case textStyleIdentity(identity: Prism.Project.AssetIdentity,
+                               style: Prism.Project.AssetIdentity.Style)
+        case textStyleColorIdentity(identity: Prism.Project.AssetIdentity,
+                                    style: Prism.Project.AssetIdentity.Style)
 
         /// A string token representation, same as the one used in
         /// a .prism template file.
@@ -44,17 +47,17 @@ extension TemplateParser {
                 return "textStyle.fontName"
             case .textStyleFontSize:
                 return "textStyle.fontSize"
-            case let .textStyleIdentity(_, platform):
-                return "textStyle.identity.\(platform.rawValue)"
-            case let .textStyleColorIdentity(_, platform):
-                return "textStyle.color.identity.\(platform.rawValue)"
+            case let .textStyleIdentity(_, style):
+                return "textStyle.identity.\(style.rawValue)"
+            case let .textStyleColorIdentity(_, style):
+                return "textStyle.color.identity.\(style.rawValue)"
             }
         }
 
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
         init?(rawToken: String, color: Prism.Project.Color) {
-            switch rawToken {
+            switch rawToken.lowercased() {
             case "color.r":
                 self = .colorRed(color.r)
             case "color.g":
@@ -63,10 +66,10 @@ extension TemplateParser {
                 self = .colorBlue(color.b)
             case "color.a":
                 self = .colorAlpha(color.a)
-            case "color.identity.iOS":
-                self = .colorIdentity(color.identity.iOS, .iOS)
-            case "color.identity.android":
-                self = .colorIdentity(color.identity.android, .android)
+            case "color.identity.camelcase":
+                self = .colorIdentity(identity: color.identity, style: .camelcase)
+            case "color.identity.snakecase":
+                self = .colorIdentity(identity: color.identity, style: .snakecase)
             default:
                 return nil
             }
@@ -80,22 +83,22 @@ extension TemplateParser {
                 self = .textStyleFontName(textStyle.fontFace)
             case "textStyle.fontSize":
                 self = .textStyleFontSize(textStyle.fontSize)
-            case "textStyle.identity.iOS":
-                self = .textStyleIdentity(textStyle.identity.iOS, .iOS)
-            case "textStyle.identity.android":
-                self = .textStyleIdentity(textStyle.identity.android, .android)
-            case "textStyle.color.identity.iOS":
+            case "textStyle.identity.camelcase":
+                self = .textStyleIdentity(identity: textStyle.identity, style: .camelcase)
+            case "textStyle.identity.snakecase":
+                self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
+            case "textStyle.color.identity.camelcase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
                     return nil
                 }
 
-                self = .textStyleColorIdentity(identity.iOS, .iOS)
-            case "textStyle.color.identity.android":
+                self = .textStyleColorIdentity(identity: identity, style: .camelcase)
+            case "textStyle.color.identity.snakecase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
                     return nil
                 }
 
-                self = .textStyleColorIdentity(identity.android, .android)
+                self = .textStyleColorIdentity(identity: identity, style: .snakecase)
             default:
                 return nil
             }
@@ -116,10 +119,10 @@ extension TemplateParser {
                  .colorGreen(let c),
                  .colorBlue(let c):
                 baseString = "\(c)"
-            case .colorIdentity(let id, _),
-                 .textStyleIdentity(let id, _),
-                 .textStyleColorIdentity(let id, _):
-                baseString = id
+            case let .colorIdentity(identity, style),
+                 let .textStyleIdentity(identity, style),
+                 let .textStyleColorIdentity(identity, style):
+                baseString = style.identifier(for: identity)
             case .textStyleFontName(let name):
                 baseString = name
             case .textStyleFontSize(let size):

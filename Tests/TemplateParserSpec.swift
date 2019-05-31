@@ -28,7 +28,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR color %}}
-                    {{%color.identity.iOS%}}, {{%color.identity.android%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}
+                    {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}
                     {{% END color %}}
                 }
                 """
@@ -54,7 +54,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR textStyle %}}
-                    {{%textStyle.identity.iOS%}}, {{%textStyle.identity.android%}} = {{%textStyle.fontName%}}, {{%textStyle.color.identity.iOS%}}, {{%textStyle.color.identity.android%}}, {{%textStyle.fontSize%}}
+                    {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.fontSize%}}
                     {{% END textStyle %}}
                 }
                 """
@@ -131,10 +131,10 @@ class TemplateParserSpec: QuickSpec {
                 it("should return nil token") {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
-                    expect(TemplateParser.Token(rawToken: "textStyle.color.identity.iOS",
+                    expect(TemplateParser.Token(rawToken: "textStyle.color.identity.camelcase",
                                                 textStyle: project.textStyles[0],
                                                 colors: [])).to(beNil())
-                    expect(TemplateParser.Token(rawToken: "textStyle.color.identity.android",
+                    expect(TemplateParser.Token(rawToken: "textStyle.color.identity.snakecase",
                                                 textStyle: project.textStyles[0],
                                                 colors: [])).to(beNil())
                 }
@@ -149,8 +149,8 @@ class TemplateParserSpec: QuickSpec {
 
                 let template = """
                 {{% FOR textStyle %}}
-                {{%textStyle.identity.iOS|lowercase%}}
-                {{%textStyle.identity.android|uppercase%}}
+                {{%textStyle.identity.camelcase|lowercase%}}
+                {{%textStyle.identity.snakecase|uppercase%}}
                 {{%textStyle.fontName|uppercase%}}
                 {{%textStyle.fontName|replace(-,_)%}}
                 {{%textStyle.fontName|lowercase|replace(-,_)%}}

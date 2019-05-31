@@ -22,20 +22,28 @@ public extension AssetIdentifiable {
 }
 
 public extension Prism.Project {
-    /// An Asset Identity containing iOS and Android flavored identity
-    /// styles base on the separate platforms.
-    ///
-    /// iOS naming is camel-cased for new words.
-    /// Android naming is lower cased and separated by underscores.
-    ///
-    /// * **Input**: An Asset 5
-    /// * **iOS**: anAsset5
-    /// * **Android**: an_asset_5
+    /// An Asset Identity containing different identity styles/flavors.
     struct AssetIdentity {
-        public let iOS: String
-        public let android: String
+        private var snakecased: String {
+            return words
+                .map { $0.lowercased() }
+                .joined(separator: "_")
+        }
+
+        private var camelcased: String {
+            return (words.first?.lowercased() ?? "") +
+                    words.dropFirst()
+                         .map { $0.capitalized }
+                        .joined()
+        }
+
+        private let words: [String]
+
+        public let name: String
 
         init(name: String) {
+            self.name = name
+
             // Seperate name to words
             var words = [String]()
             var currentWord = ""
@@ -65,16 +73,33 @@ public extension Prism.Project {
             }
 
             words.append(currentWord.replacingOccurrences(of: " ", with: ""))
-            words = words.compactMap { $0.isEmpty ? nil : $0 }
+            self.words = words.compactMap { $0.isEmpty ? nil : $0 }
+        }
+    }
+}
 
-            self.iOS = (words.first?.lowercased() ?? "") + 
-                        words.dropFirst()
-                             .map { $0.capitalized }
-                             .joined()
+extension Prism.Project.AssetIdentity: CustomStringConvertible {
+    public var description: String {
+        return "AssetIdentity(name: \(name), \(Style.allCases.map { "\($0.rawValue): \($0.identifier(for: self))" }.joined(separator: ", ")))"
+    }
+}
 
-            self.android = words
-                            .map { $0.lowercased() }
-                            .joined(separator: "_")
+public extension Prism.Project.AssetIdentity {
+    /// An Identity Style
+    enum Style: String, CaseIterable {
+        /// Camel-cased identifier. "A color 3" => "aColor3"
+        case camelcase
+
+        /// Snake-cased identifier. "A color 3" => "a_color_3"
+        case snakecase
+
+        public func identifier(for identity: Prism.Project.AssetIdentity) -> String {
+            switch self {
+            case .snakecase:
+                return identity.snakecased
+            case .camelcase:
+                return identity.camelcased
+            }
         }
     }
 }
