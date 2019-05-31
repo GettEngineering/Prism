@@ -72,7 +72,7 @@ public class TemplateParser {
                 switch identifier {
                 case "color":
                     let colorLoop = try project.colors
-                                               .sorted(by: { $0.identity.iOS < $1.identity.iOS })
+                                               .sorted(by: { $0.identity.name < $1.identity.name })
                                                .reduce(into: [String]()) { result, color in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, color: color))
                     }
@@ -80,7 +80,7 @@ public class TemplateParser {
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
                     let textStyleLoop = try project.textStyles
-                                                   .sorted(by: { $0.identity.iOS < $1.identity.iOS })
+                                                   .sorted(by: { $0.identity.name < $1.identity.name })
                                                    .reduce(into: [String]()) { result, textStyle in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, textStyle: textStyle))
                     }

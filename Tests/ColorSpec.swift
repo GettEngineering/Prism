@@ -74,10 +74,11 @@ class ColorSpec: QuickSpec {
                     ]
 
                     let matchingColors = existingColors.compactMap { project.colors.identity(matching: $0) }
+                    let camelStyle = Prism.Project.AssetIdentity.Style.camelcase
 
                     expect(matchingColors.count) == 2
-                    expect(matchingColors[0].iOS) == "clearReddish"
-                    expect(matchingColors[1].iOS) == "blueSky"
+                    expect(camelStyle.identifier(for: matchingColors[0])) == "clearReddish"
+                    expect(camelStyle.identifier(for: matchingColors[1])) == "blueSky"
                 }
             }
         }

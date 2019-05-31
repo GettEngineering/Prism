@@ -26,7 +26,7 @@ class AssetIdentitySpec: QuickSpec {
                 "My-Awesome_Color"
             ].map(Prism.Project.AssetIdentity.init)
 
-            context("iOS") {
+            context("camel case") {
                 it("should return camel-cased identities") {
                     let expectedIdentities = [
                         "aGreatColor",
@@ -39,11 +39,12 @@ class AssetIdentitySpec: QuickSpec {
                         "myAwesomeColor"
                     ]
 
-                    expect(rawIdentities.map { $0.iOS } ) == expectedIdentities
+                    let processedIdentities = rawIdentities.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0) }
+                    expect(processedIdentities) == expectedIdentities
                 }
             }
 
-            context("Android") {
+            context("snake case") {
                 it("should return lowercased identities with underscores") {
                     let expectedIdentities = [
                         "a_great_color",
@@ -56,43 +57,48 @@ class AssetIdentitySpec: QuickSpec {
                         "my_awesome_color"
                     ]
 
-                    expect(rawIdentities.map { $0.android } ) == expectedIdentities
+                    let processedIdentities = rawIdentities.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0) }
+                    expect(processedIdentities) == expectedIdentities
                 }
             }
         }
 
         describe("color identities") {
-            context("iOS") {
+            context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["clearReddish", "blueSky"]
+                    let proccessedIdentities = self.project.colors.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
-                    expect(self.project.colors.map { $0.identity.iOS }) == expectedIdentities
+                    expect(proccessedIdentities) == expectedIdentities
                 }
             }
 
-            context("Android") {
+            context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["clear_reddish", "blue_sky"]
+                    let proccessedIdentities = self.project.colors.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
-                    expect(self.project.colors.map { $0.identity.android }) == expectedIdentities
+                    expect(proccessedIdentities) == expectedIdentities
                 }
             }
         }
 
         describe("text style identities") {
-            context("iOS") {
+            context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["largeHeading", "body"]
+                    let proccessedIdentities = self.project.textStyles.map { Prism.Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
-                    expect(self.project.textStyles.map { $0.identity.iOS }) == expectedIdentities
+                    expect(proccessedIdentities) == expectedIdentities
                 }
             }
 
-            context("Android") {
+            context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["large_heading", "body"]
+                    let proccessedIdentities = self.project.textStyles.map { Prism.Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
-                    expect(self.project.textStyles.map { $0.identity.android }) == expectedIdentities
+                    expect(proccessedIdentities) == expectedIdentities
                 }
             }
         }

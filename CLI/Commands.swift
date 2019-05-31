@@ -54,7 +54,10 @@ struct GenerateCommand: CommandRepresentable {
         prism.getProject(id: options.projectId) { result in
             do {
                 let project = try result.get()
-                let allColorIdentities = Set(project.colors.flatMap { [$0.identity.iOS, $0.identity.android] })
+
+                let allColorIdentities = Set(project.colors.flatMap { color in
+                    Prism.Project.AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
+                })
                 let usedReservedColors = reservedColorNames.intersection(allColorIdentities)
 
                 guard usedReservedColors.isEmpty else {
