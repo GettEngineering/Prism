@@ -8,7 +8,7 @@
 
 import Foundation
 
-public extension Prism.Project {
+public extension Project {
     /// A Text Style containing a font face, font size,
     /// and color. It is an `Assetidentifiable` identified by its name.
     struct TextStyle: Codable, Equatable, AssetIdentifiable {

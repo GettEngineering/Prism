@@ -16,12 +16,12 @@ public protocol AssetIdentifiable {
 public extension AssetIdentifiable {
     /// A synthesized identity for iOS and Android styles based
     /// on the provided Asset name.
-    var identity: Prism.Project.AssetIdentity {
+    var identity: Project.AssetIdentity {
         return .init(name: name)
     }
 }
 
-public extension Prism.Project {
+public extension Project {
     /// An Asset Identity containing different identity styles/flavors.
     struct AssetIdentity {
         private var snakecased: String {
@@ -78,13 +78,13 @@ public extension Prism.Project {
     }
 }
 
-extension Prism.Project.AssetIdentity: CustomStringConvertible {
+extension Project.AssetIdentity: CustomStringConvertible {
     public var description: String {
         return "AssetIdentity(name: \(name), \(Style.allCases.map { "\($0.rawValue): \($0.identifier(for: self))" }.joined(separator: ", ")))"
     }
 }
 
-public extension Prism.Project.AssetIdentity {
+public extension Project.AssetIdentity {
     /// An Identity Style
     enum Style: String, CaseIterable {
         /// Camel-cased identifier. "A color 3" => "aColor3"
@@ -93,7 +93,7 @@ public extension Prism.Project.AssetIdentity {
         /// Snake-cased identifier. "A color 3" => "a_color_3"
         case snakecase
 
-        public func identifier(for identity: Prism.Project.AssetIdentity) -> String {
+        public func identifier(for identity: Project.AssetIdentity) -> String {
             switch self {
             case .snakecase:
                 return identity.snakecased

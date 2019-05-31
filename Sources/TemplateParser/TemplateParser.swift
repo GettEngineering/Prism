@@ -22,9 +22,12 @@ import Foundation
 ///                                    │   (applied)   ├─┘
 ///                                    └───────────────┘
 public class TemplateParser {
-    let project: Prism.Project
+    let project: Project
 
-    public init(project: Prism.Project) {
+    /// Initialize a Template Parser object.
+    ///
+    /// - parameter project: Prism Project
+    public init(project: Project) {
         self.project = project
     }
 
@@ -39,9 +42,15 @@ public class TemplateParser {
     /// If the method finds an iterable directive such as {{% FOR textStyle %}},
     /// it would recursively parse that specific block, providing each text
     /// style (or color) to the method.
+    ///
+    /// - parameter lines: An array of lines to parse
+    /// - parameter color: An optional color. Usually provided within a color loop.
+    /// - parameter textStyle: An optional text style. Usually provided within a text style loop.
+    ///
+    /// - returns: An array of processed lines.
     private func recursivelyParse(lines: [String],
-                                  color: Prism.Project.Color? = nil,
-                                  textStyle: Prism.Project.TextStyle? = nil) throws -> [String] {
+                                  color: Project.Color? = nil,
+                                  textStyle: Project.TextStyle? = nil) throws -> [String] {
         var output = [String]()
         var currentLineIdx = 0
 
@@ -115,14 +124,14 @@ public class TemplateParser {
     /// Resolve any tokens in the provided line, replacing them
     /// with the correct underlying values.
     ///
-    /// - parameter line: A string line
+    /// - parameter line: A string line.
     /// - parameter color: A color, usually provided if the line is part of a colors loop.
     /// - parameter textStyle: A color, usually provided if the line is part of a text styles loop.
     ///
-    /// - returns: Provided line with resolved tokens
+    /// - returns: Provided line with resolved tokens.
     private func resolveTokens(line: String,
-                               color: Prism.Project.Color?,
-                               textStyle: Prism.Project.TextStyle?) throws -> String {
+                               color: Project.Color?,
+                               textStyle: Project.TextStyle?) throws -> String {
         let lineLength = line.count
         var output = line
         var tokens = [String: String]()
@@ -171,8 +180,13 @@ public class TemplateParser {
 
 extension TemplateParser {
     enum Error: Swift.Error {
+        /// An unknown FOR loop identifier error
         case unknownLoop(identifier: String)
+
+        /// An open FOR loop with no closing END error
         case openLoop(identifier: String)
+
+        /// An unknown template token error
         case unknownToken(token: String)
 
         var localizedDescription: String {

@@ -8,9 +8,9 @@
 
 import Foundation
 
-/// Prism is the main class responsible for fetching the raw
-/// API data from Zeplin and decode it into a `Prism.Project`.
-public class Prism {
+/// PrismAPI is the main class responsible for fetching the raw
+/// API data from Zeplin and decode it into a Prism `Project`.
+public class PrismAPI {
     public typealias ProjectResult = Result<Project, Swift.Error>
     private let jwtToken: String
 
@@ -43,7 +43,7 @@ public class Prism {
                     }
 
                     do {
-                        result = .success(try Prism.Project.decode(from: data ?? Data()))
+                        result = .success(try Project.decode(from: data ?? Data()))
                     } catch let err {
                         result = .failure(err)
                     }
@@ -55,13 +55,13 @@ public class Prism {
     }
 }
 
-private extension Prism {
+private extension PrismAPI {
     enum Header: String {
         case token = "Zeplin-Token"
     }
 }
 
-extension Prism {
+extension PrismAPI {
     enum Error: Swift.Error {
         case invalidProjectId
 

@@ -18,16 +18,16 @@ extension TemplateParser {
         case colorGreen(Int)
         case colorBlue(Int)
         case colorAlpha(Double)
-        case colorIdentity(identity: Prism.Project.AssetIdentity,
-                           style: Prism.Project.AssetIdentity.Style)
+        case colorIdentity(identity: Project.AssetIdentity,
+                           style: Project.AssetIdentity.Style)
 
         /// Text Style
         case textStyleFontName(String)
         case textStyleFontSize(Float)
-        case textStyleIdentity(identity: Prism.Project.AssetIdentity,
-                               style: Prism.Project.AssetIdentity.Style)
-        case textStyleColorIdentity(identity: Prism.Project.AssetIdentity,
-                                    style: Prism.Project.AssetIdentity.Style)
+        case textStyleIdentity(identity: Project.AssetIdentity,
+                               style: Project.AssetIdentity.Style)
+        case textStyleColorIdentity(identity: Project.AssetIdentity,
+                                    style: Project.AssetIdentity.Style)
 
         /// A string token representation, same as the one used in
         /// a .prism template file.
@@ -56,7 +56,7 @@ extension TemplateParser {
 
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
-        init?(rawToken: String, color: Prism.Project.Color) {
+        init?(rawToken: String, color: Project.Color) {
             switch rawToken.lowercased() {
             case "color.r":
                 self = .colorRed(color.r)
@@ -77,7 +77,7 @@ extension TemplateParser {
 
         /// Parse a raw text style token, such as "textStyle.fontName", into its
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
-        init?(rawToken: String, textStyle: Prism.Project.TextStyle, colors: [Prism.Project.Color]) {
+        init?(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) {
             switch rawToken {
             case "textStyle.fontName":
                 self = .textStyleFontName(textStyle.fontFace)

@@ -8,7 +8,7 @@
 import Foundation
 
 /// A helper to Wait for a specific asynchronous piece of work to
-/// be done and provide a specific result.
+/// be done and provide a specific result, blocking the current thread.
 ///
 /// The caller should invoke the `done()` closure argument with the
 /// result when the asynchronous work is done.
