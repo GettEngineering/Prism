@@ -23,15 +23,50 @@ import Foundation
 ///                                    └───────────────┘
 public class TemplateParser {
     let project: Project
+    let configuration: Configuration?
 
     /// Initialize a Template Parser object.
     ///
-    /// - parameter project: Prism Project
-    public init(project: Project) {
+    /// - parameter project: Prism Project.
+    /// - parameter configuration: Configuration object (Optional).
+    public init(project: Project,
+                configuration: Configuration? = nil) {
         self.project = project
+        self.configuration = configuration
     }
 
     public func parse(template: String) throws -> String {
+        /// Make sure the project doesn't contain any reserved identities.
+        /// Otherwise, throw an error.
+        var allReservedIdentities = Set<String>()
+
+        if let reservedColors = configuration?.reservedColors {
+            let allColorIdentities = Set(project.colors.flatMap { color in
+                Project.AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
+            })
+
+            let reservedColorsSet = Set(reservedColors)
+            let usedReservedColors = reservedColorsSet.intersection(allColorIdentities)
+
+            allReservedIdentities.formUnion(usedReservedColors)
+        }
+
+        if let reservedTextStyles = configuration?.reservedTextStyles {
+            let allTextStyleIdentities = Set(project.textStyles.flatMap { textStyle in
+                Project.AssetIdentity.Style.allCases.map { $0.identifier(for: textStyle.identity) }
+            })
+
+            let reservedTextStylesSet = Set(reservedTextStyles)
+            let usedReservedTextStyles = reservedTextStylesSet.intersection(allTextStyleIdentities)
+
+            allReservedIdentities.formUnion(usedReservedTextStyles)
+        }
+
+        guard allReservedIdentities.isEmpty else {
+            throw Error.prohibitedIdentities(identities: allReservedIdentities.joined(separator: ", "))
+        }
+
+        /// If everything's OK, try to recrusively parse the provided template.
         return try recursivelyParse(lines: template.components(separatedBy: "\n"))
                     .joined(separator: "\n")
     }
@@ -189,6 +224,9 @@ extension TemplateParser {
         /// An unknown template token error
         case unknownToken(token: String)
 
+        /// One or more prohibited identities were used
+        case prohibitedIdentities(identities: String)
+
         var localizedDescription: String {
             switch self {
             case .unknownLoop(let identifier):
@@ -197,6 +235,8 @@ extension TemplateParser {
                 return "Detected FOR loop '\(identifier)' with no closing END"
             case .unknownToken(let token):
                 return "Illegal token in template '\(token)'"
+            case .prohibitedIdentities(let identities):
+                return "Prohibited identities '\(identities)' can't be used"
             }
         }
     }

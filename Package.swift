@@ -19,8 +19,8 @@ let package = Package(
         .package(url: "https://github.com/Quick/Quick", from: "2.0.0"),
         .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
-        .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master"))
-
+        .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master")),
+        .package(url: "https://github.com/jpsim/Yams", from: "2.0.0")
     ],
     targets: [
         .target(
@@ -30,11 +30,11 @@ let package = Package(
         ),
         .target(
             name: "PrismCore",
-            dependencies: [],
+            dependencies: ["Yams"],
             path: "Sources"),
        .testTarget(
            name: "PrismTests",
-           dependencies: ["prism", "Quick", "Nimble", "MockDuck", "SnapshotTesting"],
+           dependencies: ["prism", "Quick", "Nimble", "MockDuck", "Yams", "SnapshotTesting"],
            path: "Tests")
     ]
 )

@@ -51,8 +51,7 @@ extension TemplateParser {
                 default:
                     return nil
                 }
-            } catch let err {
-                fatalError("Unexpected failure: \(err)")
+            } catch {
                 return nil
             }
         }
