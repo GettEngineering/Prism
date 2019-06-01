@@ -5,6 +5,6 @@ fake line 1
 fake line 2
 
 Some Structure {
-    blueSky, blue_sky = 98, 182, 223, 1.00
-    clearReddish, clear_reddish = 223, 99, 105, 0.80
+    blueSky, blue_sky = 98, 182, 223, 1.00, #ff62b6df
+    clearReddish, clear_reddish = 223, 99, 105, 0.80, #ccdf6369
 }

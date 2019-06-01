@@ -28,7 +28,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR color %}}
-                    {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}
+                    {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}
                     {{% END color %}}
                 }
                 """

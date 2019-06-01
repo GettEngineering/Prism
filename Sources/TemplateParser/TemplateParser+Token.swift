@@ -18,6 +18,7 @@ extension TemplateParser {
         case colorGreen(Int)
         case colorBlue(Int)
         case colorAlpha(Double)
+        case colorARGB(String)
         case colorIdentity(identity: Project.AssetIdentity,
                            style: Project.AssetIdentity.Style)
 
@@ -41,6 +42,8 @@ extension TemplateParser {
                 return "color.b"
             case .colorAlpha:
                 return "color.a"
+            case .colorARGB:
+                return "color.argb"
             case let .colorIdentity(_, platform):
                 return "color.identity.\(platform.rawValue)"
             case .textStyleFontName:
@@ -66,6 +69,8 @@ extension TemplateParser {
                 self = .colorBlue(color.b)
             case "color.a":
                 self = .colorAlpha(color.a)
+            case "color.argb":
+                self = .colorARGB(color.argbValue)
             case "color.identity.camelcase":
                 self = .colorIdentity(identity: color.identity, style: .camelcase)
             case "color.identity.snakecase":
@@ -119,6 +124,8 @@ extension TemplateParser {
                  .colorGreen(let c),
                  .colorBlue(let c):
                 baseString = "\(c)"
+            case .colorARGB(let hex):
+                baseString = hex
             case let .colorIdentity(identity, style),
                  let .textStyleIdentity(identity, style),
                  let .textStyleColorIdentity(identity, style):
