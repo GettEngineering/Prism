@@ -33,7 +33,7 @@ public class PrismAPI {
         /// come back.
         let wait = WaitForResult<ProjectResult> { done in
             URLSession.shared
-                .dataTask(with: request) { data, resp, error in
+                .dataTask(with: request) { data, _, error in
                     let result: ProjectResult
                     defer { done(result) }
 
