@@ -1,0 +1,42 @@
+included:
+  - Sources
+opt_in_rules:
+  - overridden_super_call
+  - prohibited_super_call
+  - extension_access_modifier
+  - first_where
+  - closure_spacing
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
+  - redundant_nil_coalescing
+  - pattern_matching_keywords
+  - explicit_init
+  - fatal_error_message
+  - contains_over_first_not_nil
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+disabled_rules:
+  - type_body_length
+  - large_tuple
+  - type_name
+  - nesting
+  - identifier_name
+  - trailing_whitespace
+  - line_length
+  - cyclomatic_complexity
+
+function_body_length: 1000
+file_length: 2000
+function_parameter_count: 10
+
+custom_rules:
+  guard_self:
+    name: Guard Self
+    message: Prefer using `guard let self = self` over other variations
+    regex: (let weakSelf = self )|(let strongSelf = self )|(let `self` = self )|(let me = self )
+    severity: warning
+
+  weak_precedes_acl:
+    name: Weak precedes ACL
+    message: ACL should precede weak annotation
+    regex: weak (private|fileprivate|open|public|internal) var
