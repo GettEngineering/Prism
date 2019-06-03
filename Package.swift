@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "PrismCore",
+    name: "Prism",
     platforms: [
         .macOS(.v10_12), .iOS(.v10), .tvOS(.v10), .watchOS(.v4)
     ],
