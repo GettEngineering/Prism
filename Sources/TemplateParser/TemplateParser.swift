@@ -115,18 +115,26 @@ public class TemplateParser {
 
                 switch identifier {
                 case "color":
-                    let colorLoop = try project.colors
+                    var colorLoop = try project.colors
                                                .sorted(by: { $0.identity.name < $1.identity.name })
                                                .reduce(into: [String]()) { result, color in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, color: color))
                     }
 
+                    if colorLoop.last == "" {
+                        colorLoop = Array(colorLoop.dropLast())
+                    }
+
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
-                    let textStyleLoop = try project.textStyles
+                    var textStyleLoop = try project.textStyles
                                                    .sorted(by: { $0.identity.name < $1.identity.name })
                                                    .reduce(into: [String]()) { result, textStyle in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, textStyle: textStyle))
+                    }
+
+                    if textStyleLoop.last == "" {
+                        textStyleLoop = Array(textStyleLoop.dropLast())
                     }
 
                     output.append(contentsOf: textStyleLoop)
@@ -214,7 +222,7 @@ public class TemplateParser {
 }
 
 extension TemplateParser {
-    enum Error: Swift.Error {
+    enum Error: Swift.Error, CustomStringConvertible {
         /// An unknown FOR loop identifier error
         case unknownLoop(identifier: String)
 
@@ -227,7 +235,7 @@ extension TemplateParser {
         /// One or more prohibited identities were used
         case prohibitedIdentities(identities: String)
 
-        var localizedDescription: String {
+        var description: String {
             switch self {
             case .unknownLoop(let identifier):
                 return "Illegal FOR loop identifier '\(identifier)'"
