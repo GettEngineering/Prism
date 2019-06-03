@@ -136,7 +136,7 @@ class TemplateParserSpec: QuickSpec {
                                                           .unknownToken(token: "fake"),
                                                           .prohibitedIdentities(identities: "fake1, fake2")]
 
-                    let descriptions = errors.map { "\($0.localizedDescription)" }
+                    let descriptions = errors.map { "\($0)" }
                     let expectedDescriptions = [
                         "Detected FOR loop 'color' with no closing END",
                         "Illegal FOR loop identifier 'fake'",

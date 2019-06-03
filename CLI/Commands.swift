@@ -103,7 +103,7 @@ struct GenerateCommand: CommandRepresentable {
 
                 for templateFile in templateFiles {
                     let template = try? String(contentsOfFile: templateFile)
-                    let parsed = try! parser.parse(template: template ?? "")
+                    let parsed = try parser.parse(template: template ?? "")
 
                     let parsedData = parsed.data(using: .utf8) ?? Data()
                     let filename = templateFile.components(separatedBy: "/").last ?? ""
@@ -115,7 +115,7 @@ struct GenerateCommand: CommandRepresentable {
 
                 sema.signal()
             } catch let err {
-                print("Something went wrong: \(err)")
+                print("[ERROR] \(err)")
                 exit(1)
             }
         }
