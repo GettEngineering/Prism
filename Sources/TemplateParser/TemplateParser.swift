@@ -208,8 +208,8 @@ public class TemplateParser {
                 parsedToken = Token(rawToken: token, textStyle: textStyle, colors: project.colors)
             }
 
-            if let token = parsedToken {
-                tokens[token.stringToken] = token.stringValue(transformations: transformations)
+            if let parsedToken = parsedToken {
+                tokens[token] = parsedToken.stringValue(transformations: transformations)
             } else {
                 throw Error.unknownToken(token: token)
             }

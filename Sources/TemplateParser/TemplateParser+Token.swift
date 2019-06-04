@@ -19,6 +19,7 @@ extension TemplateParser {
         case colorBlue(Int)
         case colorAlpha(Double)
         case colorARGB(String)
+        case colorRGB(String)
         case colorIdentity(identity: Project.AssetIdentity,
                            style: Project.AssetIdentity.Style)
 
@@ -27,35 +28,6 @@ extension TemplateParser {
         case textStyleFontSize(Float)
         case textStyleIdentity(identity: Project.AssetIdentity,
                                style: Project.AssetIdentity.Style)
-        case textStyleColorIdentity(identity: Project.AssetIdentity,
-                                    style: Project.AssetIdentity.Style)
-
-        /// A string token representation, same as the one used in
-        /// a .prism template file.
-        var stringToken: String {
-            switch self {
-            case .colorRed:
-                return "color.r"
-            case .colorGreen:
-                return "color.g"
-            case .colorBlue:
-                return "color.b"
-            case .colorAlpha:
-                return "color.a"
-            case .colorARGB:
-                return "color.argb"
-            case let .colorIdentity(_, platform):
-                return "color.identity.\(platform.rawValue)"
-            case .textStyleFontName:
-                return "textStyle.fontName"
-            case .textStyleFontSize:
-                return "textStyle.fontSize"
-            case let .textStyleIdentity(_, style):
-                return "textStyle.identity.\(style.rawValue)"
-            case let .textStyleColorIdentity(_, style):
-                return "textStyle.color.identity.\(style.rawValue)"
-            }
-        }
 
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
@@ -71,6 +43,8 @@ extension TemplateParser {
                 self = .colorAlpha(color.a)
             case "color.argb":
                 self = .colorARGB(color.argbValue)
+            case "color.rgb":
+                self = .colorRGB(color.rgbValue)
             case "color.identity.camelcase":
                 self = .colorIdentity(identity: color.identity, style: .camelcase)
             case "color.identity.snakecase":
@@ -97,13 +71,25 @@ extension TemplateParser {
                     return nil
                 }
 
-                self = .textStyleColorIdentity(identity: identity, style: .camelcase)
+                self = .colorIdentity(identity: identity, style: .camelcase)
             case "textStyle.color.identity.snakecase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
                     return nil
                 }
 
-                self = .textStyleColorIdentity(identity: identity, style: .snakecase)
+                self = .colorIdentity(identity: identity, style: .snakecase)
+            case "textStyle.color.argb":
+                self = .colorARGB(textStyle.color.argbValue)
+            case "textStyle.color.rgb":
+                self = .colorRGB(textStyle.color.rgbValue)
+            case "textStyle.color.r":
+                self = .colorRed(textStyle.color.r)
+            case "textStyle.color.g":
+                self = .colorGreen(textStyle.color.g)
+            case "textStyle.color.b":
+                self = .colorBlue(textStyle.color.b)
+            case "textStyle.color.a":
+                self = .colorAlpha(textStyle.color.a)
             default:
                 return nil
             }
@@ -124,11 +110,11 @@ extension TemplateParser {
                  .colorGreen(let c),
                  .colorBlue(let c):
                 baseString = "\(c)"
-            case .colorARGB(let hex):
+            case .colorARGB(let hex),
+                 .colorRGB(let hex):
                 baseString = hex
             case let .colorIdentity(identity, style),
-                 let .textStyleIdentity(identity, style),
-                 let .textStyleColorIdentity(identity, style):
+                 let .textStyleIdentity(identity, style):
                 baseString = style.identifier(for: identity)
             case .textStyleFontName(let name):
                 baseString = name
