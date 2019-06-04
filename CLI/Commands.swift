@@ -120,7 +120,7 @@ struct GenerateCommand: CommandRepresentable {
 
                 sema.signal()
             } catch let err {
-                print("[ERROR] \(err)")
+                print("\(err)")
                 exit(1)
             }
         }

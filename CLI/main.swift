@@ -29,7 +29,7 @@ public final class PrismCLI {
                 }
             }()
 
-            print("[ERROR] \(message)")
+            print("\(message)")
             try commander.init().dispatch(with: ["prism", "help"])
         }
     }
