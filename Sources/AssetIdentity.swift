@@ -24,21 +24,24 @@ public extension AssetIdentifiable {
 public extension Project {
     /// An Asset Identity containing different identity styles/flavors.
     struct AssetIdentity {
+        /// A snake-cased version of the name
         private var snakecased: String {
             return words
                 .map { $0.lowercased() }
                 .joined(separator: "_")
         }
 
+        /// A camelCased version of the name
         private var camelcased: String {
             return (words.first?.lowercased() ?? "") +
                     words.dropFirst()
                          .map { $0.capitalized }
-                        .joined()
+                         .joined()
         }
 
         private let words: [String]
 
+        /// The asset's raw name, as provided by the Project
         public let name: String
 
         init(name: String) {

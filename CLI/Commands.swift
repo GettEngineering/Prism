@@ -37,20 +37,22 @@ struct GenerateCommand: CommandRepresentable {
         }
 
         let projectId: String
-        let templatesPath: String
+        let templatesPath: String?
         let outputPath: String
         let configFile: String?
     }
 
     static var symbol = "generate"
     static var usage = "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
+    static let prismFolder = ".prism"
 
     static func main(_ options: GenerateCommand.Options) throws {
         var configPath = options.configFile
 
-        let hasLocalConfig = FileManager.default.fileExists(atPath: "prism.yml")
-        if configPath == nil && hasLocalConfig {
-            configPath = "prism.yml"
+        let defaultConfigPath = "\(prismFolder)/config.yml"
+        let hasDefaultConfig = FileManager.default.fileExists(atPath: defaultConfigPath)
+        if configPath == nil && hasDefaultConfig {
+            configPath = defaultConfigPath
         }
 
         // Configuration
@@ -72,7 +74,8 @@ struct GenerateCommand: CommandRepresentable {
         let prism = PrismAPI(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
-        let templatesPath = options.templatesPath.last == "/" ? String(options.templatesPath.dropLast()) : options.templatesPath
+        let templatePath = options.templatesPath ?? prismFolder
+        let templatesPath = templatePath == "/" ? String(templatePath.dropLast()) : templatePath
         let outputPath = options.outputPath.last == "/" ? String(options.outputPath.dropLast()) : options.outputPath
 
         prism.getProject(id: options.projectId) { result in
@@ -82,8 +85,10 @@ struct GenerateCommand: CommandRepresentable {
                 let fileManager = FileManager.default
                 let enumerator = fileManager.enumerator(atPath: templatesPath)
 
-                guard fileManager.fileExists(atPath: templatesPath) else {
-                    throw CommandError.templateFolderMissing(path: templatesPath)
+                var isFolder: ObjCBool = false
+                guard fileManager.fileExists(atPath: templatesPath, isDirectory: &isFolder),
+                      isFolder.boolValue else {
+                    throw CommandError.templateFolderMissing
                 }
 
                 var templateFiles = [String]()
@@ -128,7 +133,7 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidCommand
     case missingToken
     case failedDataConversion
-    case templateFolderMissing(path: String)
+    case templateFolderMissing
     case noTemplateFiles
     case missingConfigurationFile(path: String)
 
@@ -140,8 +145,8 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Missing ZEPLIN_TOKEN environment variable"
         case .failedDataConversion:
             return "Failed converting Data to unicode string"
-        case .templateFolderMissing(let path):
-            return "The provided template folder doesn't exist: \(path)"
+        case .templateFolderMissing:
+            return "The provided template folder doesn't exist. Please provide a valid one via the -t flag, or create a '.prism' folder"
         case .noTemplateFiles:
             return "Can't find template files (*.prism) in provided folder"
         case .missingConfigurationFile(let path):
