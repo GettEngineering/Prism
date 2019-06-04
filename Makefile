@@ -4,3 +4,5 @@ clean:
 	rm -rf Prism.xcodeproj
 test:
 	swift test | xcpretty -c
+build:
+	swift build -c release
