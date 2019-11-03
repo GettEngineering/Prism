@@ -2,10 +2,10 @@ Project: Fake Project Test
 
 Colors:
 =========
-    🎨 Clear Reddish AssetIdentity(name: Clear Reddish, camelcase: clearReddish, snakecase: clear_reddish) => R: 223, G: 99, B: 105, alpha: 0.79999995
-    🎨 Blue Sky AssetIdentity(name: Blue Sky, camelcase: blueSky, snakecase: blue_sky) => R: 98, G: 182, B: 223, alpha: 1.0
+    🎨 Clear Reddish AssetIdentity(name: Clear Reddish, raw: Clear Reddish, camelcase: clearReddish, snakecase: clear_reddish) => R: 223, G: 99, B: 105, alpha: 0.79999995
+    🎨 Blue Sky AssetIdentity(name: Blue Sky, raw: Blue Sky, camelcase: blueSky, snakecase: blue_sky) => R: 98, G: 182, B: 223, alpha: 1.0
 
 Text Styles:
 =========
-    ✏️  Large Heading AssetIdentity(name: Large Heading, camelcase: largeHeading, snakecase: large_heading) => font: MyCustomFont-Light, size 32.0
-    ✏️  Body AssetIdentity(name: Body, camelcase: body, snakecase: body) => font: MyCustomFont-Regular, size 14.0
+    ✏️  Large Heading AssetIdentity(name: Large Heading, raw: Large Heading, camelcase: largeHeading, snakecase: large_heading) => font: MyCustomFont-Light, size 32.0
+    ✏️  Body AssetIdentity(name: Body, raw: Body, camelcase: body, snakecase: body) => font: MyCustomFont-Regular, size 14.0
