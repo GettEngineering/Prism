@@ -45,6 +45,8 @@ extension TemplateParser {
                 self = .colorARGB(color.argbValue)
             case "color.rgb":
                 self = .colorRGB(color.rgbValue)
+            case "color.identity":
+                self = .colorIdentity(identity: color.identity, style: .raw)
             case "color.identity.camelcase":
                 self = .colorIdentity(identity: color.identity, style: .camelcase)
             case "color.identity.snakecase":
@@ -62,10 +64,18 @@ extension TemplateParser {
                 self = .textStyleFontName(textStyle.fontFace)
             case "textStyle.fontSize":
                 self = .textStyleFontSize(textStyle.fontSize)
+            case "textStyle.identity":
+                self = .textStyleIdentity(identity: textStyle.identity, style: .raw)
             case "textStyle.identity.camelcase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .camelcase)
             case "textStyle.identity.snakecase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
+            case "textStyle.color.identity":
+                guard let identity = colors.identity(matching: textStyle.color) else {
+                    return nil
+                }
+
+                self = .colorIdentity(identity: identity, style: .raw)
             case "textStyle.color.identity.camelcase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
                     return nil

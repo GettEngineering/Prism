@@ -11,16 +11,18 @@ import Foundation
 /// templates into a provided format by extracting tokens
 /// and transformations, and resolving and applying them.
 ///
-///                                    ┌───────────────┐
-///                                  ┌─▶    Tokens     │
-///                                  │ │  (resolved)   │
-/// ┌─────────────────┐   ┌────────┐ │ └───────┬───────┘   ┌──────────────┐
-/// │                 │   │        │ │         │         ┌─▶ Processed    │
-/// │ .prism Template ────▶ Parser ├─┘         │         │ │       Output │
-/// │                 │   │        │   ┌───────▼───────┐ │ └──────────────┘
-/// └─────────────────┘   └────────┘   │Transformations│ │
-///                                    │   (applied)   ├─┘
-///                                    └───────────────┘
+//
+//                                     ┌───────────────┐
+//                                   ┌─▶    Tokens     │
+//                                   │ │  (resolved)   │
+//  ┌─────────────────┐   ┌────────┐ │ └───────┬───────┘   ┌──────────────┐
+//  │                 │   │        │ │         │         ┌─▶ Processed    │
+//  │ .prism Template ────▶ Parser ├─┘         │         │ │       Output │
+//  │                 │   │        │   ┌───────▼───────┐ │ └──────────────┘
+//  └─────────────────┘   └────────┘   │Transformations│ │
+//                                     │   (applied)   ├─┘
+//                                     └───────────────┘
+
 public class TemplateParser {
     let project: Project
     let configuration: Configuration?

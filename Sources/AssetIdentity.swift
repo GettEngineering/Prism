@@ -90,6 +90,9 @@ extension Project.AssetIdentity: CustomStringConvertible {
 public extension Project.AssetIdentity {
     /// An Identity Style
     enum Style: String, CaseIterable {
+        /// Raw, unprocessed identifier
+        case raw
+
         /// Camel-cased identifier. "A color 3" => "aColor3"
         case camelcase
 
@@ -98,6 +101,8 @@ public extension Project.AssetIdentity {
 
         public func identifier(for identity: Project.AssetIdentity) -> String {
             switch self {
+            case .raw:
+                return identity.name
             case .snakecase:
                 return identity.snakecased
             case .camelcase:
