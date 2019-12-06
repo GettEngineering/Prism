@@ -3,6 +3,7 @@
 //  Prism
 //
 //  Created by Shai Mishali on 29/05/2019.
+//  Copyright © 2019 Gett. All rights reserved.
 //
 
 import Foundation

@@ -15,6 +15,7 @@ opt_in_rules:
   - contains_over_first_not_nil
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
+  - file_header
 disabled_rules:
   - type_body_length
   - large_tuple
@@ -24,6 +25,16 @@ disabled_rules:
   - trailing_whitespace
   - line_length
   - cyclomatic_complexity
+
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  SWIFTLINT_CURRENT_FILENAME
+                    \/\/  Prism
+                    \/\/
+                    \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2,4}\.
+                    \/\/  Copyright © \d{4} Gett\. All rights reserved\.
+                    \/\/
 
 function_body_length: 1000
 file_length: 2000
