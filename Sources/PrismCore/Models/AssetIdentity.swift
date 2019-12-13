@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import ZeplinAPI
 
-/// Represents an Asset that can be identified with a name.
+/// Represents an Asset that can be identified by a name.
 public protocol AssetIdentifiable {
     var name: String { get }
 }
@@ -109,5 +110,21 @@ public extension Project.AssetIdentity {
                 return identity.camelcased
             }
         }
+    }
+}
+
+// MARK: - Zeplin Model Conformances
+extension Project.Color: AssetIdentifiable {}
+extension Project.TextStyle: AssetIdentifiable {}
+
+extension Array where Element == Project.Color {
+    /// Match a provided Raw Color with a Color
+    /// from the project, returning its identity if exists.
+    ///
+    /// - parameter for: Raw color to be matched in the project.
+    ///
+    /// - returns: Asset Identity for the matched color, if exists in the project.
+    func identity<Color: RawColorRepresentable>(matching rawColor: Color) -> Project.AssetIdentity? {
+        return first(where: { $0.argbValue == rawColor.argbValue })?.identity
     }
 }

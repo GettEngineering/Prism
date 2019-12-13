@@ -21,7 +21,7 @@ abort("Can't locate Package.swift") unless File.exist?("Package.swift")
 system("swift package generate-xcodeproj --enable-code-coverage")
 
 project = Xcodeproj::Project.open('Prism.xcodeproj')
-prism_targets = ['PrismCore', 'PrismTests', 'prism', 'PrismPackageTests', 'PrismPackageDescription']
+prism_targets = ['PrismCore', 'PrismTests', 'prism', 'ZeplinAPI', 'PrismPackageTests', 'PrismPackageDescription']
 project.targets.each do |target|
     if prism_targets.include?(target.name)
         swiftlint = target.new_shell_script_build_phase('SwiftLint')

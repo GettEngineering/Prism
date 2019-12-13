@@ -11,7 +11,7 @@ import Foundation
 public extension Project {
     /// A Text Style containing a font face, font size, colors and
     /// more. It is an `Assetidentifiable` identified by its name.
-    struct TextStyle: Codable, Equatable, AssetIdentifiable {
+    struct TextStyle: Codable, Equatable {
         public let name: String
         public let fontFamily: String
         public let fontSize: Float

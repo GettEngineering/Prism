@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ZeplinAPI
 
 /// Provides a mechanism to parse and process Prism-flavored
 /// templates into a provided format by extracting tokens

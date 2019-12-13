@@ -13,6 +13,9 @@ let package = Package(
         .library(
             name: "PrismCore",
             targets: ["PrismCore"]),
+        .library(
+            name: "ZeplinAPI",
+            targets: ["ZeplinAPI"])
     ],
     dependencies: [
         .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6"),
@@ -26,12 +29,16 @@ let package = Package(
         .target(
             name: "prism",
             dependencies: ["PrismCore", "Commander"],
-            path: "CLI"
+            path: "Sources/CLI"
         ),
         .target(
             name: "PrismCore",
-            dependencies: ["Yams"],
-            path: "Sources"),
+            dependencies: ["ZeplinAPI", "Yams"],
+            path: "Sources/PrismCore"),
+        .target(
+            name: "ZeplinAPI",
+            dependencies: [],
+            path: "Sources/ZeplinAPI"),
        .testTarget(
            name: "PrismTests",
            dependencies: ["prism", "Quick", "Nimble", "MockDuck", "Yams", "SnapshotTesting"],

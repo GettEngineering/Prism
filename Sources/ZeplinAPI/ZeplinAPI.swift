@@ -15,7 +15,7 @@ public class ZeplinAPI {
     
     /// Instantiate an instance of the Zeplin API with a
     /// provided JWT token
-    init(jwtToken: String) {
+    public init(jwtToken: String) {
         self.jwtToken = jwtToken
     }
 
@@ -24,7 +24,7 @@ public class ZeplinAPI {
     /// - parameter projectId: A Zeplin Project ID to fetch colors for
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Color`s, or a `ZeplinAPI.Error` error
-    func getColors(for projectId: Project.ID, completion: @escaping (Result<[Project.Color], Error>) -> Void) {
+    public func getColors(for projectId: Project.ID, completion: @escaping (Result<[Project.Color], Error>) -> Void) {
         request(model: [Project.Color].self, from: "projects/\(projectId)/colors", completion: completion)
     }
     
@@ -33,7 +33,7 @@ public class ZeplinAPI {
     /// - parameter projectId: A Zeplin Project ID to fetch text styles for
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
-    func getTextStyles(for projectId: Project.ID, completion: @escaping (Result<[Project.TextStyle], Error>) -> Void) {
+    public func getTextStyles(for projectId: Project.ID, completion: @escaping (Result<[Project.TextStyle], Error>) -> Void) {
         request(model: [Project.TextStyle].self, from: "projects/\(projectId)/text_styles", completion: completion)
     }
     
@@ -42,16 +42,16 @@ public class ZeplinAPI {
     ///
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Project`s, or a `ZeplinAPI.Error` error
-    func getProjects(completion: @escaping (Result<[Project], Error>) -> Void) {
+    public func getProjects(completion: @escaping (Result<[Project], Error>) -> Void) {
         request(model: [Project].self, from: "projects", completion: completion)
     }
 }
 
 // MARK: - Private Helpers
 private extension ZeplinAPI {
-    private func request<Model: Decodable>(model: Model.Type,
-                                           from path: String,
-                                           completion: @escaping (Result<Model, Error>) -> Void) {
+    func request<Model: Decodable>(model: Model.Type,
+                                   from path: String,
+                                   completion: @escaping (Result<Model, Error>) -> Void) {
         let fullPath = ZeplinAPI.basePath + (path.first == "/" ? String(path.dropFirst()) : path)
         
         guard let apiURL = URL(string: fullPath) else {
