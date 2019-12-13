@@ -17,56 +17,111 @@ public class PrismAPI {
     public init(jwtToken: String) {
         self.jwtToken = jwtToken
     }
-
-    public func getProject(id: String,
-                           completion: @escaping (ProjectResult) -> Void) {
-        guard let apiURL = URL(string: "https://api.zeplin.io/v2/projects/\(id)") else {
+    
+    private func request<Model: Decodable>(model: Model.Type,
+                                           from path: String,
+                                           completion: @escaping (Result<Model, Swift.Error>) -> Void) {
+        guard let apiURL = URL(string: path) else {
             completion(.failure(Error.invalidProjectId))
             return
         }
 
         var request = URLRequest(url: apiURL)
-        request.addValue(jwtToken, forHTTPHeaderField: Header.token.rawValue)
+        request.addValue("Bearer \(jwtToken)", forHTTPHeaderField: Header.token.rawValue)
+        
+        URLSession.shared
+            .dataTask(with: request) { data, response, _ in
+                if let response = response as? HTTPURLResponse,
+                   !(200...299 ~= response.statusCode) {
+                    do {
+                        let error = try APIError.decode(from: data ?? Data())
+                        completion(.failure(error))
+                    } catch {
+                        completion(.failure(Error.unknownAPIError(statusCode: response.statusCode)))
+                    }
+                    return
+                }
+                
+                do {
+                    try completion(.success(Model.decode(from: data ?? Data(), keyDecodingStrategy: .convertFromSnakeCase)))
+                } catch {
+                    completion(.failure(Error.decodingFailed(type: Model.self)))
+                }
+            }
+            .resume()
+    }
+
+    public func getProject(id: String,
+                           completion: @escaping (ProjectResult) -> Void) {
+        let group = DispatchGroup()
+        var colors = [Project.Color]()
+        var textStyles = [Project.TextStyle]()
+        
+        group.enter()
+        request(model: [Project.Color].self,
+                from: "https://api.zeplin.dev/v1/projects/\(id)/colors") { result in
+            defer { group.leave() }
+            switch result {
+            case .success(let color):
+                colors = color
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+
+        group.enter()
+        request(model: [Project.TextStyle].self,
+                from: "https://api.zeplin.dev/v1/projects/\(id)/text_styles") { result in
+            defer { group.leave() }
+            switch result {
+            case .success(let styles):
+                textStyles = styles
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
 
         /// It's required to wait and block here when running in CLI.
         /// Otherwise, Prism terminates without waiting for the result to
         /// come back.
-        let wait = WaitForResult<ProjectResult> { done in
-            URLSession.shared
-                .dataTask(with: request) { data, _, error in
-                    let result: ProjectResult
-                    defer { done(result) }
-
-                    if let error = error {
-                        result = .failure(error)
-                        return
-                    }
-
-                    do {
-                        result = .success(try Project.decode(from: data ?? Data()))
-                    } catch let err {
-                        result = .failure(err)
-                    }
-                }
-                .resume()
-        }
-
-        completion(wait.result)
+        group.wait()
+        completion(.success(Project(id: id, colors: colors, textStyles: textStyles)))
     }
 }
 
 private extension PrismAPI {
     enum Header: String {
-        case token = "Zeplin-Token"
+        case token = "Authorization"
     }
 }
 
 extension PrismAPI {
     enum Error: Swift.Error, CustomStringConvertible {
         case invalidProjectId
+        case requestFailed(path: String, message: String)
+        case decodingFailed(type: Decodable.Type)
+        case unknownAPIError(statusCode: Int)
 
         var description: String {
-            return "The provided project ID can't be used to construct a API URL"
+            switch self {
+            case .invalidProjectId:
+                return "The provided project ID can't be used to construct a API URL"
+            case let .requestFailed(path, message):
+                return "Failed requesting \(path): \(message)"
+            case .decodingFailed(let type):
+                return "Failed decoding \(type)"
+            case .unknownAPIError(let statusCode):
+                return "An unknown API error occured: HTTP \(statusCode)"
+            }
+        }
+    }
+    
+    struct APIError: Codable, CustomStringConvertible, Swift.Error {
+        let detail: String
+        let message: String
+        
+        var description: String {
+            return "API Error: \(detail) (\(message))"
         }
     }
 }
