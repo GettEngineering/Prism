@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ZeplinAPI
 
 /// A Prism Project, with its different colors and text styles.
 public struct ProjectAssets: Codable, Equatable {

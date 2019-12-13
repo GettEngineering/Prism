@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ZeplinAPI
 
 extension TemplateParser {
     /// A Token represents an entity within a template that is replaced

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ZeplinAPI
 
 /// Prism is the main class responsible for fetching the raw
 /// API data from Zeplin and return

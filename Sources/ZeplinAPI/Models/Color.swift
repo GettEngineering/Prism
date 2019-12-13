@@ -42,23 +42,11 @@ public extension Project {
 
     /// A color with a name (identity) as well as color values:
     /// red, green, blue and alpha values.
-    struct Color: RawColorRepresentable, AssetIdentifiable {
+    struct Color: RawColorRepresentable {
         public let name: String
         public let r: Int
         public let g: Int
         public let b: Int
         public let a: Double
-    }
-}
-
-extension Array where Element == Project.Color {
-    /// Match a provided Raw Color with a Color
-    /// from the project, returning its identity if exists.
-    ///
-    /// - parameter for: Raw color to be matched in the project.
-    ///
-    /// - returns: Asset Identity for the matched color, if exists in the project.
-    func identity<Color: RawColorRepresentable>(matching rawColor: Color) -> Project.AssetIdentity? {
-        return first(where: { $0.argbValue == rawColor.argbValue })?.identity
     }
 }

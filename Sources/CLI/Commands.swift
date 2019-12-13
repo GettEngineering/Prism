@@ -9,6 +9,7 @@ import Foundation
 import Commander
 import PrismCore
 import Yams
+import struct ZeplinAPI.Project
 
 // MARK: - Generate to File Command
 struct GenerateCommand: CommandRepresentable {
