@@ -25,7 +25,7 @@ public final class PrismCLI {
                 case OptionsDecoder.Error.decodingError(.keyNotFound(let key, _)):
                     return "Missing option: --\(key.stringValue)"
                 default:
-                    return "Unknown error: \(err)"
+                    return "Error: \(err)"
                 }
             }()
 

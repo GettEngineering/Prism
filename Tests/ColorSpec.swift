@@ -54,7 +54,7 @@ class ColorSpec: QuickSpec {
         describe("identity(matching:)") {
             context("no color match") {
                 it("should return nil") {
-                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
 
                     let nonExistingColor = Project.RawColor(r: 255, g: 245, b: 200, a: 1.0)
@@ -65,7 +65,7 @@ class ColorSpec: QuickSpec {
 
             context("color matches") {
                 it("should return correct color with identity") {
-                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
 
                     let existingColors = [
