@@ -9,8 +9,11 @@
 import Foundation
 
 extension Decodable {
-    static func decode(from data: Data) throws -> Self {
+    static func decode(from data: Data,
+                       keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys) throws -> Self {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+
         return try decoder.decode(Self.self, from: data)
     }
 }
