@@ -33,7 +33,7 @@ extension TemplateParser {
 
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
-        init?(rawToken: String, color: Project.Color) {
+        init(rawToken: String, color: Project.Color) throws {
             switch rawToken.lowercased() {
             case "color.r":
                 self = .colorRed(color.r)
@@ -54,13 +54,13 @@ extension TemplateParser {
             case "color.identity.snakecase":
                 self = .colorIdentity(identity: color.identity, style: .snakecase)
             default:
-                return nil
+                throw Error.unknownToken(token: rawToken)
             }
         }
 
         /// Parse a raw text style token, such as "textStyle.fontName", into its
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
-        init?(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) {
+        init(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
             switch rawToken {
             case "textStyle.fontName":
                 self = .textStyleFontName(textStyle.fontFamily)
@@ -74,19 +74,19 @@ extension TemplateParser {
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
             case "textStyle.color.identity":
                 guard let identity = colors.identity(matching: textStyle.color) else {
-                    return nil
+                    throw Error.missingColorNameForTextStyle(textStyle)
                 }
 
                 self = .colorIdentity(identity: identity, style: .raw)
             case "textStyle.color.identity.camelcase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
-                    return nil
+                    throw Error.missingColorNameForTextStyle(textStyle)
                 }
 
                 self = .colorIdentity(identity: identity, style: .camelcase)
             case "textStyle.color.identity.snakecase":
                 guard let identity = colors.identity(matching: textStyle.color) else {
-                    return nil
+                    throw Error.missingColorNameForTextStyle(textStyle)
                 }
 
                 self = .colorIdentity(identity: identity, style: .snakecase)
@@ -103,7 +103,7 @@ extension TemplateParser {
             case "textStyle.color.a":
                 self = .colorAlpha(textStyle.color.a)
             default:
-                return nil
+                throw Error.unknownToken(token: rawToken)
             }
         }
 

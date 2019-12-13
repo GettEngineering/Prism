@@ -204,18 +204,10 @@ public class TemplateParser {
                 transformations = []
             }
 
-            var parsedToken: Token?
-
             if let color = color {
-                parsedToken = Token(rawToken: token, color: color)
+                tokens[token] = try Token(rawToken: token, color: color).stringValue(transformations: transformations)
             } else if let textStyle = textStyle {
-                parsedToken = Token(rawToken: token, textStyle: textStyle, colors: project.colors)
-            }
-
-            if let parsedToken = parsedToken {
-                tokens[token] = parsedToken.stringValue(transformations: transformations)
-            } else {
-                throw Error.unknownToken(token: token)
+                tokens[token] = try Token(rawToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
             }
         }
 
@@ -236,6 +228,10 @@ extension TemplateParser {
         /// An unknown template token error
         case unknownToken(token: String)
 
+        /// Trying to parse a text style's color while color has
+        /// no identity / name
+        case missingColorNameForTextStyle(Project.TextStyle)
+
         /// One or more prohibited identities were used
         case prohibitedIdentities(identities: String)
 
@@ -247,6 +243,9 @@ extension TemplateParser {
                 return "Detected FOR loop '\(identifier)' with no closing END"
             case .unknownToken(let token):
                 return "Illegal token in template '\(token)'"
+            case .missingColorNameForTextStyle(let textStyle):
+                let color = textStyle.color
+                return "Text Style \(textStyle.name) has a color RGBA(\(color.r), \(color.g), \(color.b), \(color.a)), but it has no name"
             case .prohibitedIdentities(let identities):
                 return "Prohibited identities '\(identities)' can't be used"
             }

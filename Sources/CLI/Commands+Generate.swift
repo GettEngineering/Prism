@@ -1,8 +1,9 @@
 //
-//  Commands.swift
+//  Commands+Generate.swift
 //  Prism
 //
 //  Created by Shai Mishali on 31/03/2019.
+//  Copyright © 2019 Gett. All rights reserved.
 //
 
 import Foundation
@@ -11,7 +12,7 @@ import PrismCore
 import Yams
 import struct ZeplinAPI.Project
 
-// MARK: - Generate to File Command
+// MARK: - Generate command
 struct GenerateCommand: CommandRepresentable {
     struct Options: OptionsRepresentable {
         enum CodingKeys: String, CodingKeysRepresentable {
@@ -28,7 +29,7 @@ struct GenerateCommand: CommandRepresentable {
                     .configFile: "c"]
         }
 
-        static var descriptions: [Options.CodingKeys : OptionDescription] {
+        static var descriptions: [Options.CodingKeys: OptionDescription] {
             return [
                 .projectId: .usage("Zeplin Project ID to generate text styles and colors from. Overrides any config files."),
                 .templatesPath: .usage("Path to a folder containing *.prism template files. Overrides any config files."),
@@ -130,43 +131,11 @@ struct GenerateCommand: CommandRepresentable {
 
                 sema.signal()
             } catch let err {
-                print("\(err)")
+                print("❌ Error: \(err)")
                 exit(1)
             }
         }
 
         sema.wait()
-    }
-}
-
-enum CommandError: Swift.Error, CustomStringConvertible {
-    case invalidCommand
-    case missingProjectID
-    case missingToken
-    case failedDataConversion
-    case templateFolderMissing
-    case outputFolderMissing
-    case noTemplateFiles
-    case missingConfigurationFile(path: String)
-
-    var description: String {
-        switch self {
-        case .invalidCommand:
-            return "Invalid command provided"
-        case .missingProjectID:
-            return "Missing Zeplin Project ID. Please use the -i flag or provide one in your config.yml"
-        case .missingToken:
-            return "Missing ZEPLIN_TOKEN environment variable"
-        case .failedDataConversion:
-            return "Failed converting Data to unicode string"
-        case .templateFolderMissing:
-            return "Invalid or missing templates folder. Please provide a valid one via the -t flag or in your config.yml."
-        case .outputFolderMissing:
-            return "Invalid or missing output folder. Please provide a valid one via the -o flag or in your config.yml."
-        case .noTemplateFiles:
-            return "Can't find template files (*.prism) in provided folder"
-        case .missingConfigurationFile(let path):
-            return "Provided configuration path '\(path)' cannot be found"
-        }
     }
 }

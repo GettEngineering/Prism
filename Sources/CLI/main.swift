@@ -3,6 +3,7 @@
 //  Prism
 //
 //  Created by Shai Mishali on 3/27/19.
+//  Copyright © 2019 Gett. All rights reserved.
 //
 
 import PrismCore
@@ -14,23 +15,35 @@ public final class PrismCLI {
         let commander = BuiltIn.Commander.self
 
         commander.commands = [
-            GenerateCommand.self
+            GenerateCommand.self,
+            InitializeCommand.self
         ]
 
         do {
             try commander.init().dispatch(with: arguments)
         } catch let err {
+            var showUsage = false
             let message: String = {
                 switch err {
-                case OptionsDecoder.Error.decodingError(.keyNotFound(let key, _)):
-                    return "Missing option: --\(key.stringValue)"
+                case is OptionsDecoder.Error,
+                     is Commander.Error:
+                    showUsage = true
+                    let args = String(arguments.dropFirst().joined(separator: " ")).trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    if args.isEmpty {
+                        return "Please provide a command to prism"
+                    } else {
+                        return "The command 'prism \(args)' is invalid"
+                    }
                 default:
-                    return "Error: \(err)"
+                    return "\(err)"
                 }
             }()
 
-            print("\(message)")
-            try commander.init().dispatch(with: ["prism", "help"])
+            print("❌ Error: \(message)")
+            if showUsage {
+                try commander.init().dispatch(with: ["prism", "help"])
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  Decodable+Ext.swift
+//  Codable+Ext.swift
 //  Prism
 //
 //  Created by Shai Mishali on 3/27/19.
@@ -17,5 +17,12 @@ extension Decodable {
         decoder.dateDecodingStrategy = dateDecodingStrategy
 
         return try decoder.decode(Self.self, from: data)
+    }
+}
+
+extension Encodable {
+    func encode() throws -> Data {
+        let encoder = JSONEncoder()
+        return try encoder.encode(self)
     }
 }
