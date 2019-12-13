@@ -29,16 +29,16 @@ struct GenerateCommand: CommandRepresentable {
 
         static var descriptions: [Options.CodingKeys : OptionDescription] {
             return [
-                .projectId: .usage("Zeplin Project ID to generate text styles and colors from"),
-                .templatesPath: .usage("Path to a folder containing *.prism template files"),
-                .outputPath: .usage("Path to save generated files to"),
+                .projectId: .usage("Zeplin Project ID to generate text styles and colors from. Overrides any config files."),
+                .templatesPath: .usage("Path to a folder containing *.prism template files. Overrides any config files."),
+                .outputPath: .usage("Path to save generated files to. Overrides any config files."),
                 .configFile: .usage("Path to YAML configuration file")
             ]
         }
 
-        let projectId: String
+        let projectId: String?
         let templatesPath: String?
-        let outputPath: String
+        let outputPath: String?
         let configFile: String?
     }
 
@@ -70,15 +70,24 @@ struct GenerateCommand: CommandRepresentable {
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
             throw CommandError.missingToken
         }
+        
+        guard let projectId = options.projectId ?? config?.projectId else {
+            throw CommandError.missingProjectID
+        }
 
         let prism = PrismAPI(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
-        let templatePath = options.templatesPath ?? prismFolder
-        let templatesPath = templatePath == "/" ? String(templatePath.dropLast()) : templatePath
-        let outputPath = options.outputPath.last == "/" ? String(options.outputPath.dropLast()) : options.outputPath
+        let rawTemplatesPath = options.templatesPath ?? config?.templatesPath ?? prismFolder
+        let templatesPath = rawTemplatesPath == "/" ? String(rawTemplatesPath.dropLast()) : rawTemplatesPath
+        
+        guard let rawOutputPath = options.outputPath ?? config?.outputPath else {
+            throw CommandError.outputFolderMissing
+        }
 
-        prism.getProject(id: options.projectId) { result in
+        let outputPath = rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath
+
+        prism.getProject(id: projectId) { result in
             do {
                 let project = try result.get()
 
@@ -131,9 +140,11 @@ struct GenerateCommand: CommandRepresentable {
 
 enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidCommand
+    case missingProjectID
     case missingToken
     case failedDataConversion
     case templateFolderMissing
+    case outputFolderMissing
     case noTemplateFiles
     case missingConfigurationFile(path: String)
 
@@ -141,12 +152,16 @@ enum CommandError: Swift.Error, CustomStringConvertible {
         switch self {
         case .invalidCommand:
             return "Invalid command provided"
+        case .missingProjectID:
+            return "Missing Zeplin Project ID. Please use the -i flag or provide one in your config.yml"
         case .missingToken:
             return "Missing ZEPLIN_TOKEN environment variable"
         case .failedDataConversion:
             return "Failed converting Data to unicode string"
         case .templateFolderMissing:
-            return "The provided template folder doesn't exist. Please provide a valid one via the -t flag, or create a '.prism' folder"
+            return "Invalid or missing templates folder. Please provide a valid one via the -t flag or in your config.yml."
+        case .outputFolderMissing:
+            return "Invalid or missing output folder. Please provide a valid one via the -o flag or in your config.yml."
         case .noTemplateFiles:
             return "Can't find template files (*.prism) in provided folder"
         case .missingConfigurationFile(let path):
