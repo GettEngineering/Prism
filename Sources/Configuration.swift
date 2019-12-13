@@ -9,6 +9,15 @@
 import Foundation
 
 public struct Configuration {
+    /// Zeplin Project ID
+    public let projectId: String?
+    
+    /// Path to look for *.prism templates in
+    public let templatesPath: String?
+    
+    /// Path to output the result of template processing to
+    public let outputPath: String?
+    
     /// A list of reserved color identities that cannot be used.
     public let reservedColors: [String]
 
@@ -19,11 +28,17 @@ public struct Configuration {
 extension Configuration: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.projectId = try? container.decode(String.self, forKey: .projectId)
+        self.templatesPath = try? container.decode(String.self, forKey: .templatesPath)
+        self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
         self.reservedTextStyles = (try? container.decode([String].self, forKey: .reservedTextStyles)) ?? []
     }
     
     enum CodingKeys: String, CodingKey {
+        case projectId = "project_id"
+        case templatesPath = "templates_path"
+        case outputPath = "output_path"
         case reservedColors = "reserved_colors"
         case reservedTextStyles = "reserved_textstyles"
     }
