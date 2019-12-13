@@ -25,14 +25,14 @@ import Foundation
 //                                     └───────────────┘
 
 public class TemplateParser {
-    let project: Project
+    let project: ProjectAssets
     let configuration: Configuration?
 
     /// Initialize a Template Parser object.
     ///
     /// - parameter project: Prism Project.
     /// - parameter configuration: Configuration object (Optional).
-    public init(project: Project,
+    public init(project: ProjectAssets,
                 configuration: Configuration? = nil) {
         self.project = project
         self.configuration = configuration

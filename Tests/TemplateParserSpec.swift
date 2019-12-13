@@ -15,7 +15,7 @@ class TemplateParserSpec: QuickSpec {
     override func spec() {
         describe("Color Loop") {
             it("should produce valid output") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -41,7 +41,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Text Styles Loop") {
             it("should produce valid output") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -67,7 +67,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Open loop with no closing") {
             it("should throw error") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -91,7 +91,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Unknown Loop") {
             it("should throw error") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -116,7 +116,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Unknown Token") {
             it("should throw error") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -152,7 +152,7 @@ class TemplateParserSpec: QuickSpec {
         describe("Token") {
             context("unknown token") {
                 it("should return nil") {
-                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
                     expect(TemplateParser.Token(rawToken: UUID().uuidString,
                                                 color: project.colors[0])).to(beNil())
@@ -164,7 +164,7 @@ class TemplateParserSpec: QuickSpec {
 
             context("unknown color identity") {
                 it("should return nil token") {
-                    let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
                     expect(TemplateParser.Token(rawToken: "textStyle.color.identity.camelcase",
                                                 textStyle: project.textStyles[0],
@@ -178,7 +178,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Transormations") {
             it("should produce valid output") {
-                let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -206,7 +206,7 @@ class TemplateParserSpec: QuickSpec {
         }
 
         describe("Prohibited Identifiers") {
-            let projectResult = PrismAPI(jwtToken: "fake").mock(type: .successful)
+            let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
             let project = try! projectResult.get()
 
             context("camel cased") {

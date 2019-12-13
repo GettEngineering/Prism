@@ -11,7 +11,7 @@ import Nimble
 import MockDuck
 @testable import PrismCore
 
-extension PrismAPI {
+extension Prism {
     func mock(type: MockType) -> ProjectResult {
         MockDuck.shouldFallbackToNetwork = type != .failure
         MockDuck.unregisterAllRequestHandlers()

@@ -36,14 +36,14 @@ struct GenerateCommand: CommandRepresentable {
             ]
         }
 
-        let projectId: String?
+        let projectId: Project.ID?
         let templatesPath: String?
         let outputPath: String?
         let configFile: String?
     }
 
-    static var symbol = "generate"
-    static var usage = "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
+    static let symbol = "generate"
+    static let usage = "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
     static let prismFolder = ".prism"
 
     static func main(_ options: GenerateCommand.Options) throws {
@@ -75,7 +75,7 @@ struct GenerateCommand: CommandRepresentable {
             throw CommandError.missingProjectID
         }
 
-        let prism = PrismAPI(jwtToken: jwtToken)
+        let prism = Prism(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
         let rawTemplatesPath = options.templatesPath ?? config?.templatesPath ?? prismFolder
@@ -87,7 +87,7 @@ struct GenerateCommand: CommandRepresentable {
 
         let outputPath = rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath
 
-        prism.getProject(id: projectId) { result in
+        prism.getProjectAssets(for: projectId) { result in
             do {
                 let project = try result.get()
 
