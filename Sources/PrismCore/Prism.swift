@@ -29,6 +29,7 @@ public class Prism {
         let group = DispatchGroup()
         var colors = [Project.Color]()
         var textStyles = [Project.TextStyle]()
+        var outError: ZeplinAPI.Error?
         
         group.enter()
         api.getColors(for: projectId) { result in
@@ -37,7 +38,7 @@ public class Prism {
             case .success(let color):
                 colors = color
             case .failure(let error):
-                completion(.failure(error))
+                outError = error
             }
         }
         
@@ -48,7 +49,7 @@ public class Prism {
             case .success(let styles):
                 textStyles = styles
             case .failure(let error):
-                completion(.failure(error))
+                outError = error
             }
         }
 
@@ -56,6 +57,11 @@ public class Prism {
         /// Otherwise, Prism terminates without waiting for the result to
         /// come back.
         group.wait()
-        completion(.success(ProjectAssets(id: projectId, colors: colors, textStyles: textStyles)))
+        
+        if let err = outError {
+            completion(.failure(err))
+        } else {
+            completion(.success(ProjectAssets(id: projectId, colors: colors, textStyles: textStyles)))
+        }
     }
 }

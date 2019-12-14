@@ -3,12 +3,14 @@
 //  Prism
 //
 //  Created by Shai Mishali on 23/05/2019.
+//  Copyright © 2019 Gett. All rights reserved.
 //
 
 import Foundation
 import Quick
 import Nimble
 @testable import PrismCore
+@testable import ZeplinAPI
 
 class ColorSpec: QuickSpec {
     override func spec() {
