@@ -52,7 +52,7 @@ private extension ZeplinAPI {
     func request<Model: Decodable>(model: Model.Type,
                                    from path: String,
                                    completion: @escaping (Result<Model, Error>) -> Void) {
-        let fullPath = ZeplinAPI.basePath + (path.first == "/" ? String(path.dropFirst()) : path)
+        let fullPath = ZeplinAPI.basePath + path
         
         guard let apiURL = URL(string: fullPath) else {
             completion(.failure(Error.invalidRequestURL(path: fullPath)))
@@ -64,9 +64,10 @@ private extension ZeplinAPI {
         URLSession.shared
             .dataTask(with: request) { data, response, _ in
                 if let response = response as? HTTPURLResponse,
+                   let data = data,
                    !(200...299 ~= response.statusCode) {
                     do {
-                        let error = try APIError.decode(from: data ?? Data())
+                        let error = try APIError.decode(from: data)
                         completion(.failure(.apiError(message: "\(error.detail) (\(error.message))")))
                     } catch {
                         completion(.failure(Error.unknownAPIError(statusCode: response.statusCode)))
@@ -75,7 +76,10 @@ private extension ZeplinAPI {
                 }
                 
                 do {
-                    try completion(.success(Model.decode(from: data ?? Data(), keyDecodingStrategy: .convertFromSnakeCase)))
+                    if let data = data {
+                        try completion(.success(Model.decode(from: data,
+                                                             keyDecodingStrategy: .convertFromSnakeCase)))
+                    }
                 } catch {
                     completion(.failure(Error.decodingFailed(type: Model.self)))
                 }
@@ -103,7 +107,7 @@ extension ZeplinAPI {
         public var description: String {
             switch self {
             case .invalidRequestURL(let path):
-                return "Failed construct URL from path '\(path)'"
+                return "Failed constructing URL from path '\(path)'"
             case .decodingFailed(let type):
                 return "Failed decoding \(type)"
             case .unknownAPIError(let statusCode):

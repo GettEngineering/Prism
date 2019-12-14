@@ -119,26 +119,18 @@ public class TemplateParser {
 
                 switch identifier {
                 case "color":
-                    var colorLoop = try project.colors
+                    let colorLoop = try project.colors
                                                .sorted(by: { $0.identity.name < $1.identity.name })
                                                .reduce(into: [String]()) { result, color in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, color: color))
                     }
 
-                    if colorLoop.last == "" {
-                        colorLoop = Array(colorLoop.dropLast())
-                    }
-
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
-                    var textStyleLoop = try project.textStyles
+                    let textStyleLoop = try project.textStyles
                                                    .sorted(by: { $0.identity.name < $1.identity.name })
                                                    .reduce(into: [String]()) { result, textStyle in
                         result.append(contentsOf: try recursivelyParse(lines: forBody, textStyle: textStyle))
-                    }
-
-                    if textStyleLoop.last == "" {
-                        textStyleLoop = Array(textStyleLoop.dropLast())
                     }
 
                     output.append(contentsOf: textStyleLoop)
@@ -195,7 +187,7 @@ public class TemplateParser {
             if fullToken.contains("|") {
                 let tokenPieces = fullToken.components(separatedBy: "|")
                 token = tokenPieces[0]
-                transformations = tokenPieces[1...].compactMap(Transformation.init)
+                transformations = try tokenPieces[1...].compactMap(Transformation.init)
 
                 output = output.replacingOccurrences(of: fullToken,
                                                      with: token)
@@ -234,6 +226,9 @@ extension TemplateParser {
 
         /// One or more prohibited identities were used
         case prohibitedIdentities(identities: String)
+        
+        /// An unknown transformation was applied
+        case unknownTransformation(String)
 
         var description: String {
             switch self {
@@ -248,6 +243,8 @@ extension TemplateParser {
                 return "Text Style \(textStyle.name) has a color RGBA(\(color.r), \(color.g), \(color.b), \(color.a)), but it has no name"
             case .prohibitedIdentities(let identities):
                 return "Prohibited identities '\(identities)' can't be used"
+            case .unknownTransformation(let name):
+                return "There is no transformation called '\(name)'"
             }
         }
     }

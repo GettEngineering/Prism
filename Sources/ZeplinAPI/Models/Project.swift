@@ -58,7 +58,7 @@ public struct Project: Codable {
 
 public extension Project {
     /// A platform for a specific Zeplin project
-    enum Platform: String, Codable {
+    enum Platform: String, CaseIterable, Codable {
         case web
         case ios
         case android
@@ -66,7 +66,7 @@ public extension Project {
     }
     
     /// The status of a Zeplin Project
-    enum Status: String, Codable {
+    enum Status: String, CaseIterable, Codable {
         case active
         case archived
         case deleted

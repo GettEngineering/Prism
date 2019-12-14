@@ -24,7 +24,7 @@ public struct ProjectAssets: Codable, Equatable {
 extension ProjectAssets: CustomStringConvertible {
     /// A short description for the project.
     public var description: String {
-        return #"Zeplin Project "\(id)" has \(colors.count) colors and \(textStyles.count) text styles"#
+        return "Zeplin Project \(id) has \(colors.count) colors and \(textStyles.count) text styles"
     }
 }
 

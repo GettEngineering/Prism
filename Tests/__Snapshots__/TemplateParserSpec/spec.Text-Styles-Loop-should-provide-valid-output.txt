@@ -5,6 +5,6 @@ fake line 1
 fake line 2
 
 Some Structure {
-    body, body = MyCustomFont-Regular, 14.0, blueSky, blue_sky, #62b6df, #ff62b6df, 98, 182, 223, 1.00
-    largeHeading, large_heading = MyCustomFont-Light, 32.0, clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80
+    Body, body, body = MyCustomFont-Regular, 14.0, Blue Sky,  blueSky, blue_sky, #62b6df, #ff62b6df, 98, 182, 223, 1.00
+    Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, Clear Reddish,  clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80
 }

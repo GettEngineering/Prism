@@ -3,12 +3,14 @@
 //  PrismTests
 //
 //  Created by Shai Mishali on 23/05/2019.
+//  Copyright © 2019 Gett. All rights reserved.
 //
 
 import Foundation
 import Quick
 import Nimble
 @testable import PrismCore
+@testable import ZeplinAPI
 
 class AssetIdentitySpec: QuickSpec {
     let project = try! Prism(jwtToken: "fake").mock(type: .successful).get()
@@ -100,6 +102,15 @@ class AssetIdentitySpec: QuickSpec {
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
+            }
+        }
+        
+        describe("empty identity") {
+            it("should return empty identities") {
+                let identity = Project.AssetIdentity(name: "")
+                
+                let all = Project.AssetIdentity.Style.allCases.map { $0.identifier(for: identity) }
+                expect(all) == ["", "", ""]
             }
         }
     }
