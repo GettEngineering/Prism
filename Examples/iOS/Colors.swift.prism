@@ -1,0 +1,11 @@
+/// This file was generated using Prism
+import UIKit
+
+public extension UIColor {
+    {{% FOR color %}}
+    static let {{%color.identity.camelcase%}} = UIColor(red: CGFloat({{%color.r%}}) / 255,
+                                                        green: CGFloat({{%color.g%}}) / 255,
+                                                        blue: CGFloat({{%color.b%}}) / 255,
+                                                        alpha: {{%color.a%}})
+    {{% END color %}}
+}

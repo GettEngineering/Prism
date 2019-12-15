@@ -4,9 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Prism",
-    platforms: [
-        .macOS(.v10_12), .iOS(.v10), .tvOS(.v10), .watchOS(.v4)
-    ],
+    platforms: [.macOS(.v10_12)],
     products: [
         .executable(name: "prism",
                     targets: ["prism"]),
