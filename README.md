@@ -49,7 +49,7 @@ It will guide you through selecting a Zeplin project as source along with other 
 
 Prism uses templates with the `.prism` suffix located in your project's `.prism` folder. These Prism templates are basically plain text files — Prism doesn't really care what format or language you use, it can make _any kind of output_ as long as you can express it in a Prism template file.
 
-Prism looks for something called **tokens** inside your templates. These tokens follow the following format: `{{%token%}}`. You can find a couple of sample templates in the [Examples](https://github.com/gtforge/Prism/tree/master/Examples) folder.
+Prism looks for something called [**Tokens**](Documentation/Tokens.md) inside your templates. These tokens follow the following format: `{{%token%}}`. You can find a couple of sample templates in the [Examples](https://github.com/gtforge/Prism/tree/master/Examples) folder.
 
 Here are two short example of generating colors code for iOS and Android using Prism templates.
 
