@@ -34,7 +34,7 @@ extension ProjectAssets: CustomDebugStringConvertible {
         let colorDesc = colors.map { "    🎨 \($0.name) \($0.identity) => R: \($0.r), G: \($0.g), B: \($0.b), alpha: \($0.a)" }
                               .joined(separator: "\n")
 
-        let textStylesDesc = textStyles.map { "    ✏️  \($0.name) \($0.identity) => font: \($0.fontFamily), size \($0.fontSize)" }
+        let textStylesDesc = textStyles.map { "    ✏️  \($0.name) \($0.identity) => font: \($0.postscriptName), size \($0.fontSize)" }
                                        .joined(separator: "\n")
         
         return """

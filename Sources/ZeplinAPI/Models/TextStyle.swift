@@ -15,6 +15,9 @@ public extension Project {
         /// Text style name
         public let name: String
         
+        /// Text style's full Postscript name
+        public let postscriptName: String
+        
         /// Text style's font family
         public let fontFamily: String
         
@@ -29,6 +32,9 @@ public extension Project {
         
         /// Text style's line height
         public let lineHeight: Float?
+        
+        /// Text style's letter spacing
+        public let letterSpacing: Float?
         
         /// Text style's text alignment
         public let textAlign: Alignment?

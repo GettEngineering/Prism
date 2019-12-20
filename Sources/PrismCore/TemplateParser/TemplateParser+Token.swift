@@ -63,7 +63,7 @@ extension TemplateParser {
         init(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
             switch rawToken {
             case "textStyle.fontName":
-                self = .textStyleFontName(textStyle.fontFamily)
+                self = .textStyleFontName(textStyle.postscriptName)
             case "textStyle.fontSize":
                 self = .textStyleFontSize(textStyle.fontSize)
             case "textStyle.identity":
