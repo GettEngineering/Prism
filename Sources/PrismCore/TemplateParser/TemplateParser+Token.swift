@@ -34,24 +34,31 @@ extension TemplateParser {
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
         init(rawToken: String, color: Project.Color) throws {
-            switch rawToken.lowercased() {
-            case "color.r":
+            let cleanToken = rawToken.lowercased()
+            guard cleanToken.hasPrefix("color.") else {
+                throw Error.unknownToken(token: rawToken)
+            }
+            
+            let colorToken = String(cleanToken.dropFirst(6))
+            
+            switch colorToken {
+            case "r":
                 self = .colorRed(color.r)
-            case "color.g":
+            case "g":
                 self = .colorGreen(color.g)
-            case "color.b":
+            case "b":
                 self = .colorBlue(color.b)
-            case "color.a":
+            case "a":
                 self = .colorAlpha(color.a)
-            case "color.argb":
+            case "argb":
                 self = .colorARGB(color.argbValue)
-            case "color.rgb":
+            case "rgb":
                 self = .colorRGB(color.rgbValue)
-            case "color.identity":
+            case "identity":
                 self = .colorIdentity(identity: color.identity, style: .raw)
-            case "color.identity.camelcase":
+            case "identity.camelcase":
                 self = .colorIdentity(identity: color.identity, style: .camelcase)
-            case "color.identity.snakecase":
+            case "identity.snakecase":
                 self = .colorIdentity(identity: color.identity, style: .snakecase)
             default:
                 throw Error.unknownToken(token: rawToken)
@@ -61,47 +68,31 @@ extension TemplateParser {
         /// Parse a raw text style token, such as "textStyle.fontName", into its
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
         init(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
-            switch rawToken {
-            case "textStyle.fontName":
+            let cleanToken = rawToken.lowercased()
+            guard cleanToken.hasPrefix("textstyle.") else {
+                throw Error.unknownToken(token: rawToken)
+            }
+            
+            let textStyleToken = String(cleanToken.dropFirst(10))
+
+            switch textStyleToken {
+            case "fontname",
+                 "font":
                 self = .textStyleFontName(textStyle.postscriptName)
-            case "textStyle.fontSize":
+            case "fontsize":
                 self = .textStyleFontSize(textStyle.fontSize)
-            case "textStyle.identity":
+            case "identity":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .raw)
-            case "textStyle.identity.camelcase":
+            case "identity.camelcase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .camelcase)
-            case "textStyle.identity.snakecase":
+            case "identity.snakecase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
-            case "textStyle.color.identity":
-                guard let identity = colors.identity(matching: textStyle.color) else {
-                    throw Error.missingColorNameForTextStyle(textStyle)
+            case let token where token.hasPrefix("color."):
+                guard let projectColor = colors.first(where: { $0.argbValue == textStyle.color.argbValue }) else {
+                    throw Error.missingColorForTextStyle(textStyle)
                 }
 
-                self = .colorIdentity(identity: identity, style: .raw)
-            case "textStyle.color.identity.camelcase":
-                guard let identity = colors.identity(matching: textStyle.color) else {
-                    throw Error.missingColorNameForTextStyle(textStyle)
-                }
-
-                self = .colorIdentity(identity: identity, style: .camelcase)
-            case "textStyle.color.identity.snakecase":
-                guard let identity = colors.identity(matching: textStyle.color) else {
-                    throw Error.missingColorNameForTextStyle(textStyle)
-                }
-
-                self = .colorIdentity(identity: identity, style: .snakecase)
-            case "textStyle.color.argb":
-                self = .colorARGB(textStyle.color.argbValue)
-            case "textStyle.color.rgb":
-                self = .colorRGB(textStyle.color.rgbValue)
-            case "textStyle.color.r":
-                self = .colorRed(textStyle.color.r)
-            case "textStyle.color.g":
-                self = .colorGreen(textStyle.color.g)
-            case "textStyle.color.b":
-                self = .colorBlue(textStyle.color.b)
-            case "textStyle.color.a":
-                self = .colorAlpha(textStyle.color.a)
+                self = try Token(rawToken: token, color: projectColor)
             default:
                 throw Error.unknownToken(token: rawToken)
             }

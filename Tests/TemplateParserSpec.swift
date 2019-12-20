@@ -81,7 +81,7 @@ class TemplateParserSpec: QuickSpec {
                     Bad color identity: {{%textStyle.color.identity%}}
                     {{% END textStyle %}}
                     """)
-                }.to(throwError(TemplateParser.Error.missingColorNameForTextStyle(modifiedResult.textStyles[0])))
+                }.to(throwError(TemplateParser.Error.missingColorForTextStyle(modifiedResult.textStyles[0])))
             }
         }
 
@@ -143,7 +143,7 @@ class TemplateParserSpec: QuickSpec {
                     let errors: [TemplateParser.Error] = [.openLoop(identifier: "color"),
                                                           .unknownLoop(identifier: "fake"),
                                                           .unknownToken(token: "fake"),
-                                                          .missingColorNameForTextStyle(project.textStyles[0]),
+                                                          .missingColorForTextStyle(project.textStyles[0]),
                                                           .prohibitedIdentities(identities: "fake1, fake2")]
 
                     let descriptions = errors.map { "\($0)" }
@@ -151,7 +151,7 @@ class TemplateParserSpec: QuickSpec {
                         "Detected FOR loop 'color' with no closing END",
                         "Illegal FOR loop identifier 'fake'",
                         "Illegal token in template 'fake'",
-                        "Text Style Large Heading has a color RGBA(223, 99, 105, 0.79999995), but it has no name",
+                        "Text Style Large Heading has a color RGBA(223, 99, 105, 0.79999995), but it has no matching color identity",
                         "Prohibited identities 'fake1, fake2' can't be used"
                     ]
 
@@ -179,10 +179,10 @@ class TemplateParserSpec: QuickSpec {
                     let project = try! projectResult.get()
                     expect { try TemplateParser.Token(rawToken: "textStyle.color.identity.camelcase",
                                                       textStyle: project.textStyles[0],
-                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorNameForTextStyle(project.textStyles[0])))
+                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
                     expect { try TemplateParser.Token(rawToken: "textStyle.color.identity.snakecase",
                                                       textStyle: project.textStyles[0],
-                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorNameForTextStyle(project.textStyles[0])))
+                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
                 }
             }
         }
