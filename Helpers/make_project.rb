@@ -38,6 +38,7 @@ fi
     else
         target.build_configurations.each do |config|
             config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+            config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -suppress-warnings'
         end
     end
 end

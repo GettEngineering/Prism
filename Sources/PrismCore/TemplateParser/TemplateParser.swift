@@ -197,9 +197,9 @@ public class TemplateParser {
             }
 
             if let color = color {
-                tokens[token] = try Token(rawToken: token, color: color).stringValue(transformations: transformations)
+                tokens[token] = try Token(rawColorToken: token, color: color).stringValue(transformations: transformations)
             } else if let textStyle = textStyle {
-                tokens[token] = try Token(rawToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
+                tokens[token] = try Token(rawTextStyleToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
             }
         }
 

@@ -33,10 +33,13 @@ extension TemplateParser {
 
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
-        init(rawToken: String, color: Project.Color) throws {
-            let cleanToken = rawToken.lowercased()
+        ///
+        /// - parameter rawColorToken: A raw color token, e.g. `color.*`
+        /// - parameter colorr: A project color with an asset identity
+        init(rawColorToken: String, color: Project.Color) throws {
+            let cleanToken = rawColorToken.lowercased()
             guard cleanToken.hasPrefix("color.") else {
-                throw Error.unknownToken(token: rawToken)
+                throw Error.unknownToken(token: rawColorToken)
             }
             
             let colorToken = String(cleanToken.dropFirst(6))
@@ -61,16 +64,19 @@ extension TemplateParser {
             case "identity.snakecase":
                 self = .colorIdentity(identity: color.identity, style: .snakecase)
             default:
-                throw Error.unknownToken(token: rawToken)
+                throw Error.unknownToken(token: rawColorToken)
             }
         }
 
         /// Parse a raw text style token, such as "textStyle.fontName", into its
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
-        init(rawToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
-            let cleanToken = rawToken.lowercased()
+        ///
+        /// - parameter rawTextStyleToken: A raw text style token, e.g. `textStyle.*`
+        /// - parameter colorr: A project color with an asset identity
+        init(rawTextStyleToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
+            let cleanToken = rawTextStyleToken.lowercased()
             guard cleanToken.hasPrefix("textstyle.") else {
-                throw Error.unknownToken(token: rawToken)
+                throw Error.unknownToken(token: rawTextStyleToken)
             }
             
             let textStyleToken = String(cleanToken.dropFirst(10))
@@ -88,7 +94,7 @@ extension TemplateParser {
             case "identity.snakecase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
             case let token where token.hasPrefix("color."):
-                /// Look for a project color matching the TextStyle's raw color.
+                /// Look for a project color matching the Text Style's raw color.
                 /// If none exists, throw an error for the entire Text Style as "invalid".
                 ///
                 /// Prism does not support Text Styles with unidentified colors.
@@ -96,9 +102,9 @@ extension TemplateParser {
                     throw Error.missingColorForTextStyle(textStyle)
                 }
 
-                self = try Token(rawToken: token, color: projectColor)
+                self = try Token(rawColorToken: token, color: projectColor)
             default:
-                throw Error.unknownToken(token: rawToken)
+                throw Error.unknownToken(token: rawTextStyleToken)
             }
         }
 
