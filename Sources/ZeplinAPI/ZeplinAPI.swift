@@ -22,28 +22,36 @@ public class ZeplinAPI {
     /// Fetch all colors associated with a specific Zeplin Project ID
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch colors for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Color`s, or a `ZeplinAPI.Error` error
-    public func getColors(for projectId: Project.ID, completion: @escaping (Result<[Project.Color], Error>) -> Void) {
-        request(model: [Project.Color].self, from: "projects/\(projectId)/colors", completion: completion)
+    public func getColors(for projectId: Project.ID,
+                          limit: Int = 10_000,
+                          completion: @escaping (Result<[Project.Color], Error>) -> Void) {
+        request(model: [Project.Color].self, from: "projects/\(projectId)/colors?limit=\(limit)", completion: completion)
     }
     
     /// Fetch all text styles associated with a specific Zeplin Project ID
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch text styles for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
-    public func getTextStyles(for projectId: Project.ID, completion: @escaping (Result<[Project.TextStyle], Error>) -> Void) {
-        request(model: [Project.TextStyle].self, from: "projects/\(projectId)/text_styles", completion: completion)
+    public func getTextStyles(for projectId: Project.ID,
+                              limit: Int = 10_000,
+                              completion: @escaping (Result<[Project.TextStyle], Error>) -> Void) {
+        request(model: [Project.TextStyle].self, from: "projects/\(projectId)/text_styles?limit=\(limit)", completion: completion)
     }
     
     /// Fetch all projects associated with the user whose token is used
     /// for the APIs
     ///
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Project`s, or a `ZeplinAPI.Error` error
-    public func getProjects(completion: @escaping (Result<[Project], Error>) -> Void) {
-        request(model: [Project].self, from: "projects", completion: completion)
+    public func getProjects(limit: Int = 10_000,
+                            completion: @escaping (Result<[Project], Error>) -> Void) {
+        request(model: [Project].self, from: "projects?limit=\(limit)", completion: completion)
     }
 }
 
