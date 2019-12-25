@@ -68,3 +68,4 @@ Here are two short example of generating colors code for iOS and Android using P
 * Run `make project` to create an Xcode project and start working.
 * Run `make test` to run all tests.
 * Run `make clean` to clear the generated Xcode project.
+ 
