@@ -61,7 +61,9 @@ public class Prism {
         if let err = outError {
             completion(.failure(err))
         } else {
-            completion(.success(ProjectAssets(id: projectId, colors: colors, textStyles: textStyles)))
+            completion(.success(ProjectAssets(id: projectId,
+                                              colors: colors.sorted { $0.name < $1.name },
+                                              textStyles: textStyles.sorted { $0.name < $1.name })))
         }
     }
 }
