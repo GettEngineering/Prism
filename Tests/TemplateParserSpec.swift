@@ -165,9 +165,9 @@ class TemplateParserSpec: QuickSpec {
                 it("should return nil") {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
-                    expect { try TemplateParser.Token(rawToken: UUID().uuidString,
+                    expect { try TemplateParser.Token(rawColorToken: UUID().uuidString,
                                                       color: project.colors[0]) }.to(throwError())
-                    expect { try TemplateParser.Token(rawToken: UUID().uuidString,
+                    expect { try TemplateParser.Token(rawTextStyleToken: UUID().uuidString,
                                                       textStyle: project.textStyles[0],
                                                       colors: project.colors) }.to(throwError())
                 }
@@ -177,10 +177,10 @@ class TemplateParserSpec: QuickSpec {
                 it("should return nil token") {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
-                    expect { try TemplateParser.Token(rawToken: "textStyle.color.identity.camelcase",
+                    expect { try TemplateParser.Token(rawTextStyleToken: "textStyle.color.identity.camelcase",
                                                       textStyle: project.textStyles[0],
                                                       colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
-                    expect { try TemplateParser.Token(rawToken: "textStyle.color.identity.snakecase",
+                    expect { try TemplateParser.Token(rawTextStyleToken: "textStyle.color.identity.snakecase",
                                                       textStyle: project.textStyles[0],
                                                       colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
                 }

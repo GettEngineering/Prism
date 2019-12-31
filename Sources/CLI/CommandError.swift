@@ -15,6 +15,7 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case failedDataConversion
     case templateFolderMissing
     case outputFolderMissing
+    case outputFolderDoesntExist(path: String)
     case noTemplateFiles
     case missingConfigurationFile(path: String)
     case invalidConfiguration(path: String)
@@ -33,6 +34,8 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Invalid or missing templates folder. Please provide a valid one via the -t flag or in your config.yml."
         case .outputFolderMissing:
             return "Invalid or missing output folder. Please provide a valid one via the -o flag or in your config.yml."
+        case .outputFolderDoesntExist(let path):
+            return "Provided output path at '\(path)' doesn't exist"
         case .noTemplateFiles:
             return "Can't find template files (*.prism) in provided folder"
         case .missingConfigurationFile(let path):

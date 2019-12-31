@@ -92,13 +92,18 @@ struct GenerateCommand: CommandRepresentable {
             throw CommandError.outputFolderMissing
         }
 
-        let outputPath = rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath
-
+        let fileManager = FileManager.default
+        let outputPath = (rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath)
+                            .replacingOccurrences(of: "~", with: fileManager.homeDirectoryForCurrentUser.path)
+        
+        guard fileManager.folderExists(at: outputPath) else {
+            throw CommandError.outputFolderDoesntExist(path: outputPath)
+        }
+        
         prism.getProjectAssets(for: projectId) { result in
             do {
                 let project = try result.get()
-
-                let fileManager = FileManager.default
+                
                 let enumerator = fileManager.enumerator(atPath: templatesPath)
 
                 var isFolder: ObjCBool = false
