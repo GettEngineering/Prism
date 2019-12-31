@@ -66,7 +66,12 @@ struct GenerateCommand: CommandRepresentable {
             }
 
             let decoder = YAMLDecoder()
-            config = try? decoder.decode(Configuration.self, from: configString)
+            
+            do {
+                config = try decoder.decode(Configuration.self, from: configString)
+            } catch {
+                throw CommandError.invalidConfiguration(path: configPath)
+            }
         }
 
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {

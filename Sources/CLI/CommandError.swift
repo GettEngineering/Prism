@@ -17,6 +17,7 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case outputFolderMissing
     case noTemplateFiles
     case missingConfigurationFile(path: String)
+    case invalidConfiguration(path: String)
 
     var description: String {
         switch self {
@@ -36,6 +37,8 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Can't find template files (*.prism) in provided folder"
         case .missingConfigurationFile(let path):
             return "Provided configuration path '\(path)' cannot be found"
+        case .invalidConfiguration(let path):
+            return "Configuration '\(path)' was used, but doesn't seem to be a valid YAML file"
         }
     }
 }
