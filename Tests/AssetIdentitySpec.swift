@@ -68,7 +68,7 @@ class AssetIdentitySpec: QuickSpec {
         describe("color identities") {
             context("camel case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["clearReddish", "blueSky"]
+                    let expectedIdentities = ["blueSky", "clearReddish"]
                     let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
@@ -77,7 +77,7 @@ class AssetIdentitySpec: QuickSpec {
 
             context("snake case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["clear_reddish", "blue_sky"]
+                    let expectedIdentities = ["blue_sky", "clear_reddish"]
                     let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
@@ -88,7 +88,7 @@ class AssetIdentitySpec: QuickSpec {
         describe("text style identities") {
             context("camel case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["largeHeading", "body"]
+                    let expectedIdentities = ["body", "largeHeading"]
                     let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
@@ -97,7 +97,7 @@ class AssetIdentitySpec: QuickSpec {
 
             context("snake case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["large_heading", "body"]
+                    let expectedIdentities = ["body", "large_heading"]
                     let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities

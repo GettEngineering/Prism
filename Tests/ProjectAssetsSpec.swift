@@ -33,8 +33,8 @@ class ProjectAssetsSpec: QuickSpec {
                     let project = try! projectResult.get()
 
                     expect(project.id) == "12345"
-                    expect(project.colors.map { $0.argbValue }.joined(separator: ", ")) == "#ccdf6369, #ff62b6df"
-                    expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Large Heading, Body"
+                    expect(project.colors.map { $0.argbValue }.joined(separator: ", ")) == "#ff62b6df, #ccdf6369"
+                    expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Body, Large Heading"
 
                     let encoded = try! project.encode()
                     let decoded = try! ProjectAssets.decode(from: encoded)

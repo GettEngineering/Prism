@@ -28,14 +28,7 @@ class ZeplinAPISpec: QuickSpec {
             }
         }
         
-        describe("parsing") {
-            context("valid JSON") {
-                it("should return valid project") {
-                    let project = Project.mock(type: .successful)
-                    expect(try? project.get()).toNot(beNil())
-                }
-            }
-            
+        describe("parsing") {    
             context("faulty json") {
                 it("should return error") {
                     let project = Project.mock(type: .faultyJSON)

@@ -26,7 +26,7 @@ extension Prism {
             }
             
             switch path {
-            case "https://api.zeplin.dev/v1/projects/12345/colors":
+            case _ where path.hasPrefix("https://api.zeplin.dev/v1/projects/12345/colors"):
                 let colorsJSONMock = """
                 [
                     {
@@ -51,7 +51,7 @@ extension Prism {
                 """
 
                 return try? MockResponse(for: request, data: colorsJSONMock.data(using: .utf8))
-            case "https://api.zeplin.dev/v1/projects/12345/text_styles":
+            case _ where path.hasPrefix("https://api.zeplin.dev/v1/projects/12345/text_styles"):
                 let textStylesJSONMock = """
                 [
                     {

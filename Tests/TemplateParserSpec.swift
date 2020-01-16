@@ -143,7 +143,7 @@ class TemplateParserSpec: QuickSpec {
                     let errors: [TemplateParser.Error] = [.openLoop(identifier: "color"),
                                                           .unknownLoop(identifier: "fake"),
                                                           .unknownToken(token: "fake"),
-                                                          .missingColorForTextStyle(project.textStyles[0]),
+                                                          .missingColorForTextStyle(project.textStyles[1]),
                                                           .prohibitedIdentities(identities: "fake1, fake2")]
 
                     let descriptions = errors.map { "\($0)" }
