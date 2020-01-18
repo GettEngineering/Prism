@@ -88,8 +88,8 @@ public class TemplateParser {
     ///
     /// - returns: An array of processed lines.
     private func recursivelyParse(lines: [String],
-                                  color: Project.Color? = nil,
-                                  textStyle: Project.TextStyle? = nil) throws -> [String] {
+                                  color: Color? = nil,
+                                  textStyle: TextStyle? = nil) throws -> [String] {
         var output = [String]()
         var currentLineIdx = 0
 
@@ -167,8 +167,8 @@ public class TemplateParser {
     ///
     /// - returns: Provided line with resolved tokens.
     private func resolveTokens(line: String,
-                               color: Project.Color?,
-                               textStyle: Project.TextStyle?) throws -> String {
+                               color: Color?,
+                               textStyle: TextStyle?) throws -> String {
         let lineLength = line.count
         var output = line
         var tokens = [String: String]()
@@ -221,7 +221,7 @@ extension TemplateParser {
         /// Trying to parse a text style's color while color has
         /// no identity / name, or while a color doesn't match from
         /// the project's colors
-        case missingColorForTextStyle(Project.TextStyle)
+        case missingColorForTextStyle(TextStyle)
 
         /// One or more prohibited identities were used
         case prohibitedIdentities(identities: String)

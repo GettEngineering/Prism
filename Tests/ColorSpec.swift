@@ -21,7 +21,7 @@ class ColorSpec: QuickSpec {
             (4, 95, 123, 0.55),
             (71, 6, 23, 0.25),
             (51, 91, 210, 0)
-        ].map(Project.RawColor.init)
+        ].map(RawColor.init)
 
         describe("rgbValue") {
             it("returns HEX RGB value") {

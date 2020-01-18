@@ -18,40 +18,82 @@ public class ZeplinAPI {
     public init(jwtToken: String) {
         self.jwtToken = jwtToken
     }
+}
 
-    /// Fetch all colors associated with a specific Zeplin Project ID
-    ///
-    /// - parameter projectId: A Zeplin Project ID to fetch colors for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
-    /// - parameter completion: A completion handler which can result in a successful array
-    ///                          of `Color`s, or a `ZeplinAPI.Error` error
-    public func getColors(for projectId: Project.ID,
-                          limit: Int = 10_000,
-                          completion: @escaping (Result<[Project.Color], Error>) -> Void) {
-        request(model: [Project.Color].self, from: "projects/\(projectId)/colors?limit=\(limit)", completion: completion)
-    }
-    
-    /// Fetch all text styles associated with a specific Zeplin Project ID
-    ///
-    /// - parameter projectId: A Zeplin Project ID to fetch text styles for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
-    /// - parameter completion: A completion handler which can result in a successful array
-    ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
-    public func getTextStyles(for projectId: Project.ID,
-                              limit: Int = 10_000,
-                              completion: @escaping (Result<[Project.TextStyle], Error>) -> Void) {
-        request(model: [Project.TextStyle].self, from: "projects/\(projectId)/text_styles?limit=\(limit)", completion: completion)
-    }
-    
+// MARK: - Project-Specific APIs
+public extension ZeplinAPI {
     /// Fetch all projects associated with the user whose token is used
     /// for the APIs
     ///
     /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Project`s, or a `ZeplinAPI.Error` error
-    public func getProjects(limit: Int = 10_000,
-                            completion: @escaping (Result<[Project], Error>) -> Void) {
+    func getProjects(limit: Int = 10_000,
+                     completion: @escaping (Result<[Project], Error>) -> Void) {
         request(model: [Project].self, from: "projects?limit=\(limit)", completion: completion)
+    }
+    
+    /// Fetch all colors associated with a specific Zeplin Project
+    ///
+    /// - parameter projectId: A Zeplin Project ID to fetch colors for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///                          of `Color`s, or a `ZeplinAPI.Error` error
+    func getProjectColors(for projectId: Project.ID,
+                          limit: Int = 10_000,
+                          completion: @escaping (Result<[Color], Error>) -> Void) {
+        request(model: [Color].self, from: "projects/\(projectId)/colors?limit=\(limit)", completion: completion)
+    }
+    
+    /// Fetch all text styles associated with a specific Zeplin Project
+    ///
+    /// - parameter projectId: A Zeplin Project ID to fetch text styles for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
+    func getProjectTextStyles(for projectId: Project.ID,
+                              limit: Int = 10_000,
+                              completion: @escaping (Result<[TextStyle], Error>) -> Void) {
+        request(model: [TextStyle].self, from: "projects/\(projectId)/text_styles?limit=\(limit)", completion: completion)
+    }
+}
+
+// MARK: - Styleguide-Specific APIs
+public extension ZeplinAPI {
+    /// Fetch all styleguides associated with a specific Project
+    ///
+    /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///                          of `Stylguide`s, or a `ZeplinAPI.Error` error
+    func getStyleguides(for projectId: Project.ID,
+                        limit: Int = 10_000,
+                        completion: @escaping (Result<[Styleguide], Error>) -> Void) {
+        request(model: [Styleguide].self, from: "styleguides?limit=\(limit)&linked_project=\(projectId)", completion: completion)
+    }
+    
+    /// Fetch all colors associated with a specific Zeplin Styleguide
+    ///
+    /// - parameter styleguideID: A Zeplin Styleguide ID to fetch colors for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///
+    func getStyleguideColors(for styleguideID: Styleguide.ID,
+                             limit: Int = 10_000,
+                             completion: @escaping (Result<[Color], Error>) -> Void) {
+        request(model: [Color].self, from: "styleguides/\(styleguideID)/colors?limit=\(limit)", completion: completion)
+    }
+    
+    /// Fetch all text styles associated with a specific Zeplin Styleguide
+    ///
+    /// - parameter styleguideID: A Zeplin Styleguide ID to fetch text styles for
+    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
+    func getStyleguideTextStyles(for styleguideID: Styleguide.ID,
+                                 limit: Int = 10_000,
+                                 completion: @escaping (Result<[TextStyle], Error>) -> Void) {
+        request(model: [TextStyle].self, from: "styleguides/\(styleguideID)/text_styles?limit=\(limit)", completion: completion)
     }
 }
 
@@ -111,6 +153,7 @@ extension ZeplinAPI {
         case decodingFailed(type: Decodable.Type)
         case unknownAPIError(statusCode: Int)
         case apiError(message: String)
+        case compoundError(errors: [ZeplinAPI.Error])
 
         public var description: String {
             switch self {
@@ -122,6 +165,8 @@ extension ZeplinAPI {
                 return "An unknown API error occured: HTTP \(statusCode)"
             case .apiError(let message):
                 return "Zeplin API Failure: \(message)"
+            case .compoundError(let errors):
+                return errors.map { $0.description }.joined(separator: "\n")
             }
         }
     }

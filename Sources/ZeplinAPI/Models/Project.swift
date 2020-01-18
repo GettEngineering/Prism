@@ -8,57 +8,58 @@
 
 import Foundation
 
-// A Zeplin Project
+/// A Zeplin Project
 public struct Project: Codable {
     /// A Zeplin Project ID, represented by a `String`
     public typealias ID = String
     
-    // Project ID
+    /// Project ID
     public let id: ID
     
-    // Project name
+    /// Project name
     public let name: String
     
-    // Project description
+    /// Project description
     public let description: String?
     
-    // Project platform (iOS, Android, Web, macOS)
+    /// Project platform (iOS, Android, Web, macOS)
     public let platform: Platform
     
-    // Thumbnail URL
+    /// Thumbnail URL
     public let thumbnail: URL?
     
-    // Status (active, archived or deleted)
+    /// Status (active, archived or deleted)
     public let status: Status
     
-    // Scene URL
+    /// Scene URL
     public let sceneUrl: URL?
     
-    // Creation date
+    /// Creation date
     public let created: Date
     
-    // Update date
+    /// Update date
     public let updated: Date?
     
-    // Number of members for this project
+    /// Number of members for this project
     public let numberOfMembers: Int
     
-    // Number of screens in this project
+    /// Number of screens in this project
     public let numberOfScreens: Int
     
-    // Number of components in this project
+    /// Number of components in this project
     public let numberOfComponents: Int
     
-    // Number of text styles in this project
+    /// Number of text styles in this project
     public let numberOfTextStyles: Int
     
-    // Number of colors in this project
+    /// Number of colors in this project
     public let numberOfColors: Int
 }
 
 public extension Project {
     /// A platform for a specific Zeplin project
     enum Platform: String, CaseIterable, Codable {
+        case base
         case web
         case ios
         case android
