@@ -151,7 +151,7 @@ class TemplateParserSpec: QuickSpec {
                         "Detected FOR loop 'color' with no closing END",
                         "Illegal FOR loop identifier 'fake'",
                         "Illegal token in template 'fake'",
-                        "Text Style Large Heading has a color RGBA(223, 99, 105, 0.79999995), but it has no matching color identity",
+                        "Text Style Base Subhead has a color RGBA(166, 14, 14, 1.0), but it has no matching color identity",
                         "Prohibited identities 'fake1, fake2' can't be used"
                     ]
 

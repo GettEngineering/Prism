@@ -28,7 +28,7 @@ class ZeplinAPISpec: QuickSpec {
             }
         }
         
-        describe("parsing") {    
+        describe("parsing") {
             context("faulty json") {
                 it("should return error") {
                     let project = Project.mock(type: .faultyJSON)

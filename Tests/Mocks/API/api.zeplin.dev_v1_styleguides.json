@@ -1,0 +1,44 @@
+[
+    {
+        "id": "5e22156db411bc53c115c475",
+        "name": "iOS",
+        "platform": "ios",
+        "status": "active",
+        "created": 1579292013,
+        "updated": 1579292037,
+        "number_of_components": 0,
+        "number_of_text_styles": 1,
+        "number_of_colors": 2,
+        "number_of_members": 1,
+        "parent": {
+            "id": "5e2214db55a3cf6e458a676b"
+        }
+    },
+    {
+        "id": "5e2214db55a3cf6e458a676b",
+        "name": "Mobile",
+        "platform": "base",
+        "status": "active",
+        "created": 1579291867,
+        "updated": 1579291893,
+        "number_of_components": 0,
+        "number_of_text_styles": 1,
+        "number_of_colors": 2,
+        "number_of_members": 1,
+        "parent": {
+            "id": "5e221416f680ef6a5ce43bdf"
+        }
+    },
+    {
+        "id": "5e221416f680ef6a5ce43bdf",
+        "name": "Base",
+        "platform": "base",
+        "status": "active",
+        "created": 1579291670,
+        "updated": 1579291734,
+        "number_of_components": 0,
+        "number_of_text_styles": 2,
+        "number_of_colors": 2,
+        "number_of_members": 1
+    }
+]
