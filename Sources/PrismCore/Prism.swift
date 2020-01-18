@@ -24,15 +24,14 @@ public class Prism {
     /// - Note:
     ///     Due to the nature of Zeplin's API, you can't get _all_ colors and
     ///     text styles for a project in a single call. You have to get colors
-    ///     and text styles separately for each ancestor styleguide / connected
-    ///     styleguide to a project. Getting these styleguides also incurs an
-    ///     additional API call.
+    ///     and text styles separately for each styleguide linked to a project.
+    ///     Getting these styleguides also incurs an additional API call.
     ///
     ///     In essence, getting all colors and text styles for a project incurs:
     ///
-    ///         ((number_of_connected_styleguides + 1) * 2) + 1 API Calls
+    ///         ((number_of_linked_styleguides + 1) * 2) + 1 API Calls
     ///
-    ///     e.g. for a Project with 2 connected styleguides, Prism performs 7 API calls
+    ///     e.g. for a Project with 2 linkted styleguides, Prism performs 7 API calls
     ///
     /// - parameter projectId: A Zeplin project ID
     /// - parameter completion: A completion handler which can result in a successful `ProjectAssets`
