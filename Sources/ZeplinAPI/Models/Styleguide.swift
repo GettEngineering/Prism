@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A Zeplin Stylguide
+/// A Zeplin Styleguide
 public struct Styleguide: Codable {
     public typealias ID = String
     

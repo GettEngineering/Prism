@@ -1,0 +1,36 @@
+[
+    {
+        "id": "5e221456bf82f654ef71fe88",
+        "created": 1579291734,
+        "name": "Base Heading",
+        "postscript_name": "LucidaGrande-Bold",
+        "font_family": "LucidaGrande",
+        "font_size": 26,
+        "font_weight": 700,
+        "font_style": "normal",
+        "font_stretch": 1,
+        "color": {
+            "r": 98,
+            "g": 166,
+            "b": 14,
+            "a": 1,
+        }
+    },
+    {
+        "id": "5e221456ffda405476327693",
+        "created": 1579291734,
+        "name": "Base Subhead",
+        "postscript_name": "LucidaGrande-Bold",
+        "font_family": "LucidaGrande",
+        "font_size": 22,
+        "font_weight": 700,
+        "font_style": "normal",
+        "font_stretch": 1,
+        "color": {
+            "r": 166,
+            "g": 14,
+            "b": 14,
+            "a": 1
+        }
+    }
+]

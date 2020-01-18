@@ -14,91 +14,32 @@ import MockDuck
 @testable import ZeplinAPI
 
 extension Prism {
-    func mock(type: MockType) -> Result<ProjectAssets, ZeplinAPI.Error> {
+    func mock(type: MockType,
+              file: StaticString = #file) -> Result<ProjectAssets, ZeplinAPI.Error> {
         MockDuck.shouldFallbackToNetwork = false
         MockDuck.unregisterAllRequestHandlers()
+        
+        let mocksURL = URL(fileURLWithPath: "\(file)", isDirectory: false)
+            .deletingLastPathComponent()
+            .appendingPathComponent("Mocks")
+            .appendingPathComponent("API")
 
         MockDuck.registerRequestHandler { request in
-            guard let path = request.url?.absoluteString else { return nil }
+            guard let url = request.url else { return nil }
+            let path = url.absoluteString
+                .replacingOccurrences(of: "https://", with: "")
+                .replacingOccurrences(of: "?\(url.query ?? "")", with: "")
+                .replacingOccurrences(of: "/", with: "_")
             
             guard type == .successful else {
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
             }
             
-            switch path {
-            case _ where path.hasPrefix("https://api.zeplin.dev/v1/projects/12345/colors"):
-                let colorsJSONMock = """
-                [
-                    {
-                        "id": "dac9630aec642a428cd73f4be0a03569",
-                        "created": 1562834145,
-                        "name": "Clear Reddish",
-                        "r": 223,
-                        "g": 99,
-                        "b": 105,
-                        "a": 0.79999995
-                    },
-                    {
-                        "id": "53e59fface936ea788f7cf51e7b25531",
-                        "created": 1562832145,
-                        "name": "Blue Sky",
-                        "r": 98,
-                        "g": 182,
-                        "b": 223,
-                        "a": 1
-                    }
-                ]
-                """
-
-                return try? MockResponse(for: request, data: colorsJSONMock.data(using: .utf8))
-            case _ where path.hasPrefix("https://api.zeplin.dev/v1/projects/12345/text_styles"):
-                let textStylesJSONMock = """
-                [
-                    {
-                        "id":"5cc5a7e87742613db7c802e8",
-                        "name":"Large Heading",
-                        "created":1517184000,
-                        "postscript_name":"MyCustomFont-Light",
-                        "font_family":"MyCustomFont",
-                        "font_size":32,
-                        "font_weight":700,
-                        "font_style":"normal",
-                        "line_height":24,
-                        "font_stretch":1,
-                        "text_align":"left",
-                        "color": {
-                          "r": 223,
-                          "b": 105,
-                          "g": 99,
-                          "a": 0.79999995
-                        }
-                    },
-                    {
-                        "id":"5cc5a7e84a92851016fc3041",
-                        "name":"Body",
-                        "created":1517124000,
-                        "font_family":"MyCustomFont",
-                        "postscript_name":"MyCustomFont-Regular",
-                        "font_size":14,
-                        "font_weight":700,
-                        "font_style":"normal",
-                        "line_height":24,
-                        "font_stretch":1,
-                        "text_align":"left",
-                        "color": {
-                          "r": 98,
-                          "b": 223,
-                          "g": 182,
-                          "a": 1
-                        }
-                    }
-                ]
-                """
-                
-                return try? MockResponse(for: request, data: textStylesJSONMock.data(using: .utf8))
-            default:
-                return nil
+            guard let data = try? Data(contentsOf: mocksURL.appendingPathComponent("\(path).json")) else {
+                fatalError("Can't find mock for \(url)")
             }
+            
+            return try? MockResponse(for: request, data: data)
         }
 
         var outResult: Result<ProjectAssets, ZeplinAPI.Error>!

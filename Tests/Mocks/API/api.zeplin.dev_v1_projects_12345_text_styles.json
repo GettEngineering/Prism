@@ -1,0 +1,40 @@
+[
+    {
+        "id":"5cc5a7e87742613db7c802e8",
+        "name":"Large Heading",
+        "created":1517184000,
+        "postscript_name":"MyCustomFont-Light",
+        "font_family":"MyCustomFont",
+        "font_size":32,
+        "font_weight":700,
+        "font_style":"normal",
+        "line_height":24,
+        "font_stretch":1,
+        "text_align":"left",
+        "color": {
+          "r": 223,
+          "b": 105,
+          "g": 99,
+          "a": 0.79999995
+        }
+    },
+    {
+        "id":"5cc5a7e84a92851016fc3041",
+        "name":"Body 2",
+        "created":1517124000,
+        "font_family":"MyCustomFont",
+        "postscript_name":"MyCustomFont-Regular",
+        "font_size":14,
+        "font_weight":700,
+        "font_style":"normal",
+        "line_height":24,
+        "font_stretch":1,
+        "text_align":"left",
+        "color": {
+          "r": 98,
+          "b": 223,
+          "g": 182,
+          "a": 1
+        }
+    }
+]

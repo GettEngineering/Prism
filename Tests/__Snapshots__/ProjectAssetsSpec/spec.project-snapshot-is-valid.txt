@@ -4,8 +4,18 @@ Colors:
 =========
     🎨 Blue Sky AssetIdentity(name: Blue Sky, raw: Blue Sky, camelcase: blueSky, snakecase: blue_sky) => R: 98, G: 182, B: 223, alpha: 1.0
     🎨 Clear Reddish AssetIdentity(name: Clear Reddish, raw: Clear Reddish, camelcase: clearReddish, snakecase: clear_reddish) => R: 223, G: 99, B: 105, alpha: 0.79999995
+    🎨 blue AssetIdentity(name: blue, raw: blue, camelcase: blue, snakecase: blue) => R: 14, G: 40, B: 166, alpha: 1.0
+    🎨 green AssetIdentity(name: green, raw: green, camelcase: green, snakecase: green) => R: 98, G: 166, B: 14, alpha: 1.0
+    🎨 mud AssetIdentity(name: mud, raw: mud, camelcase: mud, snakecase: mud) => R: 166, G: 137, B: 14, alpha: 1.0
+    🎨 purple AssetIdentity(name: purple, raw: purple, camelcase: purple, snakecase: purple) => R: 163, G: 14, B: 166, alpha: 1.0
+    🎨 red AssetIdentity(name: red, raw: red, camelcase: red, snakecase: red) => R: 166, G: 14, B: 14, alpha: 1.0
+    🎨 teal AssetIdentity(name: teal, raw: teal, camelcase: teal, snakecase: teal) => R: 14, G: 126, B: 166, alpha: 1.0
 
 Text Styles:
 =========
-    ✏️  Body AssetIdentity(name: Body, raw: Body, camelcase: body, snakecase: body) => font: MyCustomFont-Regular, size 14.0
+    ✏️  Base Heading AssetIdentity(name: Base Heading, raw: Base Heading, camelcase: baseHeading, snakecase: base_heading) => font: LucidaGrande-Bold, size 26.0
+    ✏️  Base Subhead AssetIdentity(name: Base Subhead, raw: Base Subhead, camelcase: baseSubhead, snakecase: base_subhead) => font: LucidaGrande-Bold, size 22.0
+    ✏️  Body AssetIdentity(name: Body, raw: Body, camelcase: body, snakecase: body) => font: LucidaGrande, size 14.0
+    ✏️  Body 2 AssetIdentity(name: Body 2, raw: Body 2, camelcase: body2, snakecase: body_2) => font: MyCustomFont-Regular, size 14.0
+    ✏️  Highlight AssetIdentity(name: Highlight, raw: Highlight, camelcase: highlight, snakecase: highlight) => font: AppleGothic, size 18.0
     ✏️  Large Heading AssetIdentity(name: Large Heading, raw: Large Heading, camelcase: largeHeading, snakecase: large_heading) => font: MyCustomFont-Light, size 32.0

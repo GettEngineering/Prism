@@ -5,6 +5,10 @@ fake line 1
 fake line 2
 
 Some Structure {
-    Body, body, body = MyCustomFont-Regular, 14.0, Blue Sky,  blueSky, blue_sky, #62b6df, #ff62b6df, 98, 182, 223, 1.00
+    Base Heading, baseHeading, base_heading = LucidaGrande-Bold, 26.0, green,  green, green, #62a60e, #ff62a60e, 98, 166, 14, 1.00
+    Base Subhead, baseSubhead, base_subhead = LucidaGrande-Bold, 22.0, red,  red, red, #a60e0e, #ffa60e0e, 166, 14, 14, 1.00
+    Body, body, body = LucidaGrande, 14.0, blue,  blue, blue, #0e28a6, #ff0e28a6, 14, 40, 166, 1.00
+    Body 2, body2, body_2 = MyCustomFont-Regular, 14.0, Blue Sky,  blueSky, blue_sky, #62b6df, #ff62b6df, 98, 182, 223, 1.00
+    Highlight, highlight, highlight = AppleGothic, 18.0, purple,  purple, purple, #a30ea6, #ffa30ea6, 163, 14, 166, 1.00
     Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, Clear Reddish,  clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80
 }

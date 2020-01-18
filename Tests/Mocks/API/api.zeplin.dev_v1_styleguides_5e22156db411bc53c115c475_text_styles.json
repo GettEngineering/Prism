@@ -1,0 +1,19 @@
+[
+    {
+        "id": "5e2215807f773769ba1f76b6",
+        "created": 1579292032,
+        "name": "Highlight",
+        "postscript_name": "AppleGothic",
+        "font_family": "AppleGothic",
+        "font_size": 18,
+        "font_weight": 400,
+        "font_style": "normal",
+        "font_stretch": 1,
+        "color": {
+            "r": 163,
+            "g": 14,
+            "b": 166,
+            "a": 1
+        }
+    }
+]

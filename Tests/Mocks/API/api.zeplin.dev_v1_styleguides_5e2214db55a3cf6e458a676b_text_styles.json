@@ -1,0 +1,19 @@
+[
+    {
+        "id": "5e2214f540b2b82810c0531b",
+        "created": 1579291893,
+        "name": "Body",
+        "postscript_name": "LucidaGrande",
+        "font_family": "LucidaGrande",
+        "font_size": 14,
+        "font_weight": 400,
+        "font_style": "normal",
+        "font_stretch": 1,
+        "color": {
+            "r": 14,
+            "g": 40,
+            "b": 166,
+            "a": 1
+        }
+    }
+]

@@ -33,8 +33,8 @@ class ProjectAssetsSpec: QuickSpec {
                     let project = try! projectResult.get()
 
                     expect(project.id) == "12345"
-                    expect(project.colors.map { $0.argbValue }.joined(separator: ", ")) == "#ff62b6df, #ccdf6369"
-                    expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Body, Large Heading"
+                    expect(project.colors.map { $0.argbValue }.joined(separator: ", ")) == "#ff62b6df, #ccdf6369, #ff0e28a6, #ff62a60e, #ffa6890e, #ffa30ea6, #ffa60e0e, #ff0e7ea6"
+                    expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Base Heading, Base Subhead, Body, Body 2, Highlight, Large Heading"
 
                     let encoded = try! project.encode()
                     let decoded = try! ProjectAssets.decode(from: encoded)
@@ -77,10 +77,6 @@ class ProjectAssetsSpec: QuickSpec {
 
                 switch result {
                 case .some(.failure(let error)):
-                    guard case .invalidRequestURL = error else {
-                        fail("Expected error .invalidRequestURL, got \(error)")
-                        return
-                    }
                     expect(error.description.starts(with: "Failed constructing URL from path")).to(beTrue())
                 default:
                     fail("Expected invalid project ID error, got \(String(describing: result))")

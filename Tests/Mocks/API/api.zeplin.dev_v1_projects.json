@@ -1,0 +1,18 @@
+[
+    {
+        "id":"12345",
+        "name":"My Test Project",
+        "description":"A test mock project",
+        "platform":"ios",
+        "thumbnail":"http://placekitten.com/200/300",
+        "status":"active",
+        "scene_url":"https://scene.zeplin.io/project/5db81e73e1e36ee19f138c1a",
+        "created":1517184000,
+        "updated":1572347818,
+        "number_of_members":47,
+        "number_of_screens":112,
+        "number_of_components":46,
+        "number_of_text_styles":28,
+        "number_of_colors":17
+    }
+]
