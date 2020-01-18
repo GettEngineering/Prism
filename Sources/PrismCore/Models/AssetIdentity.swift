@@ -114,5 +114,5 @@ public extension Project.AssetIdentity {
 }
 
 // MARK: - Zeplin Model Conformances
-extension Project.Color: AssetIdentifiable {}
-extension Project.TextStyle: AssetIdentifiable {}
+extension Color: AssetIdentifiable {}
+extension TextStyle: AssetIdentifiable {}

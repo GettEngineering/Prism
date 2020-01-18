@@ -8,43 +8,41 @@
 
 import Foundation
 
-public extension Project {
-    /// A Text Style containing a font face, font size, colors and
-    /// more. It is an `Assetidentifiable` identified by its name.
-    struct TextStyle: Codable, Equatable {
-        /// Text style name
-        public let name: String
-        
-        /// Text style's full Postscript name
-        public let postscriptName: String
-        
-        /// Text style's font family
-        public let fontFamily: String
-        
-        /// Text style's font size
-        public let fontSize: Float
-        
-        /// Text style's font weight
-        public let fontWeight: Int
-        
-        /// Text style's font style
-        public let fontStyle: String
-        
-        /// Text style's line height
-        public let lineHeight: Float?
-        
-        /// Text style's letter spacing
-        public let letterSpacing: Float?
-        
-        /// Text style's text alignment
-        public let textAlign: Alignment?
-        
-        /// Text style's raw color
-        public let color: RawColor
-    }
+/// A Text Style containing a font face, font size, colors and
+/// more. It is an `Assetidentifiable` identified by its name.
+public struct TextStyle: Codable, Equatable {
+    /// Text style name
+    public let name: String
+    
+    /// Text style's full Postscript name
+    public let postscriptName: String
+    
+    /// Text style's font family
+    public let fontFamily: String
+    
+    /// Text style's font size
+    public let fontSize: Float
+    
+    /// Text style's font weight
+    public let fontWeight: Int
+    
+    /// Text style's font style
+    public let fontStyle: String
+    
+    /// Text style's line height
+    public let lineHeight: Float?
+    
+    /// Text style's letter spacing
+    public let letterSpacing: Float?
+    
+    /// Text style's text alignment
+    public let textAlign: Alignment?
+    
+    /// Text style's raw color
+    public let color: RawColor
 }
 
-public extension Project.TextStyle {
+public extension TextStyle {
     /// A text alignment
     enum Alignment: String, Codable {
         case left

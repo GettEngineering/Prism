@@ -15,10 +15,10 @@ public struct ProjectAssets: Codable, Equatable {
     public let id: Project.ID
 
     /// Project's Colors.
-    public let colors: [Project.Color]
+    public let colors: [Color]
 
     /// Project's Text Styles.
-    public let textStyles: [Project.TextStyle]
+    public let textStyles: [TextStyle]
 }
 
 extension ProjectAssets: CustomStringConvertible {

@@ -21,6 +21,8 @@ public extension Project.Platform {
             return "🤖"
         case .macos:
             return "💻"
+        case .base:
+            return "🎯"
         }
     }
     
@@ -45,6 +47,8 @@ public extension Project.Platform {
             return "Android"
         case .macos:
             return "macOS"
+        case .base:
+            return "Base"
         }
     }
 }

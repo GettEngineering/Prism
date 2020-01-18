@@ -36,7 +36,7 @@ extension TemplateParser {
         ///
         /// - parameter rawColorToken: A raw color token, e.g. `color.*`
         /// - parameter colorr: A project color with an asset identity
-        init(rawColorToken: String, color: Project.Color) throws {
+        init(rawColorToken: String, color: Color) throws {
             let cleanToken = rawColorToken.lowercased()
             guard cleanToken.hasPrefix("color.") else {
                 throw Error.unknownToken(token: rawColorToken)
@@ -73,7 +73,7 @@ extension TemplateParser {
         ///
         /// - parameter rawTextStyleToken: A raw text style token, e.g. `textStyle.*`
         /// - parameter colorr: A project color with an asset identity
-        init(rawTextStyleToken: String, textStyle: Project.TextStyle, colors: [Project.Color]) throws {
+        init(rawTextStyleToken: String, textStyle: TextStyle, colors: [Color]) throws {
             let cleanToken = rawTextStyleToken.lowercased()
             guard cleanToken.hasPrefix("textstyle.") else {
                 throw Error.unknownToken(token: rawTextStyleToken)

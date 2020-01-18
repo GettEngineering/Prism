@@ -31,22 +31,20 @@ public extension RawColorRepresentable {
     }
 }
 
-public extension Project {
-    /// A raw color with red, green, blue and alpha values.
-    struct RawColor: RawColorRepresentable {
-        public let r: Int
-        public let g: Int
-        public let b: Int
-        public let a: Double
-    }
+/// A color with a name (identity) as well as color values:
+/// red, green, blue and alpha values.
+public struct Color: RawColorRepresentable {
+    public let name: String
+    public let r: Int
+    public let g: Int
+    public let b: Int
+    public let a: Double
+}
 
-    /// A color with a name (identity) as well as color values:
-    /// red, green, blue and alpha values.
-    struct Color: RawColorRepresentable {
-        public let name: String
-        public let r: Int
-        public let g: Int
-        public let b: Int
-        public let a: Double
-    }
+/// A raw color with red, green, blue and alpha values.
+public struct RawColor: RawColorRepresentable {
+    public let r: Int
+    public let g: Int
+    public let b: Int
+    public let a: Double
 }
