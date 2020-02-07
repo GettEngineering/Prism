@@ -30,7 +30,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR color %}}
-                    {{%color.identity%}}, {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}
+                    {{%color.identity%}}, {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}, {{% IF color.argb %}}inline conditionally getting the ARGB value {{%color.argb%}}, right?{{% ENDIF %}}
                     {{% END color %}}
                 }
                 """
@@ -56,7 +56,14 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR textStyle %}}
-                    {{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}},  {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}
+                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                        {{% IF textStyle.alignment %}}
+                        This is an attempt of an indented multi-line
+                        block containing a text alignment, which is {{%textStyle.alignment%}}
+                        and also capable of inlining another condition
+                        like {{% IF textStyle.color.argb %}}getting the ARGB value {{%textStyle.color.argb%}}, right?{{% ENDIF %}}
+                        {{% ENDIF %}}
+                        We can also access optional stuff without an IF, which will result in an empty string like so: {{%textStyle.alignment%}}
                     {{% END textStyle %}}
                 }
                 """
@@ -64,6 +71,38 @@ class TemplateParserSpec: QuickSpec {
                 assertSnapshot(matching: try! parser.parse(template: template),
                                as: .lines,
                                named: "Text Styles Loop should provide valid output")
+            }
+        }
+        
+        describe("Invalid tokens") {
+            context("text style") {
+                it("should throw an error") {
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let parser = TemplateParser(project: projectResult)
+
+                    expect {
+                        try parser.parse(template: """
+                        {{% FOR textStyle %}}
+                        Bad token {{%textStyle.nonExistentToken%}}
+                        {{% END textStyle %}}
+                        """)
+                    }.to(throwError(TemplateParser.Error.unknownToken(token: "textStyle.nonExistentToken")))
+                }
+            }
+            
+            context("colors") {
+                it("should throw an error") {
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let parser = TemplateParser(project: projectResult)
+
+                    expect {
+                        try parser.parse(template: """
+                        {{% FOR color %}}
+                        Bad token {{%color.nonExistentToken%}}
+                        {{% END color %}}
+                        """)
+                    }.to(throwError(TemplateParser.Error.unknownToken(token: "color.nonExistentToken")))
+                }
             }
         }
         

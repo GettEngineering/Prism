@@ -30,7 +30,10 @@ extension TemplateParser {
         case textStyleFontSize(Float)
         case textStyleIdentity(identity: Project.AssetIdentity,
                                style: Project.AssetIdentity.Style)
-
+        case textStyleAlignment(String?)
+        case textStyleLineHeight(Float?)
+        case textStyleLetterSpacing(Float?)
+        
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
         ///
@@ -103,6 +106,12 @@ extension TemplateParser {
                 }
 
                 self = try Token(rawColorToken: token, color: projectColor)
+            case "alignment":
+                self = .textStyleAlignment(textStyle.textAlign?.rawValue)
+            case "lineheight":
+                self = .textStyleLineHeight(textStyle.lineHeight)
+            case "letterspacing":
+                self = .textStyleLetterSpacing(textStyle.letterSpacing)
             default:
                 throw Error.unknownToken(token: rawTextStyleToken)
             }
@@ -114,8 +123,8 @@ extension TemplateParser {
         /// - parameter transformations: An array of Transofmration functions.
         ///
         /// - returns: A processed token value.
-        func stringValue(transformations: [Transformation]) -> String {
-            let baseString: String
+        func stringValue(transformations: [Transformation]) -> String? {
+            var baseString: String?
             switch self {
             case .colorAlpha(let a):
                 baseString = String(format: "%.2f", a)
@@ -133,9 +142,20 @@ extension TemplateParser {
                 baseString = name
             case .textStyleFontSize(let size):
                 baseString = "\(size)"
+            case .textStyleAlignment(let alignment):
+                baseString = alignment
+            case .textStyleLetterSpacing(let spacing):
+                if let spacing = spacing {
+                    baseString = "\(spacing)"
+                }
+            case .textStyleLineHeight(let height):
+                if let height = height {
+                    baseString = "\(height)"
+                }
             }
-
-            return transformations.reduce(into: baseString) { $0 = $1.apply(to: $0) }
+            
+            guard let output = baseString else { return nil }
+            return transformations.reduce(into: output) { $0 = $1.apply(to: $0) }
         }
     }
 }

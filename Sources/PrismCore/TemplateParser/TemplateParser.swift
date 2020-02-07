@@ -95,48 +95,33 @@ public class TemplateParser {
 
         while currentLineIdx < lines.count {
             let currentLine = lines[currentLineIdx]
-            let lineLength = currentLine.count
 
-            // Find occurences of FOR loops in the template
-            let forRegex = try NSRegularExpression(pattern: #"^(\s{0,})\{\{% FOR (.*?) %\}\}$"#)
-
-            // Detected a FOR loop
-            if let forMatch = forRegex.firstMatch(in: currentLine,
-                                                  options: .init(),
-                                                  range: NSRange(location: 0, length: lineLength)) {
-                let nsLine = currentLine as NSString
-                let indent = nsLine.substring(with: forMatch.range(at: 1))
-                let identifier = nsLine.substring(with: forMatch.range(at: 2))
-
-                // Find matching END
-                guard let forEnd = lines[currentLineIdx..<lines.count]
-                                    .firstIndex(where: { $0 == "\(indent){{% END \(identifier) %}}" }) else {
-                    throw Error.openLoop(identifier: identifier)
-                }
-
-                // Recurse over FOR-loop content
-                let forBody = Array(lines[currentLineIdx + 1...forEnd - 1])
-                
-                switch identifier {
+            // Detect a FOR loop
+            if let forBlock = try detectBlock(keyword: "FOR",
+                                              lines: lines,
+                                              currentLineIdx: currentLineIdx) {
+                switch forBlock.identifier {
                 case "color":
                     let colorLoop = try project.colors
                                                .reduce(into: [String]()) { result, color in
-                        result.append(contentsOf: try recursivelyParse(lines: forBody, color: color))
+                                                result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                                               color: color))
                     }
-
+                    
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
                     let textStyleLoop = try project.textStyles
                                                    .reduce(into: [String]()) { result, textStyle in
-                        result.append(contentsOf: try recursivelyParse(lines: forBody, textStyle: textStyle))
+                        result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                       textStyle: textStyle))
                     }
 
                     output.append(contentsOf: textStyleLoop)
                 default:
-                    throw Error.unknownLoop(identifier: identifier)
+                    throw Error.unknownLoop(identifier: forBlock.identifier)
                 }
 
-                currentLineIdx = forEnd + 1
+                currentLineIdx = forBlock.endLine + 1
                 continue
             }
 
@@ -147,11 +132,47 @@ public class TemplateParser {
                 currentLineIdx += 1
                 continue
             }
+            
+            /// Detect an IF condition
+            if let condition = try detectBlock(keyword: "IF",
+                                               end: "ENDIF",
+                                               lines: lines,
+                                               currentLineIdx: currentLineIdx) {
+                let token: Token
+                if let color = color {
+                    token = try Token(rawColorToken: condition.identifier, color: color)
+                } else if let textStyle = textStyle {
+                    token = try Token(rawTextStyleToken: condition.identifier,
+                                      textStyle: textStyle,
+                                      colors: project.colors)
+                } else {
+                    throw Error.unknownToken(token: condition.identifier)
+                }
+                
+                let tokenHasValue = token.stringValue(transformations: []) != nil
+                
+                if let preBody = condition.preBody,
+                   let postBody = condition.postBody {
+                    var inlineItems = tokenHasValue ? condition.body : []
+                    inlineItems.insert(preBody, at: 0)
+                    inlineItems.append(postBody)
+                    
+                    output.append(contentsOf: try recursivelyParse(lines: [inlineItems.filter { !$0.isEmpty }.joined()],
+                                                                   color: color,
+                                                                   textStyle: textStyle))
+                } else if tokenHasValue {
+                    output.append(contentsOf: try recursivelyParse(lines: condition.body,
+                                                                   color: color,
+                                                                   textStyle: textStyle))
+                }
+
+                currentLineIdx = condition.endLine + 1
+                continue
+            }
 
             /// The current line has at least a single token that
             /// should be resolved.
             output.append(try resolveTokens(line: currentLine, color: color, textStyle: textStyle))
-
             currentLineIdx += 1
         }
 
@@ -171,7 +192,7 @@ public class TemplateParser {
                                textStyle: TextStyle?) throws -> String {
         let lineLength = line.count
         var output = line
-        var tokens = [String: String]()
+        var tokens = [String: String?]()
 
         let tokensRegex = try NSRegularExpression(pattern: #"\{\{%(.*?)%\}\}"#)
         let tokenMatches = tokensRegex.matches(in: line, options: .init(),
@@ -200,9 +221,11 @@ public class TemplateParser {
                 tokens[token] = try Token(rawTextStyleToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
             }
         }
-
+        
+        // Apply all tokens to the output
         return tokens.reduce(output) { output, token in
-            return output.replacingOccurrences(of: "{{%\(token.key)%}}", with: token.value)
+            let value = token.value ?? ""
+            return output.replacingOccurrences(of: "{{%\(token.key)%}}", with: value)
         }
     }
 }
