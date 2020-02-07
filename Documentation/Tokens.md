@@ -10,6 +10,8 @@ Tokens live inside your ***.prism** templates and follow the format `{{%TOKEN%}}
 |------------------|----------------------------------------------------------------------------------|
 | `FOR collection` | Iterate over asset collections, for example `FOR textStyle` or `FOR color`       |
 | `END collection` | End iterating over asset collections, for example `END textStyle` or `END color` |
+| `IF token`       | Confirm a token is available, for example `IF textStyle.alignment`               |
+| `ENDIF`          | Closes an `IF` block                                                             |
 
 ## Color Tokens
 
@@ -32,7 +34,11 @@ Tokens live inside your ***.prism** templates and follow the format `{{%TOKEN%}}
 | `textStyle.fontName`           | The full Postscript font name of a TextStyle                                        |
 | `textStyle.font`               | Alias of textStyle.fontName                                                         |
 | `textStyle.fontSize`           | The text style's font size                                                          |
+| `textStyle.alignment`          | The text style's alignment, if exists. Can be left, right, center or justify        |
+| `textStyle.lineHeight`         | The text style's line height, if exists                                             |
+| `textStyle.letterSpacing`      | The text style's letter spacing, if exists                                          |
 | `textStyle.identity`           | The identity/name of the text style as defined on Zeplin                            |
 | `textStyle.identity.camelcase` | The identity/name of the text style, formatted in camel case (e.g. `myTextStyle`)   |
 | `textStyle.identity.snakecase` | The identity/name of the text style, formatted in snake case (e.g. `my_text_style`) |
 | `textStyle.color.*`            | All color tokens from the section above can be used for a TextStyle's color         |
+

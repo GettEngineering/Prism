@@ -14,7 +14,8 @@ extension TextStyle {
     static let {{%textStyle.identity.camelcase%}} = TextStyle(
         fontName: "{{%textStyle.fontName%}}",
         fontSize: {{%textStyle.fontSize%}},
-        color: .{{%textStyle.color.identity.camelcase%}}
+        color: .{{%textStyle.color.identity.camelcase%}}{{% IF textStyle.alignment %}},{{% ENDIF %}}
+        {{% IF textStyle.alignment %}}alignment: .{{%textStyle.alignment|replace(justify,justified)%}}{{% ENDIF %}}
     )
 
     {{% END textStyle %}}

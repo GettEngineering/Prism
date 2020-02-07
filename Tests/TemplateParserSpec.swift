@@ -30,7 +30,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR color %}}
-                    {{%color.identity%}}, {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}
+                    {{%color.identity%}}, {{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}, {{% IF color.argb %}}inline conditionally getting the ARGB value {{%color.argb%}}, right?{{% ENDIF %}}
                     {{% END color %}}
                 }
                 """
@@ -56,7 +56,14 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR textStyle %}}
-                    {{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}},  {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}
+                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                        {{% IF textStyle.alignment %}}
+                        This is an attempt of an indented multi-line
+                        block containing a text alignment, which is {{%textStyle.alignment%}}
+                        and also capable of inlining another condition
+                        like {{% IF textStyle.color.argb %}}getting the ARGB value {{%textStyle.color.argb%}}, right?{{% ENDIF %}}
+                        {{% ENDIF %}}
+                        We can also access optional stuff without an IF, which will result in an empty string like so: {{%textStyle.alignment%}}
                     {{% END textStyle %}}
                 }
                 """
@@ -64,6 +71,38 @@ class TemplateParserSpec: QuickSpec {
                 assertSnapshot(matching: try! parser.parse(template: template),
                                as: .lines,
                                named: "Text Styles Loop should provide valid output")
+            }
+        }
+        
+        describe("Invalid tokens") {
+            context("text style") {
+                it("should throw an error") {
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let parser = TemplateParser(project: projectResult)
+
+                    expect {
+                        try parser.parse(template: """
+                        {{% FOR textStyle %}}
+                        Bad token {{%textStyle.nonExistentToken%}}
+                        {{% END textStyle %}}
+                        """)
+                    }.to(throwError(TemplateParser.Error.unknownToken(token: "textStyle.nonExistentToken")))
+                }
+            }
+            
+            context("colors") {
+                it("should throw an error") {
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let parser = TemplateParser(project: projectResult)
+
+                    expect {
+                        try parser.parse(template: """
+                        {{% FOR color %}}
+                        Bad token {{%color.nonExistentToken%}}
+                        {{% END color %}}
+                        """)
+                    }.to(throwError(TemplateParser.Error.unknownToken(token: "color.nonExistentToken")))
+                }
             }
         }
         
@@ -105,7 +144,7 @@ class TemplateParserSpec: QuickSpec {
                 """
 
                 expect { try parser.parse(template: template) }
-                    .to(throwError(TemplateParser.Error.openLoop(identifier: "color")))
+                    .to(throwError(TemplateParser.Error.openBlock(keyword: "FOR", identifier: "color")))
             }
         }
 
@@ -140,7 +179,8 @@ class TemplateParserSpec: QuickSpec {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
                     
-                    let errors: [TemplateParser.Error] = [.openLoop(identifier: "color"),
+                    let errors: [TemplateParser.Error] = [.openBlock(keyword: "FOR", identifier: "color"),
+                                                          .openBlock(keyword: "IF", identifier: "textStyle.alignment"),
                                                           .unknownLoop(identifier: "fake"),
                                                           .unknownToken(token: "fake"),
                                                           .missingColorForTextStyle(project.textStyles[1]),
@@ -148,7 +188,8 @@ class TemplateParserSpec: QuickSpec {
 
                     let descriptions = errors.map { "\($0)" }
                     let expectedDescriptions = [
-                        "Detected FOR loop 'color' with no closing END",
+                        "Detected FOR block 'color' with no closing",
+                        "Detected IF block 'textStyle.alignment' with no closing",
                         "Illegal FOR loop identifier 'fake'",
                         "Illegal token in template 'fake'",
                         "Text Style Base Subhead has a color RGBA(166, 14, 14, 1.0), but it has no matching color identity",

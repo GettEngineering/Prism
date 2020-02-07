@@ -1,6 +1,6 @@
 //
 //  TextStyle.swift
-//  RiderCore
+//  Prism
 //
 //  Created by Shai Mishali on 26/03/2019.
 //  Copyright © 2019 Gett. All rights reserved.
@@ -17,17 +17,21 @@ public struct TextStyle {
     /// The text style's color
     let color: UIColor
 
+    /// The text's alignment
+
     /// Initialize a new Text Style
     ///
     /// - parameter fontName: The PostScript-styled font name for the font.
     /// - parameter fontSize: The font's size.
     /// - parameter color: The font color.
+    /// - parameter alignment: The text's alignment.
     ///
     /// - note: If a font with the provided font name can't be created, a warning will
     ///         be printed out, and a fallback system font will be provided, instead.
     init(fontName: String,
          fontSize: Float,
-         color: UIColor) {
+         color: UIColor,
+         alignment: NSTextAlignment = .natural) {
         let ttfURL = Bundle.main.url(forResource: "\(fontName).ttf", withExtension: nil)
         let otfURL = Bundle.main.url(forResource: "\(fontName).otf", withExtension: nil)
 
@@ -62,5 +66,6 @@ public struct TextStyle {
         }
 
         self.color = color
+        self.alignment = alignment
     }
 }

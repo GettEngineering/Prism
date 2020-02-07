@@ -5,12 +5,12 @@ fake line 1
 fake line 2
 
 Some Structure {
-    Blue Sky, blueSky, blue_sky = 98, 182, 223, 1.00, #ff62b6df, #ff62b6df, #62b6df, #62b6df
-    Clear Reddish, clearReddish, clear_reddish = 223, 99, 105, 0.80, #ccdf6369, #ccdf6369, #df6369, #df6369
-    blue, blue, blue = 14, 40, 166, 1.00, #ff0e28a6, #ff0e28a6, #0e28a6, #0e28a6
-    green, green, green = 98, 166, 14, 1.00, #ff62a60e, #ff62a60e, #62a60e, #62a60e
-    mud, mud, mud = 166, 137, 14, 1.00, #ffa6890e, #ffa6890e, #a6890e, #a6890e
-    purple, purple, purple = 163, 14, 166, 1.00, #ffa30ea6, #ffa30ea6, #a30ea6, #a30ea6
-    red, red, red = 166, 14, 14, 1.00, #ffa60e0e, #ffa60e0e, #a60e0e, #a60e0e
-    teal, teal, teal = 14, 126, 166, 1.00, #ff0e7ea6, #ff0e7ea6, #0e7ea6, #0e7ea6
+    Blue Sky, blueSky, blue_sky = 98, 182, 223, 1.00, #ff62b6df, #ff62b6df, #62b6df, #62b6df, inline conditionally getting the ARGB value #ff62b6df, right?
+    Clear Reddish, clearReddish, clear_reddish = 223, 99, 105, 0.80, #ccdf6369, #ccdf6369, #df6369, #df6369, inline conditionally getting the ARGB value #ccdf6369, right?
+    blue, blue, blue = 14, 40, 166, 1.00, #ff0e28a6, #ff0e28a6, #0e28a6, #0e28a6, inline conditionally getting the ARGB value #ff0e28a6, right?
+    green, green, green = 98, 166, 14, 1.00, #ff62a60e, #ff62a60e, #62a60e, #62a60e, inline conditionally getting the ARGB value #ff62a60e, right?
+    mud, mud, mud = 166, 137, 14, 1.00, #ffa6890e, #ffa6890e, #a6890e, #a6890e, inline conditionally getting the ARGB value #ffa6890e, right?
+    purple, purple, purple = 163, 14, 166, 1.00, #ffa30ea6, #ffa30ea6, #a30ea6, #a30ea6, inline conditionally getting the ARGB value #ffa30ea6, right?
+    red, red, red = 166, 14, 14, 1.00, #ffa60e0e, #ffa60e0e, #a60e0e, #a60e0e, inline conditionally getting the ARGB value #ffa60e0e, right?
+    teal, teal, teal = 14, 126, 166, 1.00, #ff0e7ea6, #ff0e7ea6, #0e7ea6, #0e7ea6, inline conditionally getting the ARGB value #ff0e7ea6, right?
 }

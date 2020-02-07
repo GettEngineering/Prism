@@ -29,7 +29,8 @@
         "font_style":"normal",
         "line_height":24,
         "font_stretch":1,
-        "text_align":"left",
+        "text_align":"right",
+        "letter_spacing": 1.5,
         "color": {
           "r": 98,
           "b": 223,
