@@ -66,6 +66,5 @@ public struct TextStyle {
         }
 
         self.color = color
-        self.alignment = alignment
     }
 }
