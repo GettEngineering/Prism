@@ -29,9 +29,9 @@ There are three options:
 
 ### 🔑 Geting a Zeplin API Token
 
-To use Prism, you'll need to generate a Personal Access Token (JWT) to Zeplin's API. 
+To use Prism, you'll need to generate a Personal Access Token (JWT) to Zeplin's API by going to [https://app.zeplin.io/profile/developer](https://app.zeplin.io/profile/developer) and click the **Create new token** button in the **Personal access tokens** section:
 
-You can do that by going to [http://app.zeplin.io/oauth/v2/beta/access_token](http://app.zeplin.io/oauth/v2/beta/access_token).
+![Generating a Zeplin Personal Access Token](Assets/gh/pat.png "Generating a Zeplin Personal Access Token")
 
 You'll need to expose this token to run the `prism` CLI tool. Make sure you have a `ZEPLIN_TOKEN` environment variable with your token configured. 
 
