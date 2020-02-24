@@ -55,11 +55,11 @@ Here are two short example of generating colors code for iOS and Android using P
 
 **Colors.swift.prism**:
 
-![Color.swift iOS Prism Template](Assets/gh/Colors-iOS.png "Color.swift iOS Prism Template")
+![Color.swift iOS Prism Template](Assets/gh/Colors-iOS.gif "Color.swift iOS Prism Template")
 
 **colors.xml.prism**:
 
-![Color.swift Android Prism Template](Assets/gh/Colors-Android.png "Color.swift Android Prism Template")
+![Color.swift Android Prism Template](Assets/gh/Colors-Android.gif "Color.swift Android Prism Template")
     
 ## Development
 
