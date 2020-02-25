@@ -19,6 +19,11 @@ Prism is especially useful when used in your CI/CD process to remove the frictio
 
 ## Getting Started
 
+### 📹 Videos
+
+* [A 60 seconds introduction to Prism](https://www.youtube.com/watch?v=MNcAAUji-YY)
+* [Design a Design System @ Swift Heroes, Italy](https://www.youtube.com/watch?v=UFyx7EtbcMU) (25 minutes)
+
 ### 🌈 Getting Prism
 
 There are three options: 
