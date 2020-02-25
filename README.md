@@ -31,6 +31,7 @@ There are three options:
 1. **Run with SPM**: `swift run prism generate` 
 2. **Build locally**: `make` - this will build and install `prism` in **/usr/local/bin** (or run `swift build -c release` to only build without installing)
 3. Use the pre-built binary attached to a release (or in the **bin** folder)
+4. Install using **[Mint](https://github.com/yonaskolb/Mint)**: `mint install GettEngineering/Prism`
 
 ### 🔑 Getting a Zeplin API Token
 
