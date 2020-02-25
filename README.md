@@ -32,7 +32,7 @@ There are three options:
 2. **Build locally**: `make` - this will build and install `prism` in **/usr/local/bin** (or run `swift build -c release` to only build without installing)
 3. Use the pre-built binary attached to a release (or in the **bin** folder)
 
-### 🔑 Geting a Zeplin API Token
+### 🔑 Getting a Zeplin API Token
 
 To use Prism, you'll need to generate a Personal Access Token (JWT) to Zeplin's API by going to [https://app.zeplin.io/profile/developer](https://app.zeplin.io/profile/developer) and click the **Create new token** button in the **Personal access tokens** section:
 
@@ -42,7 +42,7 @@ You'll need to expose this token to run the `prism` CLI tool. Make sure you have
 
 When running `prism` in a CI environemnt, we recommend adding `ZEPLIN_TOKEN` as an Environment Secret.
 
-When using `prism` locally or bootstraping your project for the first time, you can simply run `export ZEPLIN_TOKEN='zeplin_personal_token'` before running `prism` locally.
+When using `prism` locally or bootstrapping your project for the first time, you can simply run `export ZEPLIN_TOKEN='zeplin_personal_token'` before running `prism` locally.
 
 ### 👢 Bootstrap Prism for your Project
 
