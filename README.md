@@ -26,7 +26,7 @@ Prism is especially useful when used in your CI/CD process to remove the frictio
 
 ### 🌈 Getting Prism
 
-There are three options: 
+There are four options: 
 
 1. **Run with SPM**: `swift run prism generate` 
 2. **Build locally**: `make` - this will build and install `prism` in **/usr/local/bin** (or run `swift build -c release` to only build without installing)
