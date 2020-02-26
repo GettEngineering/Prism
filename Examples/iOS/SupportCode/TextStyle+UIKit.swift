@@ -19,9 +19,9 @@ protocol TextStyleable: class {
 // MARK: - UILabel
 extension UILabel: TextStyleable {
     var textStyle: TextStyle {
-        get { return TextStyle(fontName: font.fontName,
-                               fontSize: Float(font.pointSize),
-                               color: textColor)
+        get { TextStyle(fontName: font.fontName,
+                        fontSize: Float(font.pointSize),
+                        color: textColor)
         }
 
         set(textStyle) {
@@ -34,9 +34,9 @@ extension UILabel: TextStyleable {
 // MARK: - UIButton
 extension UIButton: TextStyleable {
     var textStyle: TextStyle {
-        get { return TextStyle(fontName: titleLabel?.font.fontName ?? "",
-                               fontSize: Float(titleLabel?.font.pointSize ?? 0),
-                               color: titleLabel?.textColor ?? .black)
+        get { TextStyle(fontName: titleLabel?.font.fontName ?? "",
+                        fontSize: Float(titleLabel?.font.pointSize ?? 0),
+                        color: titleLabel?.textColor ?? .black)
         }
 
         set(textStyle) {
@@ -70,9 +70,9 @@ extension UIBarButtonItem: TextStyleable {
 // MARK: - UITextField
 extension UITextField: TextStyleable {
     var textStyle: TextStyle {
-        get { return TextStyle(fontName: font?.fontName ?? "",
-                               fontSize: Float(font?.pointSize ?? 0),
-                               color: textColor ?? .black)
+        get { TextStyle(fontName: font?.fontName ?? "",
+                        fontSize: Float(font?.pointSize ?? 0),
+                        color: textColor ?? .black)
         }
 
         set(textStyle) {

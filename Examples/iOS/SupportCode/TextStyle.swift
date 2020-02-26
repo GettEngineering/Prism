@@ -18,6 +18,7 @@ public struct TextStyle {
     let color: UIColor
 
     /// The text's alignment
+    let alignment: NSTextAlignment
 
     /// Initialize a new Text Style
     ///
@@ -66,5 +67,6 @@ public struct TextStyle {
         }
 
         self.color = color
+        self.alignment = alignment
     }
 }

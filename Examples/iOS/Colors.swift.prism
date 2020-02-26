@@ -3,9 +3,18 @@ import UIKit
 
 public extension UIColor {
     {{% FOR color %}}
-    static let {{%color.identity.camelcase%}} = UIColor(red: CGFloat({{%color.r%}}) / 255,
-                                                        green: CGFloat({{%color.g%}}) / 255,
-                                                        blue: CGFloat({{%color.b%}}) / 255,
-                                                        alpha: {{%color.a%}})
+    static let {{% color.identity.camelcase %}} = UIColor(r: {{% color.r %}},
+                                                          g: {{% color.g %}},
+                                                          b: {{% color.b %}},
+                                                          alpha: {{% color.a %}}
     {{% END color %}}
+}
+
+private extension UIColor {
+    convenience init(r: Int, g: Int, b: Int, alpha: Float) {
+        self.init(red: CGFloat(r) / 255.0,
+                  green: CGFloat(g) / 255.0,
+                  blue: CGFloat(b) / 255.0,
+                  alpha: CGFloat(alpha))
+    }
 }
