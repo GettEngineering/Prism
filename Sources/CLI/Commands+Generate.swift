@@ -7,49 +7,35 @@
 //
 
 import Foundation
-import Commander
+import ArgumentParser
 import PrismCore
 import Yams
 import struct ZeplinAPI.Project
+import Darwin
 
 // MARK: - Generate command
-struct GenerateCommand: CommandRepresentable {
-    struct Options: OptionsRepresentable {
-        enum CodingKeys: String, CodingKeysRepresentable {
-            case projectId
-            case templatesPath
-            case outputPath
-            case configFile
-        }
+struct Generate: ParsableCommand {
+    static var configuration = CommandConfiguration(
+        commandName: "generate",
+        abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
+    )
+    
+    @Option(name: .shortAndLong, help: "Zeplin Project ID to generate text styles and colors from. Overrides any config files.")
+    var projectId: Project.ID?
+    
+    @Option(name: .shortAndLong, help: "Path to a folder containing *.prism template files. Overrides any config files.")
+    var templatesPath: String?
+    
+    @Option(name: .shortAndLong, help: "Path to save generated files to. Overrides any config files.")
+    var outputPath: String?
+    
+    @Option(name: .shortAndLong, help: "Path to YAML configuration file")
+    var configFile: String?
+    
+    private let prismFolder = ".prism"
 
-        static var keys: [Options.CodingKeys: Character] {
-            return [.projectId: "i",
-                    .templatesPath: "t",
-                    .outputPath: "o",
-                    .configFile: "c"]
-        }
-
-        static var descriptions: [Options.CodingKeys: OptionDescription] {
-            return [
-                .projectId: .usage("Zeplin Project ID to generate text styles and colors from. Overrides any config files."),
-                .templatesPath: .usage("Path to a folder containing *.prism template files. Overrides any config files."),
-                .outputPath: .usage("Path to save generated files to. Overrides any config files."),
-                .configFile: .usage("Path to YAML configuration file")
-            ]
-        }
-
-        let projectId: Project.ID?
-        let templatesPath: String?
-        let outputPath: String?
-        let configFile: String?
-    }
-
-    static let symbol = "generate"
-    static let usage = "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
-    static let prismFolder = ".prism"
-
-    static func main(_ options: GenerateCommand.Options) throws {
-        var configPath = options.configFile
+    func run() throws {
+        var configPath = configFile
 
         let defaultConfigPath = "\(prismFolder)/config.yml"
         let hasDefaultConfig = FileManager.default.fileExists(atPath: defaultConfigPath)
@@ -78,17 +64,17 @@ struct GenerateCommand: CommandRepresentable {
             throw CommandError.missingToken
         }
         
-        guard let projectId = options.projectId ?? config?.projectId else {
+        guard let projectId = projectId ?? config?.projectId else {
             throw CommandError.missingProjectID
         }
 
         let prism = Prism(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
-        let rawTemplatesPath = options.templatesPath ?? config?.templatesPath ?? prismFolder
+        let rawTemplatesPath = templatesPath ?? config?.templatesPath ?? prismFolder
         let templatesPath = rawTemplatesPath == "/" ? String(rawTemplatesPath.dropLast()) : rawTemplatesPath
         
-        guard let rawOutputPath = options.outputPath ?? config?.outputPath else {
+        guard let rawOutputPath = outputPath ?? config?.outputPath else {
             throw CommandError.outputFolderMissing
         }
 
@@ -142,7 +128,7 @@ struct GenerateCommand: CommandRepresentable {
                 sema.signal()
             } catch let err {
                 print("❌ Error: \(err)")
-                exit(1)
+                Darwin.exit(1)
             }
         }
 

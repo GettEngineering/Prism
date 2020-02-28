@@ -7,36 +7,20 @@
 //
 
 import Foundation
-import Commander
+import ArgumentParser
 import PrismCore
 import Yams
 import ZeplinAPI
+import Darwin
 
 // MARK: - Initialize command
-struct InitializeCommand: CommandRepresentable {
-    struct Options: OptionsRepresentable {
-        enum CodingKeys: String, CodingKeysRepresentable {
-            case quiet
-        }
+struct Initialize: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "init",
+      abstract: "Bootstrap Prism for your project"
+    )
 
-        static var keys: [Options.CodingKeys: Character] {
-            return [.quiet: "q"]
-        }
-
-        static var descriptions: [Options.CodingKeys: OptionDescription] {
-            return [
-                .quiet: .usage("Use this command, printing as little output as possible")
-            ]
-        }
-
-        let quiet: Bool?
-    }
-    
-    static let symbol = "init"
-    static let usage = "Bootstrap Prism for your project"
-    static let prismFolder = ".prism"
-
-    static func main(_ options: InitializeCommand.Options) throws {
+    func run() throws {
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
             throw CommandError.missingToken
         }
@@ -51,8 +35,8 @@ struct InitializeCommand: CommandRepresentable {
         var reservedColors = [String]()
         
         guard !fileManager.fileExists(atPath: configPath) ||
-              UserInput(message: "It seems you already have a configuration file. Running through this wizard will overwrite it. Are you sure?").request() else {
-            exit(1)
+            UserInput(message: "It seems you already have a configuration file. Running through this wizard will overwrite it. Are you sure?").request() else {
+            Darwin.exit(1)
         }
         
         // Start onboarding
@@ -79,7 +63,7 @@ struct InitializeCommand: CommandRepresentable {
                 projects = try result.get().filter { $0.status == .active }
             } catch let err {
                 print("Failed fetching projects: \(err)")
-                exit(1)
+                Darwin.exit(1)
             }
         }
         
@@ -87,7 +71,7 @@ struct InitializeCommand: CommandRepresentable {
         
         guard !projects.isEmpty else {
             print("❌ No projects found for your user!")
-            exit(1)
+            Darwin.exit(1)
         }
         
         print("🔎 Found \(projects.count) projects:")
@@ -139,7 +123,7 @@ struct InitializeCommand: CommandRepresentable {
                 try fileManager.createDirectory(atPath: ".prism", withIntermediateDirectories: false, attributes: nil)
             } catch {
                 print("❌ Failed creating .prism folder: \(error)")
-                exit(1)
+                Darwin.exit(1)
             }
         }
 
@@ -166,7 +150,7 @@ struct InitializeCommand: CommandRepresentable {
                              encoding: .utf8)
         } catch {
             print("❌ Failed creating config.yml file: \(error)")
-            exit(1)
+            Darwin.exit(1)
         }
         
         print("""

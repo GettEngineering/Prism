@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Commander",
-        "repositoryURL": "https://github.com/devedbox/Commander.git",
-        "state": {
-          "branch": null,
-          "revision": "3cebc1b64f546046b1f9e0711914d123d11012c6",
-          "version": "0.5.7"
-        }
-      },
-      {
         "package": "CwlCatchException",
         "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
         "state": {
@@ -53,6 +44,15 @@
           "branch": null,
           "revision": "33682c2f6230c60614861dfc61df267e11a1602f",
           "version": "2.2.0"
+        }
+      },
+      {
+        "package": "swift-argument-parser",
+        "repositoryURL": "https://github.com/apple/swift-argument-parser",
+        "state": {
+          "branch": null,
+          "revision": "f6ac7b8118ff5d1bc0faee7f37bf6f8fd8f95602",
+          "version": "0.0.1"
         }
       },
       {
