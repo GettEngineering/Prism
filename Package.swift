@@ -16,7 +16,7 @@ let package = Package(
             targets: ["ZeplinAPI"])
     ],
     dependencies: [
-        .package(url: "https://github.com/devedbox/Commander.git", from: "0.5.6"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1"),
         .package(url: "https://github.com/Quick/Quick", from: "2.0.0"),
         .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
@@ -26,7 +26,7 @@ let package = Package(
     targets: [
         .target(
             name: "prism",
-            dependencies: ["PrismCore", "Commander"],
+            dependencies: ["PrismCore", "ArgumentParser"],
             path: "Sources/CLI"
         ),
         .target(

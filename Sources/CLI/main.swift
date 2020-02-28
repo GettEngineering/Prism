@@ -8,45 +8,14 @@
 
 import PrismCore
 import Foundation
-import Commander
+import ArgumentParser
 
-public final class PrismCLI {
-    public func run(with arguments: [String] = CommandLine.arguments) throws {
-        let commander = BuiltIn.Commander.self
-
-        commander.commands = [
-            GenerateCommand.self,
-            InitializeCommand.self
-        ]
-
-        do {
-            try commander.init().dispatch(with: arguments)
-        } catch let err {
-            var showUsage = false
-            let message: String = {
-                switch err {
-                case is OptionsDecoder.Error,
-                     is Commander.Error:
-                    showUsage = true
-                    let args = String(arguments.dropFirst().joined(separator: " ")).trimmingCharacters(in: .whitespacesAndNewlines)
-                    
-                    if args.isEmpty {
-                        return "Please provide a command to prism"
-                    } else {
-                        return "The command 'prism \(args)' is invalid"
-                    }
-                default:
-                    return "\(err)"
-                }
-            }()
-
-            print("❌ Error: \(message)")
-            if showUsage {
-                try commander.init().dispatch(with: ["prism", "help"])
-            }
-        }
-    }
+struct PrismCLI: ParsableCommand {
+    static let configuration: CommandConfiguration = .init(
+        commandName: "prism",
+        abstract: "🎨 A CLI to Generate platform-specific design code from Zeplin Projects",
+        subcommands: [Initialize.self, Generate.self]
+    )
 }
 
-let cli = PrismCLI()
-try cli.run()
+PrismCLI.main()
