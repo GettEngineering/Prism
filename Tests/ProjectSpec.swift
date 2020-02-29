@@ -19,7 +19,7 @@ class ZeplinAPISpec: QuickSpec {
             it("should have valid Prism metadata") {
                 let output = Project.Platform
                     .allCases
-                    .map { "\($0.name): \($0.emoji), \($0.reservedColors.joined(separator: ", "))"}
+                    .map { "\($0.name): \($0.emoji)" }
                     .joined(separator: "\n")
                 
                 assertSnapshot(matching: output,

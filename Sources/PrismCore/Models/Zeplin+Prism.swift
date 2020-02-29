@@ -26,16 +26,6 @@ public extension Project.Platform {
         }
     }
     
-    // Reserved colors for this platform
-    var reservedColors: [String] {
-        switch self {
-        case .ios:
-            return ["black", "darkGray", "lightGray", "white", "gray", "red", "green", "blue", "cyan", "yellow", "magenta", "orange", "purple", "brown", "clear"]
-        default:
-            return []
-        }
-    }
-    
     // Read-friendly name for this platform
     var name: String {
         switch self {

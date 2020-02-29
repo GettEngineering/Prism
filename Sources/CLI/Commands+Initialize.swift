@@ -82,15 +82,6 @@ struct Initialize: ParsableCommand {
         
         let projectNumber = UserInput(message: "Pick a project").request(range: 1...projects.count)
         project = projects[projectNumber - 1]
-
-        // If platform has reserved colors, let the user approve usage
-        if !project.platform.reservedColors.isEmpty,
-            UserInput(message: "You picked a(n) \(project.platform.name) project. " +
-                               "Would you like to use the following reserved colors to protect " +
-                               "against designers wrongfully adding them? " +
-                               "\(project.platform.reservedColors.joined(separator: ", "))").request() {
-           reservedColors = project.platform.reservedColors
-        }
         
         // Get output folder for Prism template output
         if UserInput(message: "📂 Use current folder as output folder for Prism?").request() {
