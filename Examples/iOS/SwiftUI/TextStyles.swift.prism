@@ -1,0 +1,19 @@
+// This file was generated using Prism
+import SwiftUI
+
+extension TextStyle {
+    // iOS doesn't have built-in support for "Text Styles", per-se.
+    //
+    // This works given a custom `TextStyle` struct to hold these
+    // text styling properties and allowing to apply a custom .textStyle
+    // modifier to `View`s in your app. See `TextStyle+SwiftUI.swift`
+    // for more inspiration around this.
+    {{% FOR textStyle %}}
+    static let {{% textStyle.identity.camelcase %}} = TextStyle(
+        fontName: "{{% textStyle.fontName %}}",
+        fontSize: {{% textStyle.fontSize %}},
+        color: .{{% textStyle.color.identity.camelcase %}}
+    )
+
+    {{% END textStyle %}}
+}

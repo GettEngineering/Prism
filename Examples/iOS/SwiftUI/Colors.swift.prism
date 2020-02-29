@@ -1,0 +1,14 @@
+// This file was generated using Prism
+import SwiftUI
+
+extension Color {
+    {{% FOR color %}}
+    static let {{% color.identity.camelcase %}} = Color(r: {{% color.r %}}, g: {{% color.g %}}, b: {{% color.b %}}, alpha: {{% color.a %}})
+    {{% END color %}}
+}
+
+private extension Color {
+    init(r: Double, g: Double, b: Double, alpha: Double) {
+        self.init(red: r / 255, green: g / 255, blue: b / 255, opacity: alpha)
+    }
+}
