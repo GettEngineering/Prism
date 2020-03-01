@@ -1,0 +1,19 @@
+name: Prism
+
+on: [push]
+
+jobs:
+  macOS:
+    name: "Prism Tests (macOS)"
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Generate project
+      run: make project
+    - name: Run tests
+      run: set -o pipefail && xcodebuild -project Prism.xcodeproj -scheme prism -enableCodeCoverage YES test | xcpretty -c
+    - uses: codecov/codecov-action@v1.0.5
+      with:
+        token: 390d08f3-de89-4a9c-92e2-61c0902e0f88
+        name: Prism

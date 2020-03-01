@@ -1,7 +1,7 @@
 <p align="center">
 <img src="Assets/gh/logo.jpg" alt="Prism: Design System Code Generator logo" title="Prism: Design System Code Generator logo" />
 <br />
-<a href="https://app.bitrise.io/app/2d0aa2513db48aa2" target="_blank" alt="Build Status" title="Build Status"><img src="https://app.bitrise.io/app/2d0aa2513db48aa2/status.svg?token=riEOgNQwUYaEcZpDbxaY0g&branch=master" alt="Build Status" title="Build Status" /></a>
+<a href="https://actions-badge.atrox.dev/GettEngineering/Prism/goto" target="_blank" alt="Build Status" title="Build Status"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGettEngineering%2FPrism%2Fbadge" alt="Build Status" title="Build Status"></a>
 <a href="https://codecov.io/gh/GettEngineering/Prism" target="_blank" alt="Code Coverage for Prism on codecov" title="Code Coverage for Prism on codecov"><img src="https://codecov.io/gh/GettEngineering/Prism/branch/master/graph/badge.svg" alt="Code Coverage for Prism on codecov" title="Code Coverage for Prism on codecov"/></a>
 <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-%23989898" />
 <a href="https://github.com/apple/swift-package-manager"><img src="https://img.shields.io/badge/SPM-compatible-brightgreen.svg" alt="Swift Package Manager Support" /></a>
