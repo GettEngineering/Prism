@@ -148,7 +148,8 @@ extension TemplateParser {
                 baseString = alignment
             case .textStyleLetterSpacing(let spacing):
                 if let spacing = spacing {
-                    baseString = "\(spacing)"
+                    let roundedSpacing = (spacing * 100).rounded(.toNearestOrEven) / 100
+                    baseString = "\(roundedSpacing)"
                 }
             case .textStyleLineHeight(let height):
                 if let height = height {
