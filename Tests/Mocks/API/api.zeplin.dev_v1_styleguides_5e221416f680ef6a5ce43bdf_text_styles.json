@@ -9,6 +9,7 @@
         "font_weight": 700,
         "font_style": "normal",
         "font_stretch": 1,
+        "letter_spacing": 0.408,
         "color": {
             "r": 98,
             "g": 166,
@@ -26,6 +27,7 @@
         "font_weight": 700,
         "font_style": "normal",
         "font_stretch": 1,
+        "letter_spacing": 0.488,
         "color": {
             "r": 166,
             "g": 14,

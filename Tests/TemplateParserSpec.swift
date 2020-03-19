@@ -299,5 +299,23 @@ class TemplateParserSpec: QuickSpec {
                 }
             }
         }
+
+        describe("Letter spacing") {
+            it("should be rounded") {
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let project = try! projectResult.get()
+                let parser = TemplateParser(project: project)
+
+                let template = """
+                {{% FOR textStyle %}}
+                {{%textStyle.identity%}} {{%textStyle.letterSpacing%}}
+                {{% END textStyle %}}
+                """
+
+                assertSnapshot(matching: try! parser.parse(template: template),
+                               as: .lines,
+                               named: "Letter spacing should be rounded")
+            }
+        }
     }
 }

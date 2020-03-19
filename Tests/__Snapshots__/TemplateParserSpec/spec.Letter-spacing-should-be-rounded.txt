@@ -1,0 +1,6 @@
+Base Heading 0.41
+Base Subhead 0.49
+Body 0.5
+Body 2 1.5
+Highlight 
+Large Heading 
