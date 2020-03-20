@@ -26,12 +26,12 @@ Prism is especially useful when used in your CI/CD process to remove the frictio
 
 ### 🌈 Getting Prism
 
-There are four options: 
+There are four options to install prism: 
 
-1. **Run with SPM**: `swift run prism generate` 
-2. **Build locally**: `make` - this will build and install `prism` in **/usr/local/bin** (or run `swift build -c release` to only build without installing)
-3. Use the pre-built binary attached to a release (or in the **bin** folder)
-4. Install using **[Mint](https://github.com/yonaskolb/Mint)**: `mint install GettEngineering/Prism`
+1. **Install with [Homebrew](https://brew.sh)**: `brew install GettEngineering/tap/prism`
+1. **Install using [Mint](https://github.com/yonaskolb/Mint)**: `mint install GettEngineering/Prism`
+1. **Build from source**: `make install`
+1. **Run directly with SPM**: `swift run prism generate` 
 
 ### 🔑 Getting a Zeplin API Token
 
@@ -70,7 +70,7 @@ Here are two short example of generating colors code for iOS and Android using P
 ## Development
 
 * Run `make` or `make install` to build a release binary of the `prism` CLI tool and install it to **/usr/local/bin**.
-* Run `make build` to build a release binary of the `prism` CLI tool and copy it to the **bin** folder.
+* Run `make build` to build a release binary of the `prism` CLI tool
 * Run `make project` to create an Xcode project and start working.
 * Run `make test` to run all tests.
 * Run `make clean` to clear the generated Xcode project.
