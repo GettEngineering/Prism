@@ -9,12 +9,13 @@
         "font_weight": 700,
         "font_style": "normal",
         "font_stretch": 1,
-        "letter_spacing": 0.408,
+        "letter_spacing": 0.401,
+        "line_height": 26.001,
         "color": {
             "r": 98,
             "g": 166,
             "b": 14,
-            "a": 1,
+            "a": 1
         }
     },
     {
@@ -28,6 +29,7 @@
         "font_style": "normal",
         "font_stretch": 1,
         "letter_spacing": 0.488,
+        "line_height": 22.527,
         "color": {
             "r": 166,
             "g": 14,
