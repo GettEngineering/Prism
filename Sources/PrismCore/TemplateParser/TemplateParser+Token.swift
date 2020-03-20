@@ -148,16 +148,24 @@ extension TemplateParser {
                 baseString = alignment
             case .textStyleLetterSpacing(let spacing):
                 if let spacing = spacing {
-                    baseString = "\(spacing)"
+                    baseString = "\(spacing.roundToNearest())"
                 }
             case .textStyleLineHeight(let height):
                 if let height = height {
-                    baseString = "\(height)"
+                    baseString = "\(height.roundToNearest())"
                 }
             }
             
             guard let output = baseString else { return nil }
             return transformations.reduce(into: output) { $0 = $1.apply(to: $0) }
         }
+    }
+}
+
+// MARK: - Private Helpers
+private extension Float {
+    /// Round the Float to the nearest 2 floating points
+    func roundToNearest() -> Float {
+        (self * 100).rounded(.toNearestOrEven) / 100
     }
 }

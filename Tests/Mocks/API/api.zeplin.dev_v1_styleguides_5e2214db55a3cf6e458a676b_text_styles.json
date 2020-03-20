@@ -9,6 +9,7 @@
         "font_weight": 400,
         "font_style": "normal",
         "font_stretch": 1,
+        "letter_spacing": 0.498,
         "color": {
             "r": 14,
             "g": 40,
