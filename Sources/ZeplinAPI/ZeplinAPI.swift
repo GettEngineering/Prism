@@ -12,6 +12,9 @@ import Foundation
 public class ZeplinAPI {
     private let jwtToken: String
     static let basePath = "https://api.zeplin.dev/v1/"
+
+    /// Maximum number of items per page
+    public static let itemsPerPage = 100
     
     /// Instantiate an instance of the Zeplin API with a
     /// provided JWT token
@@ -25,36 +28,39 @@ public extension ZeplinAPI {
     /// Fetch all projects associated with the user whose token is used
     /// for the APIs
     ///
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Project`s, or a `ZeplinAPI.Error` error
-    func getProjects(limit: Int = 10_000,
+    func getProjects(page: Int = 1,
                      completion: @escaping (Result<[Project], Error>) -> Void) {
-        request(model: [Project].self, from: "projects?limit=\(limit)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [Project].self, from: "projects?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)", completion: completion)
     }
     
     /// Fetch all colors associated with a specific Zeplin Project
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch colors for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Color`s, or a `ZeplinAPI.Error` error
     func getProjectColors(for projectId: Project.ID,
-                          limit: Int = 10_000,
+                          page: Int = 1,
                           completion: @escaping (Result<[Color], Error>) -> Void) {
-        request(model: [Color].self, from: "projects/\(projectId)/colors?limit=\(limit)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [Color].self, from: "projects/\(projectId)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)", completion: completion)
     }
     
     /// Fetch all text styles associated with a specific Zeplin Project
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch text styles for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current resultspage to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
     func getProjectTextStyles(for projectId: Project.ID,
-                              limit: Int = 10_000,
+                              page: Int = 1,
                               completion: @escaping (Result<[TextStyle], Error>) -> Void) {
-        request(model: [TextStyle].self, from: "projects/\(projectId)/text_styles?limit=\(limit)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [TextStyle].self, from: "projects/\(projectId)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)", completion: completion)
     }
 }
 
@@ -63,37 +69,40 @@ public extension ZeplinAPI {
     /// Fetch all styleguides associated with a specific Project
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Stylguide`s, or a `ZeplinAPI.Error` error
     func getStyleguides(for projectId: Project.ID,
-                        limit: Int = 10_000,
+                        page: Int = 1,
                         completion: @escaping (Result<[Styleguide], Error>) -> Void) {
-        request(model: [Styleguide].self, from: "styleguides?limit=\(limit)&linked_project=\(projectId)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [Styleguide].self, from: "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(projectId)", completion: completion)
     }
     
     /// Fetch all colors associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch colors for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///
     func getStyleguideColors(for styleguideID: Styleguide.ID,
-                             limit: Int = 10_000,
+                             page: Int = 1,
                              completion: @escaping (Result<[Color], Error>) -> Void) {
-        request(model: [Color].self, from: "styleguides/\(styleguideID)/colors?limit=\(limit)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [Color].self, from: "styleguides/\(styleguideID)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)", completion: completion)
     }
     
     /// Fetch all text styles associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch text styles for
-    /// - parameter limit: Maximum number of results to ask for. Defaults to 10,000.
+    /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
     func getStyleguideTextStyles(for styleguideID: Styleguide.ID,
-                                 limit: Int = 10_000,
+                                 page: Int = 1,
                                  completion: @escaping (Result<[TextStyle], Error>) -> Void) {
-        request(model: [TextStyle].self, from: "styleguides/\(styleguideID)/text_styles?limit=\(limit)", completion: completion)
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [TextStyle].self, from: "styleguides/\(styleguideID)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)", completion: completion)
     }
 }
 

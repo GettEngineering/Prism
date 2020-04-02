@@ -2,6 +2,7 @@ install: build
 		 \cp -rf .build/release/prism /usr/local/bin
 build:
 	swift build -Xswiftc -suppress-warnings -c release --disable-sandbox --enable-pubgrub-resolver
+	\cp -rf .build/release/prism bin/
 project:
 	ruby Helpers/make_project.rb
 clean:
