@@ -32,8 +32,7 @@ struct Initialize: ParsableCommand {
         // Information needed for config.yml creation
         let project: Project
         var outputPath = ""
-        var reservedColors = [String]()
-        
+
         guard !fileManager.fileExists(atPath: configPath) ||
             UserInput(message: "It seems you already have a configuration file. Running through this wizard will overwrite it. Are you sure?").request() else {
             Darwin.exit(1)
@@ -125,13 +124,6 @@ struct Initialize: ParsableCommand {
         config.append("project_id: \"\(project.id)\"")
         config.append("templates_path: \".prism\"")
         config.append("output_path: \"\(outputPath)\"")
-        
-        if !reservedColors.isEmpty {
-            config.append("reserved_colors:")
-            config.append(contentsOf: reservedColors.reduce(into: [String]()) { lines, color in
-                lines.append("  - \"\(color)\"")
-            })
-        }
         
         // Save it!
         do {
