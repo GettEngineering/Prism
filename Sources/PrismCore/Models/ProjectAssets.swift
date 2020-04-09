@@ -19,12 +19,15 @@ public struct ProjectAssets: Codable, Equatable {
 
     /// Project's Text Styles.
     public let textStyles: [TextStyle]
+
+    /// Project's Spacing tokens.
+    public let spacing: [Spacing]
 }
 
 extension ProjectAssets: CustomStringConvertible {
     /// A short description for the project.
     public var description: String {
-        return "Zeplin Project \(id) has \(colors.count) colors and \(textStyles.count) text styles"
+        "Zeplin Project \(id) has \(colors.count) colors and \(textStyles.count) text styles"
     }
 }
 

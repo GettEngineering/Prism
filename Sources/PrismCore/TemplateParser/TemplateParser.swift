@@ -89,7 +89,8 @@ public class TemplateParser {
     /// - returns: An array of processed lines.
     private func recursivelyParse(lines: [String],
                                   color: Color? = nil,
-                                  textStyle: TextStyle? = nil) throws -> [String] {
+                                  textStyle: TextStyle? = nil,
+                                  spacing: Spacing? = nil) throws -> [String] {
         var output = [String]()
         var currentLineIdx = 0
 
@@ -117,6 +118,14 @@ public class TemplateParser {
                     }
 
                     output.append(contentsOf: textStyleLoop)
+                case "spacing":
+                    let spacingLoop = try project.spacing
+                                                 .reduce(into: [String]()) { result, spacing in
+                        result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                       spacing: spacing))
+                    }
+
+                    output.append(contentsOf: spacingLoop)
                 default:
                     throw Error.unknownLoop(identifier: forBlock.identifier)
                 }
@@ -176,7 +185,10 @@ public class TemplateParser {
 
             /// The current line has at least a single token that
             /// should be resolved.
-            output.append(try resolveTokens(line: currentLine, color: color, textStyle: textStyle))
+            output.append(try resolveTokens(line: currentLine,
+                                            color: color,
+                                            textStyle: textStyle,
+                                            spacing: spacing))
             currentLineIdx += 1
         }
 
@@ -188,12 +200,14 @@ public class TemplateParser {
     ///
     /// - parameter line: A string line.
     /// - parameter color: A color, usually provided if the line is part of a colors loop.
-    /// - parameter textStyle: A color, usually provided if the line is part of a text styles loop.
+    /// - parameter textStyle: A text style
+    /// - parameter spacing: A spacing token
     ///
     /// - returns: Provided line with resolved tokens.
     private func resolveTokens(line: String,
                                color: Color?,
-                               textStyle: TextStyle?) throws -> String {
+                               textStyle: TextStyle?,
+                               spacing: Spacing?) throws -> String {
         let lineLength = line.count
         var output = line
         var tokens = [String: String?]()
@@ -223,6 +237,8 @@ public class TemplateParser {
                 tokens[token] = try Token(rawColorToken: token, color: color).stringValue(transformations: transformations)
             } else if let textStyle = textStyle {
                 tokens[token] = try Token(rawTextStyleToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
+            } else if let spacing = spacing {
+                tokens[token] = try Token(rawSpacingToken: token, spacing: spacing).stringValue(transformations: transformations)
             }
         }
         

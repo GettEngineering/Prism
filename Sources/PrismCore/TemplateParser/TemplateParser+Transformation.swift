@@ -41,7 +41,8 @@ extension TemplateParser {
             } else {
                 params = nsValue.substring(with: match.range(at: 3))
                                 .components(separatedBy: ",")
-                                .map { $0.trimmingCharacters(in: .whitespaces) }
+                                .map { $0.trimmingCharacters(in: .whitespaces)
+                                         .stripQuotes() }
             }
 
             switch (action, params.count) {
@@ -71,5 +72,17 @@ extension TemplateParser {
                 return string.replacingOccurrences(of: of, with: with)
             }
         }
+    }
+}
+
+private extension String {
+    func stripQuotes() -> String {
+        guard count >= 2,
+              first == Character("\""),
+              first == last else {
+          return self
+        }
+
+        return String(self[index(after: startIndex)..<index(before: endIndex)])
     }
 }

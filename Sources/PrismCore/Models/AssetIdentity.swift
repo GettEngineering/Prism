@@ -18,7 +18,7 @@ public extension AssetIdentifiable {
     /// A synthesized identity for iOS and Android styles based
     /// on the provided Asset name.
     var identity: Project.AssetIdentity {
-        return .init(name: name)
+        .init(name: name)
     }
 }
 
@@ -27,16 +27,20 @@ public extension Project {
     struct AssetIdentity {
         /// A snake-cased version of the name
         private var snakecased: String {
-            return words
+            words
                 .map { $0.lowercased() }
                 .joined(separator: "_")
         }
 
         /// A camelCased version of the name
         private var camelcased: String {
+            /// A set of terms that sould have uppercased presentattion
+            /// Usually those would be units of size
+            let uppercaseTerms = ["xxs", "xs", "x", "m", "l", "xl", "xxl", "xxxl"]
+
             return (words.first?.lowercased() ?? "") +
                     words.dropFirst()
-                         .map { $0.capitalized }
+                         .map { uppercaseTerms.contains($0) ? $0.uppercased() : $0.capitalized }
                          .joined()
         }
 
@@ -84,7 +88,7 @@ public extension Project {
 
 extension Project.AssetIdentity: CustomStringConvertible {
     public var description: String {
-        return "AssetIdentity(name: \(name), \(Style.allCases.map { "\($0.rawValue): \($0.identifier(for: self))" }.joined(separator: ", ")))"
+        "AssetIdentity(name: \(name), \(Style.allCases.map { "\($0.rawValue): \($0.identifier(for: self))" }.joined(separator: ", ")))"
     }
 }
 
@@ -116,3 +120,4 @@ public extension Project.AssetIdentity {
 // MARK: - Zeplin Model Conformances
 extension Color: AssetIdentifiable {}
 extension TextStyle: AssetIdentifiable {}
+extension Spacing: AssetIdentifiable {}

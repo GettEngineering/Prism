@@ -11,6 +11,9 @@ import Foundation
 /// A Text Style containing a font face, font size, colors and
 /// more. It is an `Assetidentifiable` identified by its name.
 public struct TextStyle: Codable, Equatable {
+    /// Text style ID
+    public let id: String
+
     /// Text style name
     public let name: String
     
