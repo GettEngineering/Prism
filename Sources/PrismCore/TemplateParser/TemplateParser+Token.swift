@@ -15,7 +15,7 @@ extension TemplateParser {
     ///
     /// Tokens use the {{%tokenName%}} structure, for example {{%textStyle.fontSize%}}.
     enum Token {
-        /// Color
+        // Color
         case colorRed(Int)
         case colorGreen(Int)
         case colorBlue(Int)
@@ -25,7 +25,7 @@ extension TemplateParser {
         case colorIdentity(identity: Project.AssetIdentity,
                            style: Project.AssetIdentity.Style)
 
-        /// Text Style
+        // Text Style
         case textStyleFontName(String)
         case textStyleFontSize(Float)
         case textStyleIdentity(identity: Project.AssetIdentity,
@@ -33,12 +33,17 @@ extension TemplateParser {
         case textStyleAlignment(String?)
         case textStyleLineHeight(Float?)
         case textStyleLetterSpacing(Float?)
+
+        // Spacing
+        case spacingIdentity(identity: Project.AssetIdentity,
+                             style: Project.AssetIdentity.Style)
+        case spacingValue(Float)
         
         /// Parse a raw color token, such as "color.r", into its
         /// appropriate Token case (e.g. `.colorRed(value)` in this case).
         ///
         /// - parameter rawColorToken: A raw color token, e.g. `color.*`
-        /// - parameter colorr: A project color with an asset identity
+        /// - parameter color: A project color with an asset identity
         init(rawColorToken: String, color: Color) throws {
             let cleanToken = rawColorToken.lowercased()
                                           .trimmingCharacters(in: .whitespaces)
@@ -76,7 +81,8 @@ extension TemplateParser {
         /// appropriate Token case (e.g. `.textStyleFontName(value)` in this case).
         ///
         /// - parameter rawTextStyleToken: A raw text style token, e.g. `textStyle.*`
-        /// - parameter colorr: A project color with an asset identity
+        /// - parameter textStyle: A project text style with an asset identity
+        /// - parameter color: A project color with an asset identity
         init(rawTextStyleToken: String, textStyle: TextStyle, colors: [Color]) throws {
             let cleanToken = rawTextStyleToken.lowercased()
                                               .trimmingCharacters(in: .whitespaces)
@@ -119,6 +125,34 @@ extension TemplateParser {
             }
         }
 
+        /// Parse a raw spacing token, such as "spacing.value", into its
+        /// appropriate Token case (e.g. `.spacingValue(value)` in this case).
+        ///
+        /// - parameter rawSpacingToken: A raw text style token, e.g. `spacing.*`
+        /// - parameter spacing: A spacing entity
+        init(rawSpacingToken: String, spacing: Spacing) throws {
+            let cleanToken = rawSpacingToken.lowercased()
+                                            .trimmingCharacters(in: .whitespaces)
+            guard cleanToken.hasPrefix("spacing.") else {
+                throw Error.unknownToken(token: rawSpacingToken)
+            }
+
+            let spacingToken = String(cleanToken.dropFirst(8))
+
+            switch spacingToken {
+            case "identity":
+                self = .spacingIdentity(identity: spacing.identity, style: .raw)
+            case "identity.camelcase":
+                self = .spacingIdentity(identity: spacing.identity, style: .camelcase)
+            case "identity.snakecase":
+                self = .spacingIdentity(identity: spacing.identity, style: .snakecase)
+            case "value":
+                self = .spacingValue(spacing.value)
+            default:
+                throw Error.unknownToken(token: rawSpacingToken)
+            }
+        }
+
         /// Process the current token, while applying the provided
         /// set of transformations.
         ///
@@ -128,6 +162,10 @@ extension TemplateParser {
         func stringValue(transformations: [Transformation]) -> String? {
             var baseString: String?
             switch self {
+            case let .colorIdentity(identity, style),
+             let .textStyleIdentity(identity, style),
+             let .spacingIdentity(identity, style):
+                baseString = style.identifier(for: identity)
             case .colorAlpha(let a):
                 baseString = String(format: "%.2f", a)
             case .colorRed(let c),
@@ -137,9 +175,6 @@ extension TemplateParser {
             case .colorARGB(let hex),
                  .colorRGB(let hex):
                 baseString = hex
-            case let .colorIdentity(identity, style),
-                 let .textStyleIdentity(identity, style):
-                baseString = style.identifier(for: identity)
             case .textStyleFontName(let name):
                 baseString = name
             case .textStyleFontSize(let size):
@@ -154,8 +189,10 @@ extension TemplateParser {
                 if let height = height {
                     baseString = "\(height.roundToNearest())"
                 }
+            case .spacingValue(let value):
+                baseString = "\(value.roundToNearest())"
             }
-            
+
             guard let output = baseString else { return nil }
             return transformations.reduce(into: output) { $0 = $1.apply(to: $0) }
         }

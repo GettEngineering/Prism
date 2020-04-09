@@ -41,6 +41,7 @@ public class Prism {
         let group = DispatchGroup()
         var colors = [Color]()
         var textStyles = [TextStyle]()
+        var spacings = [Spacing]()
         var errors = [ZeplinAPI.Error]()
         
         /// Get linked style guides and their colors and
@@ -52,7 +53,7 @@ public class Prism {
 
             switch result {
             case .success(let styleguides):
-                // Get text styles and colors separately
+                // Get text styles, colors and spacing separately
                 // for each styleguide
                 for styleguide in styleguides {
                     group.enter()
@@ -73,6 +74,17 @@ public class Prism {
                         },
                         completion: { result in
                             result.appendValuesOrErrors(values: &textStyles, errors: &errors)
+                            group.leave()
+                        }
+                    )
+
+                    group.enter()
+                    api.getPagedItems(
+                        work: { page, api, completion in
+                            api.getStyleguideSpacings(for: styleguide.id, page: page, completion: completion)
+                        },
+                        completion: { result in
+                            result.appendValuesOrErrors(values: &spacings, errors: &errors)
                             group.leave()
                         }
                     )
@@ -106,6 +118,18 @@ public class Prism {
             }
         )
 
+        // Get project spacing
+        group.enter()
+        api.getPagedItems(
+            work: { page, api, completion in
+                api.getProjectSpacings(for: projectId, page: page, completion: completion)
+            },
+            completion: { result in
+                result.appendValuesOrErrors(values: &spacings, errors: &errors)
+                group.leave()
+            }
+        )
+
         /// It's required to wait and block here when running in CLI.
         /// Otherwise, Prism terminates without waiting for the result to
         /// come back.
@@ -116,7 +140,8 @@ public class Prism {
         } else {
             completion(.success(ProjectAssets(id: projectId,
                                               colors: colors.sorted { $0.name < $1.name },
-                                              textStyles: textStyles.sorted { $0.name < $1.name })))
+                                              textStyles: textStyles.sorted { $0.name < $1.name },
+                                              spacing: spacings.sorted(by: { $0.value < $1.value }))))
         }
     }
 }
