@@ -11,7 +11,6 @@ import ArgumentParser
 import PrismCore
 import Yams
 import ZeplinAPI
-import Darwin
 
 // MARK: - Initialize command
 struct Initialize: ParsableCommand {
@@ -35,7 +34,7 @@ struct Initialize: ParsableCommand {
 
         guard !fileManager.fileExists(atPath: configPath) ||
             UserInput(message: "It seems you already have a configuration file. Running through this wizard will overwrite it. Are you sure?").request() else {
-            Darwin.exit(1)
+            terminate(with: nil)
         }
         
         // Start onboarding
@@ -61,16 +60,14 @@ struct Initialize: ParsableCommand {
                 defer { group.leave() }
                 projects = try result.get().filter { $0.status == .active }
             } catch let err {
-                print("Failed fetching projects: \(err)")
-                Darwin.exit(1)
+                terminate(with: "Failed fetching projects: \(err)")
             }
         }
         
         group.wait()
         
         guard !projects.isEmpty else {
-            print("❌ No projects found for your user!")
-            Darwin.exit(1)
+            terminate(with: "❌ No projects found for your user!")
         }
         
         print("🔎 Found \(projects.count) projects:")
@@ -112,8 +109,7 @@ struct Initialize: ParsableCommand {
             do {
                 try fileManager.createDirectory(atPath: ".prism", withIntermediateDirectories: false, attributes: nil)
             } catch {
-                print("❌ Failed creating .prism folder: \(error)")
-                Darwin.exit(1)
+                terminate(with: "❌ Failed creating .prism folder: \(error)")
             }
         }
 
@@ -132,8 +128,7 @@ struct Initialize: ParsableCommand {
                              atomically: true,
                              encoding: .utf8)
         } catch {
-            print("❌ Failed creating config.yml file: \(error)")
-            Darwin.exit(1)
+            terminate(with: "❌ Failed creating config.yml file: \(error)")
         }
         
         print("""

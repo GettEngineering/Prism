@@ -11,7 +11,6 @@ import ArgumentParser
 import PrismCore
 import Yams
 import struct ZeplinAPI.Project
-import Darwin
 
 // MARK: - Generate command
 struct Generate: ParsableCommand {
@@ -127,8 +126,7 @@ struct Generate: ParsableCommand {
 
                 sema.signal()
             } catch let err {
-                print("❌ Error: \(err)")
-                Darwin.exit(1)
+                terminate(with: "❌ Error: \(err)")
             }
         }
 
