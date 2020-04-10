@@ -163,8 +163,8 @@ extension TemplateParser {
             var baseString: String?
             switch self {
             case let .colorIdentity(identity, style),
-             let .textStyleIdentity(identity, style),
-             let .spacingIdentity(identity, style):
+                 let .textStyleIdentity(identity, style),
+                 let .spacingIdentity(identity, style):
                 baseString = style.identifier(for: identity)
             case .colorAlpha(let alpha):
                 baseString = String(format: "%.2f", alpha)

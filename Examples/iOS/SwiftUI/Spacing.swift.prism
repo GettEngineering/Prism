@@ -1,0 +1,8 @@
+// This file was generated using Prism
+import Foundation
+
+enum Spacing {
+    {{% FOR spacing %}}
+    static let {{% spacing.identity.camelcase %}} = CGFloat({{% spacing.value %}})
+    {{% END spacing %}}
+}

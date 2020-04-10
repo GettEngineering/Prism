@@ -1,0 +1,7 @@
+<!-- This file was generated using Prism -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    {{% FOR spacing %}}
+    <dimen name="{{% spacing.identity.snakecase %}}">{{% spacing.value %}}dp</dimen>
+    {{% END spacing %}}
+</resources>

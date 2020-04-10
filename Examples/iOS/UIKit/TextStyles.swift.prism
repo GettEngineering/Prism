@@ -10,10 +10,10 @@ extension TextStyle {
     // UI element in your app. See `TextStyle.swift` for some
     // more inspiration around this.
     {{% FOR textStyle %}}
-    static let {{%textStyle.identity.camelcase%}} = TextStyle(
-        fontName: "{{%textStyle.fontName%}}",
-        fontSize: {{%textStyle.fontSize%}},
-        color: .{{%textStyle.color.identity.camelcase%}}{{% IF textStyle.alignment %}},{{% ENDIF %}}
+    static let {{% textStyle.identity.camelcase %}} = TextStyle(
+        fontName: "{{% textStyle.fontName %}}",
+        fontSize: {{% textStyle.fontSize %}},
+        color: .{{% textStyle.color.identity.camelcase %}}{{% IF textStyle.alignment %}},{{% ENDIF %}}
         {{% IF textStyle.alignment %}}alignment: .{{%textStyle.alignment|replace(justify,justified)%}}{{% ENDIF %}}
     )
 
