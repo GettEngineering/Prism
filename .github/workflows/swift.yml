@@ -19,3 +19,11 @@ jobs:
       with:
         token: 390d08f3-de89-4a9c-92e2-61c0902e0f88
         name: Prism
+  Linux:
+    name: "Prism Build (Linux)"
+    runs-on: ubuntu-16.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and run
+      run: set -o pipefail && swift build --enable-test-discovery
