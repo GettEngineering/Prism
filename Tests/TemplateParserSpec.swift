@@ -22,8 +22,7 @@ class TemplateParserSpec: QuickSpec {
                 let parser = TemplateParser(project: project)
 
                 let template = """
-                /// This file was generated using Prism, Gett's Design System code generator.
-                /// https://github.com/GettEngineering/Prism
+                /// This file was generated using Prism
 
                 fake line 1
                 fake line 2
@@ -48,8 +47,7 @@ class TemplateParserSpec: QuickSpec {
                 let parser = TemplateParser(project: project)
 
                 let template = """
-                /// This file was generated using Prism, Gett's Design System code generator.
-                /// https://github.com/GettEngineering/Prism
+                /// This file was generated using Prism
 
                 fake line 1
                 fake line 2
@@ -71,6 +69,31 @@ class TemplateParserSpec: QuickSpec {
                 assertSnapshot(matching: try! parser.parse(template: template),
                                as: .lines,
                                named: "Text Styles Loop should provide valid output")
+            }
+        }
+
+        describe("Spacing Loop") {
+            it("should produce valid output") {
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let project = try! projectResult.get()
+                let parser = TemplateParser(project: project)
+
+                let template = """
+                /// This file was generated using Prism
+
+                fake line 1
+                fake line 2
+
+                Some SpacingSructure {
+                    {{% FOR spacing %}}
+                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}} = {{% spacing.value %}}
+                    {{% END spacing %}}
+                }
+                """
+
+                assertSnapshot(matching: try! parser.parse(template: template),
+                               as: .lines,
+                               named: "Spacing Loop should provide valid output")
             }
         }
         
@@ -104,6 +127,21 @@ class TemplateParserSpec: QuickSpec {
                     }.to(throwError(TemplateParser.Error.unknownToken(token: "color.nonExistentToken")))
                 }
             }
+
+            context("spacing") {
+                it("should throw an error") {
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let parser = TemplateParser(project: projectResult)
+
+                    expect {
+                        try parser.parse(template: """
+                        {{% FOR spacing %}}
+                        Bad token {{%spacing.nonExistentToken%}}
+                        {{% END spacing %}}
+                        """)
+                    }.to(throwError(TemplateParser.Error.unknownToken(token: "spacing.nonExistentToken")))
+                }
+            }
         }
         
         describe("Text Style without color identity") {
@@ -111,7 +149,8 @@ class TemplateParserSpec: QuickSpec {
                 let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
                 let modifiedResult = ProjectAssets(id: projectResult.id,
                                                    colors: [],
-                                                   textStyles: Array(projectResult.textStyles.prefix(1)))
+                                                   textStyles: Array(projectResult.textStyles.prefix(1)),
+                                                   spacing: [])
                 
                 let parser = TemplateParser(project: modifiedResult)
                 expect {
@@ -131,8 +170,7 @@ class TemplateParserSpec: QuickSpec {
                 let parser = TemplateParser(project: project)
 
                 let template = """
-                /// This file was generated using Prism, Gett's Design System code generator.
-                /// https://github.com/GettEngineering/Prism
+                /// This file was generated using Prism
 
                 fake line 1
                 fake line 2
@@ -155,8 +193,7 @@ class TemplateParserSpec: QuickSpec {
                 let parser = TemplateParser(project: project)
 
                 let template = """
-                /// This file was generated using Prism, Gett's Design System code generator.
-                /// https://github.com/GettEngineering/Prism
+                /// This file was generated using Prism
 
                 fake line 1
                 fake line 2
@@ -211,6 +248,8 @@ class TemplateParserSpec: QuickSpec {
                     expect { try TemplateParser.Token(rawTextStyleToken: UUID().uuidString,
                                                       textStyle: project.textStyles[0],
                                                       colors: project.colors) }.to(throwError())
+                    expect { try TemplateParser.Token(rawSpacingToken: UUID().uuidString,
+                                                      spacing: project.spacing[0]) }.to(throwError())
                 }
             }
 
@@ -240,7 +279,8 @@ class TemplateParserSpec: QuickSpec {
                 {{%textStyle.identity.snakecase|uppercase%}}
                 {{%textStyle.fontName|uppercase%}}
                 {{%textStyle.fontName|replace(-,_)%}}
-                {{%textStyle.fontName|lowercase|replace(-,_)%}}
+                {{%textStyle.fontName|replace("-","_")%}}
+                {{%textStyle.fontName|lowercase|replace(-,"_")%}}
                 ==============================================
                 {{% END textStyle %}}
                 """

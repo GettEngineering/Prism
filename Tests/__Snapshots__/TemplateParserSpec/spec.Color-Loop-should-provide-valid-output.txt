@@ -1,5 +1,4 @@
-/// This file was generated using Prism, Gett's Design System code generator.
-/// https://github.com/GettEngineering/Prism
+/// This file was generated using Prism
 
 fake line 1
 fake line 2

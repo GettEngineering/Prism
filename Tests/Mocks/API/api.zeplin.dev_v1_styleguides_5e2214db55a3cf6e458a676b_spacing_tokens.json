@@ -1,0 +1,30 @@
+[
+    {
+        "id":"5e62d3ae75119b93cc515ee",
+        "name":"spacing-xl",
+        "value":32,
+        "color":{
+            "r":113,
+            "b":24,
+            "g":12,
+            "a":0.7
+        },
+        "section":{
+            "id":"5e849158f07b4c2451164e5e"
+        }
+    },
+    {
+        "id":"5e8f8d32xa1119b93cc515ee",
+        "name":"spacing-l",
+        "value":24,
+        "color":{
+            "r":113,
+            "b":24,
+            "g":12,
+            "a":0.7
+        },
+        "section":{
+            "id":"5e849158f07b4c2451164e5e"
+        }
+    }
+]

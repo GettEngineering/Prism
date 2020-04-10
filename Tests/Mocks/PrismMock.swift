@@ -34,9 +34,10 @@ extension Prism {
             guard type == .successful else {
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
             }
-            
-            guard let data = try? Data(contentsOf: mocksURL.appendingPathComponent("\(path).json")) else {
-                fatalError("Can't find mock for \(url)")
+
+            let mockPath = mocksURL.appendingPathComponent("\(path).json")
+            guard let data = try? Data(contentsOf: mockPath) else {
+                fatalError("Can't find mock for \(url) at \(mockPath)")
             }
             
             return try? MockResponse(for: request, data: data)
