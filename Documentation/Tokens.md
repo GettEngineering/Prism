@@ -6,12 +6,12 @@ Tokens live inside your ***.prism** templates and follow the format `{{%TOKEN%}}
 
 ## Core Tokens
 
-| Token            | Description                                                                      |
-|------------------|----------------------------------------------------------------------------------|
-| `FOR collection` | Iterate over asset collections, for example `FOR textStyle` or `FOR color`       |
-| `END collection` | End iterating over asset collections, for example `END textStyle` or `END color` |
-| `IF token`       | Confirm a token is available, for example `IF textStyle.alignment`               |
-| `ENDIF`          | Closes an `IF` block                                                             |
+| Token            | Description                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------|
+| `FOR collection` | Iterate over asset collections, for example `FOR textStyle`, `FOR color`, or `FOR spacing`       |
+| `END collection` | End iterating over asset collections, for example `END textStyle`, `END color`, or `END spacing` |
+| `IF token`       | Confirm a token is available, for example `IF textStyle.alignment`                               |
+| `ENDIF`          | Closes an `IF` block                                                                             |
 
 ## Color Tokens
 
@@ -42,3 +42,11 @@ Tokens live inside your ***.prism** templates and follow the format `{{%TOKEN%}}
 | `textStyle.identity.snakecase` | The identity/name of the text style, formatted in snake case (e.g. `my_text_style`) |
 | `textStyle.color.*`            | All color tokens from the section above can be used for a TextStyle's color         |
 
+## Spacing Tokens
+
+| Token                        | Description                                                                       |
+|------------------------------|-----------------------------------------------------------------------------------|
+| `spacing.value`              | The value of the current spacing token                                            |
+| `spacing.identity`           | The identity/name of the spacing token, as defined on Zeplin                      |
+| `spacing.identity.camelcase` | The identity/name of the spacing token, formatted in camel case                   |
+| `spacing.identity.snakecase` | The identity/name of the spacing token, formatted in snake case                   |

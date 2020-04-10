@@ -11,7 +11,7 @@ Prism is a Design System code generator developed by the team at Gett 🚕.
 
 Synchronizing design teams with engineering teams is a huge challenge.
 
-As teams scale, new growing pains start around how to properly align colors, text styles and other design details between teams, in a uniform way, from a single source of truth.
+As teams scale, new growing pains start around how to properly align colors, text styles, spacing and other design details between teams, in a uniform way, from a single source of truth.
 
 Prism was built to solve this very problem! It takes a Zeplin project as input, and generates any output code you want from a project's styleguide based on a set of templates in your project, resulting in cross-platform code that is always synchronized from a single source-of-truth (Your project's Zeplin Styleguide).
 
