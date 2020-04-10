@@ -14,7 +14,7 @@ public protocol RawColorRepresentable: Codable, Equatable {
     var r: Int { get }
     var g: Int { get }
     var b: Int { get }
-    var a: Double { get }
+    var a: Float { get }
 }
 
 public extension RawColorRepresentable {
@@ -38,7 +38,7 @@ public struct Color: RawColorRepresentable {
     public let r: Int
     public let g: Int
     public let b: Int
-    public let a: Double
+    public let a: Float
 }
 
 /// A raw color with red, green, blue and alpha values.
@@ -46,5 +46,5 @@ public struct RawColor: RawColorRepresentable {
     public let r: Int
     public let g: Int
     public let b: Int
-    public let a: Double
+    public let a: Float
 }

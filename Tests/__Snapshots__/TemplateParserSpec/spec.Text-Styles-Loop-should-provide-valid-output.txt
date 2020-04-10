@@ -1,17 +1,16 @@
-/// This file was generated using Prism, Gett's Design System code generator.
-/// https://github.com/GettEngineering/Prism
+/// This file was generated using Prism
 
 fake line 1
 fake line 2
 
 Some Structure {
-    line height is 26.0, Base Heading, baseHeading, base_heading = LucidaGrande-Bold, 26.0, green, green, green, letter spacing is: 0.4, #62a60e, #ff62a60e, 98, 166, 14, 1.00
+    line height is 26, Base Heading, baseHeading, base_heading = LucidaGrande-Bold, 26.0, green, green, green, letter spacing is: 0.4, #62a60e, #ff62a60e, 98, 166, 14, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
     line height is 22.53, Base Subhead, baseSubhead, base_subhead = LucidaGrande-Bold, 22.0, red, red, red, letter spacing is: 0.49, #a60e0e, #ffa60e0e, 166, 14, 14, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
     Body, body, body = LucidaGrande, 14.0, blue, blue, blue, letter spacing is: 0.5, #0e28a6, #ff0e28a6, 14, 40, 166, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
-    line height is 24.0, Body 2, body2, body_2 = MyCustomFont-Regular, 14.0, Blue Sky, blueSky, blue_sky, letter spacing is: 1.5, #62b6df, #ff62b6df, 98, 182, 223, 1.00, alignment is right
+    line height is 24, Body 2, body2, body_2 = MyCustomFont-Regular, 14.0, Blue Sky, blueSky, blue_sky, letter spacing is: 1.5, #62b6df, #ff62b6df, 98, 182, 223, 1.00, alignment is right
         This is an attempt of an indented multi-line
         block containing a text alignment, which is right
         and also capable of inlining another condition
@@ -19,7 +18,7 @@ Some Structure {
         We can also access optional stuff without an IF, which will result in an empty string like so: right
     Highlight, highlight, highlight = AppleGothic, 18.0, purple, purple, purple, #a30ea6, #ffa30ea6, 163, 14, 166, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
-    line height is 24.0, Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, Clear Reddish, clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
+    line height is 24, Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, Clear Reddish, clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
         This is an attempt of an indented multi-line
         block containing a text alignment, which is left
         and also capable of inlining another condition

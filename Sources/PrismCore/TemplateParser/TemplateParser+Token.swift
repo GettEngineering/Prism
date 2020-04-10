@@ -19,7 +19,7 @@ extension TemplateParser {
         case colorRed(Int)
         case colorGreen(Int)
         case colorBlue(Int)
-        case colorAlpha(Double)
+        case colorAlpha(Float)
         case colorARGB(String)
         case colorRGB(String)
         case colorIdentity(identity: Project.AssetIdentity,
@@ -166,8 +166,8 @@ extension TemplateParser {
              let .textStyleIdentity(identity, style),
              let .spacingIdentity(identity, style):
                 baseString = style.identifier(for: identity)
-            case .colorAlpha(let a):
-                baseString = String(format: "%.2f", a)
+            case .colorAlpha(let alpha):
+                baseString = String(format: "%.2f", alpha)
             case .colorRed(let c),
                  .colorGreen(let c),
                  .colorBlue(let c):
@@ -183,14 +183,14 @@ extension TemplateParser {
                 baseString = alignment
             case .textStyleLetterSpacing(let spacing):
                 if let spacing = spacing {
-                    baseString = "\(spacing.roundToNearest())"
+                    baseString = spacing.roundedToNearest()
                 }
             case .textStyleLineHeight(let height):
                 if let height = height {
-                    baseString = "\(height.roundToNearest())"
+                    baseString = height.roundedToNearest()
                 }
             case .spacingValue(let value):
-                baseString = "\(value.roundToNearest())"
+                baseString = value.roundedToNearest()
             }
 
             guard let output = baseString else { return nil }
@@ -202,7 +202,14 @@ extension TemplateParser {
 // MARK: - Private Helpers
 private extension Float {
     /// Round the Float to the nearest 2 floating points
-    func roundToNearest() -> Float {
-        (self * 100).rounded(.toNearestOrEven) / 100
+    func roundedToNearest() -> String {
+        let value = (self * 100).rounded(.toNearestOrEven) / 100
+
+        let int = Int(value)
+        if Float(int) == value {
+            return "\(int)"
+        } else {
+            return "\(value)"
+        }
     }
 }

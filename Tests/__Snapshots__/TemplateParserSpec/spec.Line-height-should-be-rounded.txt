@@ -1,6 +1,6 @@
-Base Heading 26.0
+Base Heading 26
 Base Subhead 22.53
 Body 
-Body 2 24.0
+Body 2 24
 Highlight 
-Large Heading 24.0
+Large Heading 24
