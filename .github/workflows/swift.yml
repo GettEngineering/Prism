@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Select Xcode 11.4
+      run: sudo xcode-select -s /Applications/Xcode_11.4.app
     - name: Generate project
       run: make project
     - name: Run tests
