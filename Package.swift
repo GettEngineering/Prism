@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
         .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master")),
-        .package(url: "https://github.com/jpsim/Yams", from: "2.0.0")
+        .package(url: "https://github.com/jpsim/Yams", from: "3.0.0")
     ],
     targets: [
         .target(
