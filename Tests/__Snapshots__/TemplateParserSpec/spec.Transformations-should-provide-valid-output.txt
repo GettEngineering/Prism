@@ -1,3 +1,28 @@
+No spaces on sides
+baseheading
+BASE_HEADING
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Spaces on both sides
+baseheading
+BASE_HEADING
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Space on left
+baseheading
+BASE_HEADING
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Space on right
 baseheading
 BASE_HEADING
 LUCIDAGRANDE-BOLD
@@ -5,6 +30,31 @@ LucidaGrande_Bold
 LucidaGrande_Bold
 lucidagrande_bold
 ==============================================
+No spaces on sides
+basesubhead
+BASE_SUBHEAD
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Spaces on both sides
+basesubhead
+BASE_SUBHEAD
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Space on left
+basesubhead
+BASE_SUBHEAD
+LUCIDAGRANDE-BOLD
+LucidaGrande_Bold
+LucidaGrande_Bold
+lucidagrande_bold
+
+Space on right
 basesubhead
 BASE_SUBHEAD
 LUCIDAGRANDE-BOLD
@@ -12,6 +62,31 @@ LucidaGrande_Bold
 LucidaGrande_Bold
 lucidagrande_bold
 ==============================================
+No spaces on sides
+body
+BODY
+LUCIDAGRANDE
+LucidaGrande
+LucidaGrande
+lucidagrande
+
+Spaces on both sides
+body
+BODY
+LUCIDAGRANDE
+LucidaGrande
+LucidaGrande
+lucidagrande
+
+Space on left
+body
+BODY
+LUCIDAGRANDE
+LucidaGrande
+LucidaGrande
+lucidagrande
+
+Space on right
 body
 BODY
 LUCIDAGRANDE
@@ -19,6 +94,31 @@ LucidaGrande
 LucidaGrande
 lucidagrande
 ==============================================
+No spaces on sides
+body2
+BODY_2
+MYCUSTOMFONT-REGULAR
+MyCustomFont_Regular
+MyCustomFont_Regular
+mycustomfont_regular
+
+Spaces on both sides
+body2
+BODY_2
+MYCUSTOMFONT-REGULAR
+MyCustomFont_Regular
+MyCustomFont_Regular
+mycustomfont_regular
+
+Space on left
+body2
+BODY_2
+MYCUSTOMFONT-REGULAR
+MyCustomFont_Regular
+MyCustomFont_Regular
+mycustomfont_regular
+
+Space on right
 body2
 BODY_2
 MYCUSTOMFONT-REGULAR
@@ -26,6 +126,31 @@ MyCustomFont_Regular
 MyCustomFont_Regular
 mycustomfont_regular
 ==============================================
+No spaces on sides
+highlight
+HIGHLIGHT
+APPLEGOTHIC
+AppleGothic
+AppleGothic
+applegothic
+
+Spaces on both sides
+highlight
+HIGHLIGHT
+APPLEGOTHIC
+AppleGothic
+AppleGothic
+applegothic
+
+Space on left
+highlight
+HIGHLIGHT
+APPLEGOTHIC
+AppleGothic
+AppleGothic
+applegothic
+
+Space on right
 highlight
 HIGHLIGHT
 APPLEGOTHIC
@@ -33,6 +158,31 @@ AppleGothic
 AppleGothic
 applegothic
 ==============================================
+No spaces on sides
+largeheading
+LARGE_HEADING
+MYCUSTOMFONT-LIGHT
+MyCustomFont_Light
+MyCustomFont_Light
+mycustomfont_light
+
+Spaces on both sides
+largeheading
+LARGE_HEADING
+MYCUSTOMFONT-LIGHT
+MyCustomFont_Light
+MyCustomFont_Light
+mycustomfont_light
+
+Space on left
+largeheading
+LARGE_HEADING
+MYCUSTOMFONT-LIGHT
+MyCustomFont_Light
+MyCustomFont_Light
+mycustomfont_light
+
+Space on right
 largeheading
 LARGE_HEADING
 MYCUSTOMFONT-LIGHT

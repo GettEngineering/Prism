@@ -21,16 +21,17 @@ extension TemplateParser {
         case replace(String, String)
 
         init(rawValue: String) throws {
-            let fullRange = NSRange(location: 0, length: rawValue.count)
-            let nsValue = rawValue as NSString
+            let sanitized = rawValue.trimmingCharacters(in: .whitespaces)
+            let fullRange = NSRange(location: 0, length: sanitized.count)
+            let nsValue = sanitized as NSString
             let pattern = #"^(.*?)(\((.*?)\)){0,1}$"#
 
             let regex = try NSRegularExpression(pattern: pattern)
-            let openParensCount = rawValue.filter { $0 == "(" }.count
-            let closeParensCount = rawValue.filter { $0 == ")" }.count
-            guard let match = regex.matches(in: rawValue, options: [], range: fullRange).first,
+            let openParensCount = sanitized.filter { $0 == "(" }.count
+            let closeParensCount = sanitized.filter { $0 == ")" }.count
+            guard let match = regex.matches(in: sanitized, options: [], range: fullRange).first,
                   openParensCount == closeParensCount else {
-                throw Error.unknownTransformation(rawValue)
+                throw Error.unknownTransformation(sanitized)
             }
 
             let action = nsValue.substring(with: match.range(at: 1))

@@ -275,12 +275,37 @@ class TemplateParserSpec: QuickSpec {
 
                 let template = """
                 {{% FOR textStyle %}}
+                No spaces on sides
                 {{%textStyle.identity.camelcase|lowercase%}}
                 {{%textStyle.identity.snakecase|uppercase%}}
                 {{%textStyle.fontName|uppercase%}}
                 {{%textStyle.fontName|replace(-,_)%}}
                 {{%textStyle.fontName|replace("-","_")%}}
                 {{%textStyle.fontName|lowercase|replace(-,"_")%}}
+
+                Spaces on both sides
+                {{% textStyle.identity.camelcase|lowercase %}}
+                {{% textStyle.identity.snakecase|uppercase %}}
+                {{% textStyle.fontName|uppercase %}}
+                {{% textStyle.fontName|replace(-,_) %}}
+                {{% textStyle.fontName|replace("-","_") %}}
+                {{% textStyle.fontName|lowercase|replace(-,"_") %}}
+
+                Space on left
+                {{% textStyle.identity.camelcase|lowercase%}}
+                {{% textStyle.identity.snakecase|uppercase%}}
+                {{% textStyle.fontName|uppercase%}}
+                {{% textStyle.fontName|replace(-,_)%}}
+                {{% textStyle.fontName|replace("-","_")%}}
+                {{% textStyle.fontName|lowercase|replace(-,"_")%}}
+
+                Space on right
+                {{%textStyle.identity.camelcase|lowercase %}}
+                {{%textStyle.identity.snakecase|uppercase %}}
+                {{%textStyle.fontName|uppercase %}}
+                {{%textStyle.fontName|replace(-,_) %}}
+                {{%textStyle.fontName|replace("-","_") %}}
+                {{%textStyle.fontName|lowercase|replace(-,"_") %}}
                 ==============================================
                 {{% END textStyle %}}
                 """
