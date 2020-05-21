@@ -34,7 +34,7 @@ class ZeplinAPISpec: QuickSpec {
                     let project = Project.mock(type: .faultyJSON)
                     
                     guard case .failure(let error) = project,
-                          case .decodingFailed(let type) = error,
+                          case .decodingFailed(let type, _) = error,
                           type == [Project].self else {
                         fail("Expected decoding falilure, got \(project)")
                         return

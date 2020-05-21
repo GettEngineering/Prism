@@ -185,7 +185,8 @@ private extension ZeplinAPI {
                                                              keyDecodingStrategy: .convertFromSnakeCase)))
                     }
                 } catch {
-                    completion(.failure(Error.decodingFailed(type: Model.self)))
+                    completion(.failure(Error.decodingFailed(type: Model.self,
+                                                             message: error.localizedDescription)))
                 }
             }
             .resume()
@@ -204,7 +205,7 @@ private extension URLRequest {
 extension ZeplinAPI {
     public enum Error: Swift.Error, CustomStringConvertible {
         case invalidRequestURL(path: String)
-        case decodingFailed(type: Decodable.Type)
+        case decodingFailed(type: Decodable.Type, message: String)
         case unknownAPIError(statusCode: Int)
         case apiError(message: String)
         case compoundError(errors: [ZeplinAPI.Error])
@@ -213,8 +214,8 @@ extension ZeplinAPI {
             switch self {
             case .invalidRequestURL(let path):
                 return "Failed constructing URL from path '\(path)'"
-            case .decodingFailed(let type):
-                return "Failed decoding \(type)"
+            case let .decodingFailed(type, description):
+                return "Failed decoding \(type): \(description)"
             case .unknownAPIError(let statusCode):
                 return "An unknown API error occured: HTTP \(statusCode)"
             case .apiError(let message):
