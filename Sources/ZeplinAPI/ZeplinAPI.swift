@@ -186,7 +186,7 @@ private extension ZeplinAPI {
                     }
                 } catch {
                     completion(.failure(Error.decodingFailed(type: Model.self,
-                                                             message: error.localizedDescription)))
+                                                             message: "\(error)")))
                 }
             }
             .resume()
