@@ -63,7 +63,7 @@ class ZeplinAPISpec: QuickSpec {
                     let project = Project.mock(type: .unknownApiError)
                     
                     guard case .failure(let error) = project,
-                          case .unknownAPIError(let statusCode) = error,
+                          case .unknownAPIError(let statusCode, _, _) = error,
                           statusCode == 400 else {
                         fail("Expected Unknown API Error, got \(project)")
                         return

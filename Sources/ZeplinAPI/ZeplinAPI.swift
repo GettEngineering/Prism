@@ -174,7 +174,9 @@ private extension ZeplinAPI {
                         let error = try APIError.decode(from: data)
                         completion(.failure(.apiError(message: "\(error.detail) (\(error.message))")))
                     } catch {
-                        completion(.failure(Error.unknownAPIError(statusCode: response.statusCode)))
+                        completion(.failure(Error.unknownAPIError(statusCode: response.statusCode,
+                                                                  url: request.url?.absoluteString ?? "N/A",
+                                                                  message: "\(error)")))
                     }
                     return
                 }
@@ -206,7 +208,7 @@ extension ZeplinAPI {
     public enum Error: Swift.Error, CustomStringConvertible {
         case invalidRequestURL(path: String)
         case decodingFailed(type: Decodable.Type, message: String)
-        case unknownAPIError(statusCode: Int)
+        case unknownAPIError(statusCode: Int, url: String, message: String)
         case apiError(message: String)
         case compoundError(errors: [ZeplinAPI.Error])
 
@@ -216,8 +218,8 @@ extension ZeplinAPI {
                 return "Failed constructing URL from path '\(path)'"
             case let .decodingFailed(type, description):
                 return "Failed decoding \(type): \(description)"
-            case .unknownAPIError(let statusCode):
-                return "An unknown API error occured: HTTP \(statusCode)"
+            case let .unknownAPIError(statusCode, url, message):
+                return "An unknown HTTP \(statusCode) API error to \(url) occured: \(message)"
             case .apiError(let message):
                 return "Zeplin API Failure: \(message)"
             case .compoundError(let errors):
