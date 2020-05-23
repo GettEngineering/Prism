@@ -42,7 +42,7 @@ public struct TextStyle: Codable, Equatable {
     public let textAlign: Alignment?
     
     /// Text style's raw color
-    public let color: RawColor
+    public let color: RawColor?
 }
 
 public extension TextStyle {

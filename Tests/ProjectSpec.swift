@@ -73,5 +73,27 @@ class ZeplinAPISpec: QuickSpec {
                 }
             }
         }
+
+        describe("Errors") {
+            context("localized description") {
+                it("should have valid descriptions") {
+
+                    let errors: [ZeplinAPI.Error] = [.apiError(message: "API Message failure"),
+                                                     .decodingFailed(type: Project.self, message: "A decoding output"),
+                                                     .invalidRequestURL(path: "http://myfakeurl.com"),
+                                                     .unknownAPIError(statusCode: 418, url: "http://myfakeurl.com", message: "I'm a teapot")]
+
+                    let descriptions = errors.map { "\($0)" }
+                    let expectedDescriptions = [
+                        "Zeplin API Failure: API Message failure",
+                        "Failed decoding Project: A decoding output",
+                        "Failed constructing URL from path 'http://myfakeurl.com'",
+                        "An unknown HTTP 418 API error to http://myfakeurl.com occured: I'm a teapot"
+                    ]
+
+                    expect(descriptions) == expectedDescriptions
+                }
+            }
+        }
     }
 }

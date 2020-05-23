@@ -105,11 +105,17 @@ extension TemplateParser {
             case "identity.snakecase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
             case let token where token.hasPrefix("color."):
-                /// Look for a project color matching the Text Style's raw color.
-                /// If none exists, throw an error for the entire Text Style as "invalid".
-                ///
+                // If a color token is used for a text style with no color,
+                // we throw an error
+                guard let textStyleColor = textStyle.color else {
+                    throw Error.missingColorForTextStyle(textStyle)
+                }
+
+                // Look for a project color matching the Text Style's raw color.
+                // If none exists, throw an error for the entire Text Style as "invalid".
+                //
                 /// Prism does not support Text Styles with unidentified colors.
-                guard let projectColor = colors.first(where: { $0.argbValue == textStyle.color.argbValue }) else {
+                guard let projectColor = colors.first(where: { $0.argbValue == textStyleColor.argbValue }) else {
                     throw Error.missingColorForTextStyle(textStyle)
                 }
 
