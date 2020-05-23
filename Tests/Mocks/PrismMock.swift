@@ -106,7 +106,6 @@ extension Project {
         let group = DispatchGroup()
         group.enter()
         api.getProjects { projects in
-            print(#line, projects)
             outResult = projects
             group.leave()
         }

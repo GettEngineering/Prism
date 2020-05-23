@@ -72,6 +72,54 @@ class TemplateParserSpec: QuickSpec {
             }
         }
 
+        describe("Text Style Color Conditional") {
+            it("should ignore color tokens") {
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let baseProject = try! projectResult.get()
+                let noColorTextStyle = TextStyle(id: "42142141",
+                                                 name: "Fake Style 2",
+                                                 postscriptName: "fake-style2",
+                                                 fontFamily: "fake2",
+                                                 fontSize: 24,
+                                                 fontWeight: 4,
+                                                 fontStyle: "medium",
+                                                 lineHeight: nil,
+                                                 letterSpacing: nil,
+                                                 textAlign: nil,
+                                                 color: nil)
+                let project = ProjectAssets(id: baseProject.id,
+                                            colors: baseProject.colors,
+                                            textStyles: baseProject.textStyles + [noColorTextStyle],
+                                            spacing: baseProject.spacing)
+                let parser = TemplateParser(project: project)
+
+                let template = """
+                /// This file was generated using Prism
+
+                fake line 1
+                fake line 2
+
+                Some Structure {
+                {{% FOR textStyle %}}
+                    {{% textStyle.identity %}}
+                    {{% IF textStyle.color.identity %}}{{%textStyle.color.identity%}}{{% ENDIF %}}
+                    {{% IF textStyle.color %}}{{%textStyle.color.identity%}}{{% ENDIF %}}
+                    {{% IF textstyle.color %}}
+                    {{% textStyle.color.identity.camelcase %}},
+                        {{% textStyle.color.identity.snakecase %}}, {{% textStyle.color.rgb %}}, {{% textStyle.color.argb %}},
+                               {{% textStyle.color.r %}}, {{% textStyle.color.g %}}, {{% textStyle.color.b %}}, {{% textStyle.color.a %}}
+                    {{% ENDIF %}}
+                ============
+                {{% END textStyle %}}
+                }
+                """
+
+                assertSnapshot(matching: try! parser.parse(template: template),
+                               as: .lines,
+                               named: "Color conditional should skip missing colors")
+            }
+        }
+
         describe("Spacing Loop") {
             it("should produce valid output") {
                 let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
@@ -160,6 +208,47 @@ class TemplateParserSpec: QuickSpec {
                     {{% END textStyle %}}
                     """)
                 }.to(throwError(TemplateParser.Error.missingColorForTextStyle(modifiedResult.textStyles[0])))
+            }
+        }
+
+        describe("Text Style color accessed with no color") {
+            it("should throw an error when accessed") {
+                let assets = ProjectAssets(
+                    id: "12345",
+                    colors: [Color(name: "Fake", r: 255, g: 100, b: 100, a: 1.0)],
+                    textStyles: [TextStyle(id: "12321312",
+                                           name: "Fake Style",
+                                           postscriptName: "fake-style",
+                                           fontFamily: "fake",
+                                           fontSize: 16,
+                                           fontWeight: 2,
+                                           fontStyle: "light",
+                                           lineHeight: nil,
+                                           letterSpacing: nil,
+                                           textAlign: nil,
+                                           color: RawColor(r: 255, g: 100, b: 100, a: 1.0)),
+                                 TextStyle(id: "42142141",
+                                           name: "Fake Style 2",
+                                           postscriptName: "fake-style2",
+                                           fontFamily: "fake2",
+                                           fontSize: 24,
+                                           fontWeight: 4,
+                                           fontStyle: "medium",
+                                           lineHeight: nil,
+                                           letterSpacing: nil,
+                                           textAlign: nil,
+                                           color: nil)],
+                    spacing: []
+                )
+
+                let parser = TemplateParser(project: assets)
+                expect {
+                    try parser.parse(template: """
+                    {{% FOR textStyle %}}
+                    Missing color identity: {{%textStyle.color.identity%}}
+                    {{% END textStyle %}}
+                    """)
+                }.to(throwError(TemplateParser.Error.missingColorForTextStyle(assets.textStyles[1])))
             }
         }
 

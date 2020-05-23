@@ -87,7 +87,12 @@ extension TemplateParser {
         let postBody = nsLine.substring(with: blockMatch.range(at: 6))
         let indent = preBody.prefix(while: { $0 == " " })
         
-        let identifier = nsLine.substring(with: blockMatch.range(at: 3))
+        let rawIdentifier = nsLine.substring(with: blockMatch.range(at: 3))
+
+        // We want to give the consumer the option to check `{{% IF textStyle.color %}}`,
+        // but that isn't an actual valid token, so we replace it with an identity token
+        // as an alias for the specific conditional case
+        let identifier = rawIdentifier.lowercased() == "textstyle.color" ? "textStyle.color.identity" : rawIdentifier
         
         // If we have the fourth optional match, it means there's
         // an in-line closing of the block instead of in a new-line

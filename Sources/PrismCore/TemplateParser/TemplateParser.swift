@@ -147,18 +147,33 @@ public class TemplateParser {
                                                end: "ENDIF",
                                                lines: lines,
                                                currentLineIdx: currentLineIdx) {
+                var tokenHasValue = false
                 let token: Token
+
                 if let color = color {
                     token = try Token(rawColorToken: condition.identifier, color: color)
+                    tokenHasValue = token.stringValue(transformations: []) != nil
                 } else if let textStyle = textStyle {
-                    token = try Token(rawTextStyleToken: condition.identifier,
-                                      textStyle: textStyle,
-                                      colors: project.colors)
+                    do {
+                        token = try Token(rawTextStyleToken: condition.identifier,
+                                          textStyle: textStyle,
+                                          colors: project.colors)
+                        tokenHasValue = token.stringValue(transformations: []) != nil
+                    } catch Error.missingColorForTextStyle(let style) {
+                        // Detect the specific error thrown when a text style
+                        // with no color is accessed
+                        //
+                        // In this case, we assume the token has no value.
+                        // In any other case, we simply rethrow the error
+                        guard style.color == nil else {
+                            throw Error.missingColorForTextStyle(style)
+                        }
+
+                        tokenHasValue = false
+                    }
                 } else {
                     throw Error.unknownToken(token: condition.identifier)
                 }
-                
-                let tokenHasValue = token.stringValue(transformations: []) != nil
                 
                 if let preBody = condition.preBody,
                    let postBody = condition.postBody {
@@ -281,8 +296,11 @@ extension TemplateParser {
             case .unknownToken(let token):
                 return "Illegal token in template '\(token)'"
             case .missingColorForTextStyle(let textStyle):
-                let color = textStyle.color
-                return "Text Style \(textStyle.name) has a color RGBA(\(color.r), \(color.g), \(color.b), \(color.a)), but it has no matching color identity"
+                if let color = textStyle.color {
+                    return "Text Style \(textStyle.name) has a color RGBA(\(color.r), \(color.g), \(color.b), \(color.a)), but it has no matching color identity"
+                } else {
+                    return "Text Style '\(textStyle.name)' has no color, but token textStyle.color was used"
+                }
             case .prohibitedIdentities(let identities):
                 return "Prohibited identities '\(identities)' can't be used"
             case .unknownTransformation(let name):
