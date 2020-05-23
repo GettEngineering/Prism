@@ -172,7 +172,7 @@ private extension ZeplinAPI {
                    !(200...299 ~= response.statusCode) {
                     do {
                         let error = try APIError.decode(from: data)
-                        completion(.failure(.apiError(message: "\(error.detail) (\(error.message))")))
+                        completion(.failure(.apiError(message: error.description)))
                     } catch {
                         completion(.failure(Error.unknownAPIError(statusCode: response.statusCode,
                                                                   url: request.url?.absoluteString ?? "N/A",
@@ -230,7 +230,12 @@ extension ZeplinAPI {
     
     // Private struct used to parse Zeplin's API Error Model
     private struct APIError: Codable {
-        let detail: String
         let message: String
+        let detail: String?
+        let code: String?
+
+        var description: String {
+            return "\(message) (detail: \(code ?? "N/A"), code: \(code ?? "N/A"))"
+        }
     }
 }
