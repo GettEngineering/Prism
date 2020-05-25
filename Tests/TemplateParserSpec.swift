@@ -87,7 +87,7 @@ class TemplateParserSpec: QuickSpec {
                     {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
                     {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
                     {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
-                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
                         {{% IF textStyle.alignment %}}
                         This is an attempt of an indented multi-line
                         block containing a text alignment, which is {{%textStyle.alignment%}}
@@ -171,7 +171,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some SpacingSructure {
                     {{% FOR spacing %}}
-                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}} = {{% spacing.value %}}
+                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}} = {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
                     {{% END spacing %}}
                 }
                 """

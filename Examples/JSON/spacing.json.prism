@@ -1,0 +1,5 @@
+{
+    {{% FOR spacing %}}
+    "{{% spacing.identity %}}": {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
+    {{% END spacing %}}
+}

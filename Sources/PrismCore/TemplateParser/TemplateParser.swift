@@ -149,10 +149,10 @@ public class TemplateParser {
                                                  .enumerated()
                                                  .reduce(into: [String]()) { result, spacingAndIndex in
                         let (index, spacing) = spacingAndIndex
-                                                    result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
-                                                                                                   spacing: spacing,
-                                                                                                   loopPosition: position(for: index,
-                                                                                                                          totalItems: numberOfSpacings)))
+                        result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                       spacing: spacing,
+                                                                       loopPosition: position(for: index,
+                                                                                              totalItems: numberOfSpacings)))
                     }
 
                     output.append(contentsOf: spacingLoop)
@@ -216,6 +216,11 @@ public class TemplateParser {
                         guard positionToken.isValid else { throw error }
                         tokenHasValue = positionToken.doesMatch
                     }
+                } else if spacing != nil {
+                    let positionToken = Token.isValidPositionToken(condition.identifier,
+                                                                   for: loopPosition,
+                                                                   base: "spacing")
+                    tokenHasValue = positionToken.doesMatch
                 } else {
                     throw Error.unknownToken(token: condition.identifier)
                 }
@@ -237,12 +242,14 @@ public class TemplateParser {
                         output.append(contentsOf: try recursivelyParse(lines: [final],
                                                                        color: color,
                                                                        textStyle: textStyle,
+                                                                       spacing: spacing,
                                                                        loopPosition: loopPosition))
                     }
                 } else if tokenHasValue {
                     output.append(contentsOf: try recursivelyParse(lines: condition.body,
                                                                    color: color,
                                                                    textStyle: textStyle,
+                                                                   spacing: spacing,
                                                                    loopPosition: loopPosition))
                 }
 
