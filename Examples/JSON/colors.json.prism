@@ -1,0 +1,17 @@
+[
+    {{% FOR color %}}
+    {
+        "identity": {
+            "raw": "{{% color.identity %}}",
+            "camelcase": "{{% color.identity.camelcase %}}",
+            "snakecase": "{{% color.identity.snakecase %}}"
+        },
+        "r": {{% color.r %}},
+        "g": {{% color.g %}},
+        "b": {{% color.b %}},
+        "a": {{% color.a %}},
+        "rgb": "{{% color.rgb %}}",
+        "argb": "{{% color.argb %}}"
+    }{{% IF !color.isLast %}},{{% ENDIF %}}
+    {{% END color %}}
+]

@@ -1,0 +1,32 @@
+[
+    {{% FOR textStyle %}}
+    {
+        "identity": {
+            "raw": "{{% textStyle.identity %}}",
+            "camelcase": "{{% textStyle.identity.camelcase %}}",
+            "snakecase": "{{% textStyle.identity.snakecase %}}"
+        },
+        "fontName": "{{% textStyle.fontName %}}",
+        "font": "{{% textStyle.font %}}",
+        {{% IF textStyle.alignment %}}"alignment": textStyle.alignment,{{% ENDIF %}}
+        {{% IF textStyle.lineHeight %}}"lineHeight": textStyle.lineHeight,{{% ENDIF %}}
+        {{% IF textStyle.letterSpacing %}}"letterSpacing": textStyle.letterSpacing,{{% ENDIF %}}
+        {{% IF textStyle.color %}}
+        "color": {
+            "identity": {
+                "raw": "{{% textStyle.color.identity %}}",
+                "camelcase": "{{% textStyle.color.identity.camelcase %}}",
+                "snakecase": "{{% textStyle.color.identity.snakecase %}}"
+            },
+            "r": {{% textStyle.color.r %}},
+            "g": {{% textStyle.color.g %}},
+            "b": {{% textStyle.color.b %}},
+            "a": {{% textStyle.color.a %}},
+            "rgb": "{{% textStyle.color.rgb %}}",
+            "argb": "{{% textStyle.color.argb %}}"
+        },
+        {{% ENDIF %}}
+        "fontSize": {{% textStyle.fontSize %}}
+    }{{% IF !textStyle.isLast %}},{{% ENDIF %}}
+    {{% END textStyle %}}
+]
