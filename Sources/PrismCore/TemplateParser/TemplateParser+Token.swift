@@ -30,6 +30,9 @@ extension TemplateParser {
         case textStyleFontSize(Float)
         case textStyleIdentity(identity: Project.AssetIdentity,
                                style: Project.AssetIdentity.Style)
+        case textStyleFontWeight(Int)
+        case textStyleFontStyle(String)
+        case textStyleFontStretch(Float)
         case textStyleAlignment(String?)
         case textStyleLineHeight(Float?)
         case textStyleLetterSpacing(Float?)
@@ -98,6 +101,12 @@ extension TemplateParser {
                 self = .textStyleFontName(textStyle.postscriptName)
             case "fontsize":
                 self = .textStyleFontSize(textStyle.fontSize)
+            case "fontweight":
+                self = .textStyleFontWeight(textStyle.fontWeight)
+            case "fontstyle":
+                self = .textStyleFontStyle(textStyle.fontStyle)
+            case "fontstretch":
+                self = .textStyleFontStretch(textStyle.fontStretch)
             case "identity":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .raw)
             case "identity.camelcase":
@@ -185,6 +194,12 @@ extension TemplateParser {
                 baseString = name
             case .textStyleFontSize(let size):
                 baseString = "\(size)"
+            case .textStyleFontWeight(let weight):
+                baseString = "\(weight)"
+            case .textStyleFontStyle(let style):
+                baseString = "\(style)"
+            case .textStyleFontStretch(let stretch):
+                baseString = "\(stretch)"
             case .textStyleAlignment(let alignment):
                 baseString = alignment
             case .textStyleLetterSpacing(let spacing):

@@ -31,6 +31,9 @@ public struct TextStyle: Codable, Equatable {
     
     /// Text style's font style
     public let fontStyle: String
+
+    /// Text style's font stretch form
+    public let fontStretch: Float
     
     /// Text style's line height
     public let lineHeight: Float?

@@ -54,7 +54,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some Structure {
                     {{% FOR textStyle %}}
-                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
                         {{% IF textStyle.alignment %}}
                         This is an attempt of an indented multi-line
                         block containing a text alignment, which is {{%textStyle.alignment%}}
@@ -83,6 +83,7 @@ class TemplateParserSpec: QuickSpec {
                                                  fontSize: 24,
                                                  fontWeight: 4,
                                                  fontStyle: "medium",
+                                                 fontStretch: 1,
                                                  lineHeight: nil,
                                                  letterSpacing: nil,
                                                  textAlign: nil,
@@ -223,6 +224,7 @@ class TemplateParserSpec: QuickSpec {
                                            fontSize: 16,
                                            fontWeight: 2,
                                            fontStyle: "light",
+                                           fontStretch: 0.75,
                                            lineHeight: nil,
                                            letterSpacing: nil,
                                            textAlign: nil,
@@ -234,6 +236,7 @@ class TemplateParserSpec: QuickSpec {
                                            fontSize: 24,
                                            fontWeight: 4,
                                            fontStyle: "medium",
+                                           fontStretch: 1.25,
                                            lineHeight: nil,
                                            letterSpacing: nil,
                                            textAlign: nil,
