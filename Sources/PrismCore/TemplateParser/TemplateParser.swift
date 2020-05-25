@@ -219,6 +219,11 @@ public class TemplateParser {
                 } else {
                     throw Error.unknownToken(token: condition.identifier)
                 }
+
+                // Flip the conditional if the block is inverted (e.g. has a `!` prefix)
+                if condition.isInverted {
+                    tokenHasValue.toggle()
+                }
                 
                 if let preBody = condition.preBody,
                    let postBody = condition.postBody {
