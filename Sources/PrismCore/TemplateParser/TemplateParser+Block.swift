@@ -50,6 +50,24 @@ extension TemplateParser {
     }
 }
 
+// MARK: - Loop Position
+extension TemplateParser.Block {
+    /// Position of element inside containing loop
+    enum LoopPosition {
+        /// First element in the loop
+        case first
+
+        /// Regular element in the middle of the loop
+        case middle
+
+        /// Last element in the loop
+        case last
+
+        /// Single element in in the loop
+        case single
+    }
+}
+
 // MARK: - Detection
 extension TemplateParser {
     /// Attempt to detect a block identified by a keyword
@@ -72,7 +90,8 @@ extension TemplateParser {
 
         // Find occurences of block in the template
         // Find matching END
-        let blockRegex = try NSRegularExpression(pattern: #"(^(.*))?\{\{%\ "# + keyword + #" (.*?) %\}\}((.*?)\{\{%\ "# + (end ?? "END \\2") + #" %\}\})?(.*?$)?"#)
+        
+        let blockRegex = try NSRegularExpression(pattern: #"\{\{\% "# + keyword + #" (.*?) %\}\}((.*?)\{\{\% "# + (end ?? "END \\2") + #" \%\}\})?"#)
 
         // Detected the provided loop
         guard let blockMatch = blockRegex.firstMatch(in: currentLine,
@@ -82,12 +101,17 @@ extension TemplateParser {
         }
         
         let nsLine = currentLine as NSString
-        let preBodyRange = blockMatch.range(at: 1)
-        let preBody = preBodyRange.location == NSNotFound ? "" : nsLine.substring(with: preBodyRange)
-        let postBody = nsLine.substring(with: blockMatch.range(at: 6))
+        let fullMatchRange = blockMatch.range(at: 0)
+        let fullMatch = nsLine.substring(with: fullMatchRange)
+        let pieces = currentLine.components(separatedBy: fullMatch)
+
+        guard pieces.count == 2 else { return nil }
+
+        let preBody = pieces[0]
+        let postBody = pieces[1]
         let indent = preBody.prefix(while: { $0 == " " })
         
-        let rawIdentifier = nsLine.substring(with: blockMatch.range(at: 3))
+        let rawIdentifier = nsLine.substring(with: blockMatch.range(at: 1))
 
         // We want to give the consumer the option to check `{{% IF textStyle.color %}}`,
         // but that isn't an actual valid token, so we replace it with an identity token
@@ -96,8 +120,8 @@ extension TemplateParser {
         
         // If we have the fourth optional match, it means there's
         // an in-line closing of the block instead of in a new-line
-        if blockMatch.range(at: 4).location != NSNotFound {
-            let body = nsLine.substring(with: blockMatch.range(at: 5))
+        if blockMatch.range(at: 2).location != NSNotFound {
+            let body = nsLine.substring(with: blockMatch.range(at: 3))
             return Block(body: [body],
                          preBody: preBody,
                          postBody: postBody,
