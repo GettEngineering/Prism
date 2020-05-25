@@ -55,7 +55,7 @@ extension TemplateParser {
             }
             
             let colorToken = String(cleanToken.dropFirst(6))
-            
+
             switch colorToken {
             case "r":
                 self = .colorRed(color.r)
@@ -165,6 +165,35 @@ extension TemplateParser {
                 self = .spacingValue(spacing.value)
             default:
                 throw Error.unknownToken(token: rawSpacingToken)
+            }
+        }
+
+        /// Determine if a provided token is a valid loop position token
+        /// e.g. "isFirst", "isLast" based on the provided `LoopPosition`
+        ///
+        /// - parameter token: Raw string token
+        /// - parameter position: Loop position object
+        /// - parameter base: Base asset, e.g. "color", "textStyle", "spacing"
+        ///
+        /// - returns: A tuple where the first boolean indicates this is a valid position token,
+        ///            and the second indicates it correctly matches the provided block position
+        static func isValidPositionToken(_ token: String,
+                                         for position: Block.LoopPosition,
+                                         base: String) -> (isValid: Bool, doesMatch: Bool) {
+            let pieces = token.lowercased().components(separatedBy: ".")
+            guard pieces.count == 2,
+                  pieces[0] == base.lowercased() else { return (false, false) }
+
+            let rawPosition = pieces[1]
+            let isValid = rawPosition == "isfirst" || rawPosition == "islast"
+
+            switch (rawPosition, position) {
+            case ("isfirst", .first), ("isfirst", .single):
+                return (isValid, true)
+            case ("islast", .last), ("islast", .single):
+                return (isValid, true)
+            default:
+                return (isValid, false)
             }
         }
 

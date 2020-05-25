@@ -90,9 +90,24 @@ public class TemplateParser {
     private func recursivelyParse(lines: [String],
                                   color: Color? = nil,
                                   textStyle: TextStyle? = nil,
-                                  spacing: Spacing? = nil) throws -> [String] {
+                                  spacing: Spacing? = nil,
+                                  loopPosition: Block.LoopPosition = .middle) throws -> [String] {
         var output = [String]()
         var currentLineIdx = 0
+
+        func position(for index: Int, totalItems: Int) -> Block.LoopPosition {
+            guard totalItems > 1 else { return .single }
+            let lastIndex = totalItems - 1
+
+            switch index {
+            case 0:
+                return .first
+            case lastIndex:
+                return .last
+            default:
+                return .middle
+            }
+        }
 
         while currentLineIdx < lines.count {
             let currentLine = lines[currentLineIdx]
@@ -103,26 +118,41 @@ public class TemplateParser {
                                               currentLineIdx: currentLineIdx) {
                 switch forBlock.identifier {
                 case "color":
+                    let numberOfColors = project.colors.count
                     let colorLoop = try project.colors
-                                               .reduce(into: [String]()) { result, color in
-                                                result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
-                                                                                               color: color))
+                                               .enumerated()
+                                               .reduce(into: [String]()) { result, colorAndIndex in
+                        let (index, color) = colorAndIndex
+                        result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                       color: color,
+                                                                       loopPosition: position(for: index,
+                                                                                              totalItems: numberOfColors)))
                     }
                     
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
+                    let numberOfTextStyles = project.textStyles.count
                     let textStyleLoop = try project.textStyles
-                                                   .reduce(into: [String]()) { result, textStyle in
+                                                   .enumerated()
+                                                   .reduce(into: [String]()) { result, textStyleAndIndex in
+                        let (index, textStyle) = textStyleAndIndex
                         result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
-                                                                       textStyle: textStyle))
+                                                                       textStyle: textStyle,
+                                                                       loopPosition: position(for: index,
+                                                                                              totalItems: numberOfTextStyles)))
                     }
 
                     output.append(contentsOf: textStyleLoop)
                 case "spacing":
+                    let numberOfSpacings = project.spacing.count
                     let spacingLoop = try project.spacing
-                                                 .reduce(into: [String]()) { result, spacing in
-                        result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
-                                                                       spacing: spacing))
+                                                 .enumerated()
+                                                 .reduce(into: [String]()) { result, spacingAndIndex in
+                        let (index, spacing) = spacingAndIndex
+                                                    result.append(contentsOf: try recursivelyParse(lines: forBlock.body,
+                                                                                                   spacing: spacing,
+                                                                                                   loopPosition: position(for: index,
+                                                                                                                          totalItems: numberOfSpacings)))
                     }
 
                     output.append(contentsOf: spacingLoop)
@@ -148,17 +178,29 @@ public class TemplateParser {
                                                lines: lines,
                                                currentLineIdx: currentLineIdx) {
                 var tokenHasValue = false
-                let token: Token
+                let token: Token?
 
                 if let color = color {
-                    token = try Token(rawColorToken: condition.identifier, color: color)
-                    tokenHasValue = token.stringValue(transformations: []) != nil
+                    let positionToken = Token.isValidPositionToken(condition.identifier,
+                                                                   for: loopPosition,
+                                                                   base: "color")
+
+                    do {
+                        token = try Token(rawColorToken: condition.identifier, color: color)
+                        tokenHasValue = token?.stringValue(transformations: []) != nil
+                    } catch {
+                        guard positionToken.isValid else { throw error }
+                        tokenHasValue = positionToken.doesMatch
+                    }
                 } else if let textStyle = textStyle {
+                    let positionToken = Token.isValidPositionToken(condition.identifier,
+                                                                   for: loopPosition,
+                                                                   base: "textStyle")
                     do {
                         token = try Token(rawTextStyleToken: condition.identifier,
                                           textStyle: textStyle,
                                           colors: project.colors)
-                        tokenHasValue = token.stringValue(transformations: []) != nil
+                        tokenHasValue = token?.stringValue(transformations: []) != nil
                     } catch Error.missingColorForTextStyle(let style) {
                         // Detect the specific error thrown when a text style
                         // with no color is accessed
@@ -170,6 +212,9 @@ public class TemplateParser {
                         }
 
                         tokenHasValue = false
+                    } catch {
+                        guard positionToken.isValid else { throw error }
+                        tokenHasValue = positionToken.doesMatch
                     }
                 } else {
                     throw Error.unknownToken(token: condition.identifier)
@@ -186,12 +231,14 @@ public class TemplateParser {
                     if !final.trimmingCharacters(in: .whitespaces).isEmpty {
                         output.append(contentsOf: try recursivelyParse(lines: [final],
                                                                        color: color,
-                                                                       textStyle: textStyle))
+                                                                       textStyle: textStyle,
+                                                                       loopPosition: loopPosition))
                     }
                 } else if tokenHasValue {
                     output.append(contentsOf: try recursivelyParse(lines: condition.body,
                                                                    color: color,
-                                                                   textStyle: textStyle))
+                                                                   textStyle: textStyle,
+                                                                   loopPosition: loopPosition))
                 }
 
                 currentLineIdx = condition.endLine + 1
