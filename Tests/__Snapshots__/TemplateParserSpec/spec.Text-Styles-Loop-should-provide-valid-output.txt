@@ -4,7 +4,8 @@ fake line 1
 fake line 2
 
 Some Structure {
-    line height is 26, Base Heading, baseHeading, base_heading = LucidaGrande-Bold, 26.0, 700, normal, 1.0, green, green, green, letter spacing is: 0.4, #62a60e, #ff62a60e, 98, 166, 14, 1.00
+    This is the first text style
+    line height is 26, Base Heading, baseHeading, base_heading = LucidaGrande-Bold, 26.0, green, green, green, letter spacing is: 0.4, #62a60e, #ff62a60e, 98, 166, 14, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
     line height is 22.53, Base Subhead, baseSubhead, base_subhead = LucidaGrande-Bold, 22.0, 700, normal, 1.0, red, red, red, letter spacing is: 0.49, #a60e0e, #ffa60e0e, 166, 14, 14, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
@@ -18,7 +19,8 @@ Some Structure {
         We can also access optional stuff without an IF, which will result in an empty string like so: right
     Highlight, highlight, highlight = AppleGothic, 18.0, 400, normal, 1.0, purple, purple, purple, #a30ea6, #ffa30ea6, 163, 14, 166, 1.00
         We can also access optional stuff without an IF, which will result in an empty string like so: 
-    line height is 24, Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, 700, normal, 1.0, Clear Reddish, clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
+    This is the last text style
+    line height is 24, Large Heading, largeHeading, large_heading = MyCustomFont-Light, 32.0, Clear Reddish, clearReddish, clear_reddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
         This is an attempt of an indented multi-line
         block containing a text alignment, which is left
         and also capable of inlining another condition

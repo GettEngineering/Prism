@@ -1,0 +1,9 @@
+/// This file was generated using Prism
+
+fake line 1
+fake line 2
+
+Some Structure {
+    This is the first color
+    This is the last color
+}
