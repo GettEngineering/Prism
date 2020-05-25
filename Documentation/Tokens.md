@@ -10,8 +10,17 @@ Tokens live inside your ***.prism** templates and follow the format `{{%TOKEN%}}
 |------------------|--------------------------------------------------------------------------------------------------|
 | `FOR collection` | Iterate over asset collections, for example `FOR textStyle`, `FOR color`, or `FOR spacing`       |
 | `END collection` | End iterating over asset collections, for example `END textStyle`, `END color`, or `END spacing` |
-| `IF token`       | Confirm a token is available, for example `IF textStyle.alignment`                               |
+| `IF token`       | Confirm a token is available, for example `IF textStyle.alignment`. Conditions can also be inverted if they are prefixed by `!`, for example `IF !textStyle.alignment` |
 | `ENDIF`          | Closes an `IF` block                                                                             |
+
+## Loop Tokens
+
+These tokens specifically work in the scope of a loop (e.g. `FOR textStyle`)
+
+| Token            | Description                                                                                          |
+|------------------|------------------------------------------------------------------------------------------------------|
+| `isFirst`        | Determine whether or not the current item is the first in a loop (e.g. `{{% IF color.isFirst %}}`    |
+| `isLast`         | Determine whether or not the current item is the last in a loop (e.g. `{{% IF textStyle.isLast %}}`  |
 
 ## Color Tokens
 

@@ -84,13 +84,18 @@ class TemplateParserSpec: QuickSpec {
                 Some Structure {
                     {{% FOR textStyle %}}
                     {{% IF textStyle.isFirst %}}This is the first text style{{% ENDIF %}}
+                    {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
                     {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
+                    {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
                     {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
                         {{% IF textStyle.alignment %}}
                         This is an attempt of an indented multi-line
                         block containing a text alignment, which is {{%textStyle.alignment%}}
                         and also capable of inlining another condition
                         like {{% IF textStyle.color.argb %}}getting the ARGB value {{%textStyle.color.argb%}}, right?{{% ENDIF %}}
+                        {{% ENDIF %}}
+                        {{% IF !textStyle.alignment %}}
+                        The text style {{% textStyle.identity %}} has no alignment
                         {{% ENDIF %}}
                         We can also access optional stuff without an IF, which will result in an empty string like so: {{%textStyle.alignment%}}
                     {{% END textStyle %}}
