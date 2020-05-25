@@ -47,6 +47,10 @@ extension TemplateParser {
         /// which is used by the parser to move on to the next
         /// piece of content after the block is processed
         let endLine: Int
+
+        /// Whether or nor the block is inverted. This is specifically used
+        /// in an IF codition, so you could do `IF !condition`
+        let isInverted: Bool
     }
 }
 
@@ -113,10 +117,15 @@ extension TemplateParser {
         
         let rawIdentifier = nsLine.substring(with: blockMatch.range(at: 1))
 
+        // if the first character of the token is `!`, we consider this to be an
+        // inverted block. This is used to flip the condition of an `IF` block, for example
+        let isInverted = rawIdentifier.first == "!"
+        let cleanIdentifier = isInverted ? String(rawIdentifier.dropFirst()) : rawIdentifier
+
         // We want to give the consumer the option to check `{{% IF textStyle.color %}}`,
         // but that isn't an actual valid token, so we replace it with an identity token
         // as an alias for the specific conditional case
-        let identifier = rawIdentifier.lowercased() == "textstyle.color" ? "textStyle.color.identity" : rawIdentifier
+        let identifier = cleanIdentifier.lowercased() == "textstyle.color" ? "textStyle.color.identity" : cleanIdentifier
         
         // If we have the fourth optional match, it means there's
         // an in-line closing of the block instead of in a new-line
@@ -126,7 +135,8 @@ extension TemplateParser {
                          preBody: preBody,
                          postBody: postBody,
                          identifier: identifier,
-                         endLine: currentLineIdx)
+                         endLine: currentLineIdx,
+                         isInverted: isInverted)
         }
         
         // Otherwise, we look for the next line that closes
@@ -143,6 +153,7 @@ extension TemplateParser {
                      preBody: nil,
                      postBody: nil,
                      identifier: identifier,
-                     endLine: blockEnd)
+                     endLine: blockEnd,
+                     isInverted: isInverted)
     }
 }
