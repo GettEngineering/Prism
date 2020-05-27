@@ -234,7 +234,7 @@ extension TemplateParser {
             case .textStyleFontName(let name):
                 baseString = name
             case .textStyleFontSize(let size):
-                baseString = "\(size)"
+                baseString = size.roundedToNearest()
             case .textStyleFontWeight(let weight):
                 baseString = "\(weight)"
             case .textStyleFontStyle(let style):
