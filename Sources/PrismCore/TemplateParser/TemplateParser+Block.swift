@@ -67,7 +67,7 @@ extension TemplateParser.Block {
         /// Last element in the loop
         case last
 
-        /// Single element in in the loop
+        /// Single element in the loop
         case single
     }
 }

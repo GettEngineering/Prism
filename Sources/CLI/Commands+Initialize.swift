@@ -73,7 +73,7 @@ struct Initialize: ParsableCommand {
         print("🔎 Found \(projects.count) projects:")
         
         for (idx, project) in projects.enumerated() {
-            print("  \(idx+1)) \(project.platform.emoji) \(project.name) (\(project.numberOfColors) colors, \(project.numberOfTextStyles) text styles)")
+            print("  \(idx+1)) \(project.platform.emoji) \(project.name)")
         }
         
         let projectNumber = UserInput(message: "Pick a project").request(range: 1...projects.count)
