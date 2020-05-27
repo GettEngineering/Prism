@@ -87,7 +87,7 @@ class TemplateParserSpec: QuickSpec {
                     {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
                     {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
                     {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
-                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}}, {{%textStyle.identity.kebabcase%}}, {{%textstyle.identity.pascalcase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.identity.kebabcase%}}, {{%textStyle.color.identity.pascalcase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
                         {{% IF textStyle.alignment %}}
                         This is an attempt of an indented multi-line
                         block containing a text alignment, which is {{%textStyle.alignment%}}
@@ -143,7 +143,7 @@ class TemplateParserSpec: QuickSpec {
                     {{% IF textStyle.color %}}{{%textStyle.color.identity%}}{{% ENDIF %}}
                     {{% IF textstyle.color %}}
                     {{% textStyle.color.identity.camelcase %}},
-                        {{% textStyle.color.identity.snakecase %}}, {{% textStyle.color.rgb %}}, {{% textStyle.color.argb %}},
+                        {{% textStyle.color.identity.snakecase %}}, {{% textStyle.color.identity.kebabcase %}}, {{% textStyle.color.identity.pascalcase %}}, {{% textStyle.color.rgb %}}, {{% textStyle.color.argb %}},
                                {{% textStyle.color.r %}}, {{% textStyle.color.g %}}, {{% textStyle.color.b %}}, {{% textStyle.color.a %}}
                     {{% ENDIF %}}
                 ============
@@ -171,7 +171,7 @@ class TemplateParserSpec: QuickSpec {
 
                 Some SpacingSructure {
                     {{% FOR spacing %}}
-                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}} = {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
+                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}}, {{%spacing.identity.kebabcase%}}, {{%spacing.identity.pascalcase%}} = {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
                     {{% END spacing %}}
                 }
                 """
@@ -385,12 +385,15 @@ class TemplateParserSpec: QuickSpec {
                 it("should return nil token") {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
                     let project = try! projectResult.get()
-                    expect { try TemplateParser.Token(rawTextStyleToken: "textStyle.color.identity.camelcase",
-                                                      textStyle: project.textStyles[0],
-                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
-                    expect { try TemplateParser.Token(rawTextStyleToken: "textStyle.color.identity.snakecase",
-                                                      textStyle: project.textStyles[0],
-                                                      colors: []) }.to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
+                    for style in Project.AssetIdentity.Style.allCases.dropFirst() {
+                        expect { try TemplateParser
+                            .Token(rawTextStyleToken: "textStyle.color.identity.\(style.rawValue)",
+                                   textStyle: project.textStyles[0],
+                                   colors: [])
+                            }
+                        .to(throwError(TemplateParser.Error.missingColorForTextStyle(project.textStyles[0])))
+                    }
+                    
                 }
             }
         }

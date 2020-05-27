@@ -75,6 +75,10 @@ extension TemplateParser {
                 self = .colorIdentity(identity: color.identity, style: .camelcase)
             case "identity.snakecase":
                 self = .colorIdentity(identity: color.identity, style: .snakecase)
+            case "identity.kebabcase":
+                self = .colorIdentity(identity: color.identity, style: .kebabcase)
+            case "identity.pascalcase":
+                self = .colorIdentity(identity: color.identity, style: .pascalcase)
             default:
                 throw Error.unknownToken(token: rawColorToken)
             }
@@ -113,6 +117,10 @@ extension TemplateParser {
                 self = .textStyleIdentity(identity: textStyle.identity, style: .camelcase)
             case "identity.snakecase":
                 self = .textStyleIdentity(identity: textStyle.identity, style: .snakecase)
+            case "identity.kebabcase":
+                self = .textStyleIdentity(identity: textStyle.identity, style: .kebabcase)
+            case "identity.pascalcase":
+                self = .textStyleIdentity(identity: textStyle.identity, style: .pascalcase)
             case let token where token.hasPrefix("color."):
                 // If a color token is used for a text style with no color,
                 // we throw an error
@@ -161,6 +169,10 @@ extension TemplateParser {
                 self = .spacingIdentity(identity: spacing.identity, style: .camelcase)
             case "identity.snakecase":
                 self = .spacingIdentity(identity: spacing.identity, style: .snakecase)
+            case "identity.kebabcase":
+                self = .spacingIdentity(identity: spacing.identity, style: .kebabcase)
+            case "identity.pascalcase":
+                self = .spacingIdentity(identity: spacing.identity, style: .pascalcase)
             case "value":
                 self = .spacingValue(spacing.value)
             default:

@@ -63,6 +63,42 @@ class AssetIdentitySpec: QuickSpec {
                     expect(processedIdentities) == expectedIdentities
                 }
             }
+
+            context("kebab case") {
+                it("should return lowercased identities with dashes") {
+                    let expectedIdentities = [
+                        "a-great-color",
+                        "sky-red",
+                        "title-m-regular",
+                        "accent-blue",
+                        "primary-red",
+                        "my-color-2",
+                        "my-color3",
+                        "my-awesome-color"
+                    ]
+
+                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.kebabcase.identifier(for: $0) }
+                    expect(processedIdentities) == expectedIdentities
+                }
+            }
+
+            context("pascal case") {
+                it("should return pascal-cased identities") {
+                    let expectedIdentities = [
+                        "AGreatColor",
+                        "SkyRed",
+                        "TitleMRegular",
+                        "AccentBlue",
+                        "PrimaryRed",
+                        "MyColor2",
+                        "MyColor3",
+                        "MyAwesomeColor"
+                    ]
+
+                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.pascalcase.identifier(for: $0) }
+                    expect(processedIdentities) == expectedIdentities
+                }
+            }
         }
 
         describe("color identities") {
@@ -110,7 +146,7 @@ class AssetIdentitySpec: QuickSpec {
                 let identity = Project.AssetIdentity(name: "")
                 
                 let all = Project.AssetIdentity.Style.allCases.map { $0.identifier(for: identity) }
-                expect(all) == ["", "", ""]
+                expect(all.allSatisfy { $0 == "" }).to(beTrue())
             }
         }
     }
