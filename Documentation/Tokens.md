@@ -35,6 +35,8 @@ These tokens specifically work in the scope of a loop (e.g. `FOR textStyle`)
 | `color.identity`           | The identity/name of the color as defined on Zeplin                               |
 | `color.identity.camelcase` | The identity/name of the color, formatted in camel case (e.g. `fancyLightBlue`)   |
 | `color.identity.snakecase` | The identity/name of the color, formatted in snake case (e.g. `fancy_light_blue`) |
+| `color.identity.kebabcase` | The identity/name of the color, formatted in snake case (e.g. `fancy-light-blue`) |
+| `color.identity.pascalcase`| The identity/name of the color, formatted in pascal case (e.g. `FancyLightBlue`)  |
 
 ## Text Style Tokens
 
@@ -49,6 +51,8 @@ These tokens specifically work in the scope of a loop (e.g. `FOR textStyle`)
 | `textStyle.identity`           | The identity/name of the text style as defined on Zeplin                            |
 | `textStyle.identity.camelcase` | The identity/name of the text style, formatted in camel case (e.g. `myTextStyle`)   |
 | `textStyle.identity.snakecase` | The identity/name of the text style, formatted in snake case (e.g. `my_text_style`) |
+| `textStyle.identity.kebabcase` | The identity/name of the text style, formatted in snake case (e.g. `my-text-style`) |
+| `textStyle.identity.pascalcase`| The identity/name of the text style, formatted in camel case (e.g. `MyTextStyle`)   |
 | `textStyle.color.*`            | All color tokens from the section above can be used for a TextStyle's color         |
 
 ## Spacing Tokens
@@ -59,3 +63,5 @@ These tokens specifically work in the scope of a loop (e.g. `FOR textStyle`)
 | `spacing.identity`           | The identity/name of the spacing token, as defined on Zeplin                      |
 | `spacing.identity.camelcase` | The identity/name of the spacing token, formatted in camel case                   |
 | `spacing.identity.snakecase` | The identity/name of the spacing token, formatted in snake case                   |
+| `spacing.identity.kebabcase` | The identity/name of the spacing token, formatted in kebab case                   |
+| `spacing.identity.pascalcase`| The identity/name of the spacing token, formatted in pascal case                  |

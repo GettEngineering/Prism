@@ -8,42 +8,42 @@ Some Structure {
     green
     green
     green,
-        green, #62a60e, #ff62a60e,
+        green, green, Green, #62a60e, #ff62a60e,
                98, 166, 14, 1.00
 ============
     Base Subhead
     red
     red
     red,
-        red, #a60e0e, #ffa60e0e,
+        red, red, Red, #a60e0e, #ffa60e0e,
                166, 14, 14, 1.00
 ============
     Body
     blue
     blue
     blue,
-        blue, #0e28a6, #ff0e28a6,
+        blue, blue, Blue, #0e28a6, #ff0e28a6,
                14, 40, 166, 1.00
 ============
     Body 2
     Blue Sky
     Blue Sky
     blueSky,
-        blue_sky, #62b6df, #ff62b6df,
+        blue_sky, blue-sky, BlueSky, #62b6df, #ff62b6df,
                98, 182, 223, 1.00
 ============
     Highlight
     purple
     purple
     purple,
-        purple, #a30ea6, #ffa30ea6,
+        purple, purple, Purple, #a30ea6, #ffa30ea6,
                163, 14, 166, 1.00
 ============
     Large Heading
     Clear Reddish
     Clear Reddish
     clearReddish,
-        clear_reddish, #df6369, #ccdf6369,
+        clear_reddish, clear-reddish, ClearReddish, #df6369, #ccdf6369,
                223, 99, 105, 0.80
 ============
     Fake Style 2

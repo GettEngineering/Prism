@@ -4,11 +4,11 @@ fake line 1
 fake line 2
 
 Some SpacingSructure {
-    spacing-xxs, spacingXXS, spacing_xxs = 4,
-    spacing-xs, spacingXS, spacing_xs = 8,
-    spacing-s, spacingS, spacing_s = 12,
-    spacing-m, spacingM, spacing_m = 16,
-    spacing-l, spacingL, spacing_l = 24,
-    spacing-xl, spacingXL, spacing_xl = 32,
-    spacing-xxl, spacingXXL, spacing_xxl = 40.2
+    spacing-xxs, spacingXXS, spacing_xxs, spacing-xxs, SpacingXXS = 4,
+    spacing-xs, spacingXS, spacing_xs, spacing-xs, SpacingXS = 8,
+    spacing-s, spacingS, spacing_s, spacing-s, SpacingS = 12,
+    spacing-m, spacingM, spacing_m, spacing-m, SpacingM = 16,
+    spacing-l, spacingL, spacing_l, spacing-l, SpacingL = 24,
+    spacing-xl, spacingXL, spacing_xl, spacing-xl, SpacingXL = 32,
+    spacing-xxl, spacingXXL, spacing_xxl, spacing-xxl, SpacingXXL = 40.2
 }

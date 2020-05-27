@@ -32,6 +32,19 @@ public extension Project {
                 .joined(separator: "_")
         }
 
+        private var kebabcased: String {
+            words
+                .map { $0.lowercased() }
+                .joined(separator: "-")
+        }
+
+        private var pascalcased: String {
+            guard !camelcased.isEmpty else { return "" }
+            
+            return camelcased[camelcased.startIndex].uppercased() +
+                   camelcased[camelcased.index(after: camelcased.startIndex)...]
+        }
+
         /// A camelCased version of the name
         private var camelcased: String {
             /// A set of terms that sould have uppercased presentattion
@@ -104,6 +117,12 @@ public extension Project.AssetIdentity {
         /// Snake-cased identifier. "A color 3" => "a_color_3"
         case snakecase
 
+        /// Kebab-cased identifier. "A color 3" => "a-color-3"
+        case kebabcase
+
+        /// Pascal-cased identifieir "hey color 3" => "HeyColor3"
+        case pascalcase
+
         public func identifier(for identity: Project.AssetIdentity) -> String {
             switch self {
             case .raw:
@@ -112,6 +131,10 @@ public extension Project.AssetIdentity {
                 return identity.snakecased
             case .camelcase:
                 return identity.camelcased
+            case .kebabcase:
+                return identity.kebabcased
+            case .pascalcase:
+                return identity.pascalcased
             }
         }
     }
