@@ -16,7 +16,8 @@ import ZeplinAPI
 struct Generate: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "generate",
-        abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
+        abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths",
+        subcommands: [GenerateAssetCatalog.self]
     )
     
     @Option(name: .shortAndLong, help: "Zeplin Project ID to generate text styles and colors from. Overrides any config files.")
@@ -84,10 +85,10 @@ struct Generate: ParsableCommand {
         let prism = Prism(jwtToken: jwtToken)
         let sema = DispatchSemaphore(value: 0)
 
-        let rawTemplatesPath = templatesPath ?? config?.templatesPath ?? prismFolder
+        let rawTemplatesPath = templatesPath ?? config.templatesPath ?? prismFolder
         let templatesPath = rawTemplatesPath == "/" ? String(rawTemplatesPath.dropLast()) : rawTemplatesPath
         
-        guard let rawOutputPath = outputPath ?? config?.outputPath else {
+        guard let rawOutputPath = outputPath ?? config.outputPath else {
             throw CommandError.outputFolderMissing
         }
 
