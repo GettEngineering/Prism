@@ -108,45 +108,51 @@ public extension ZeplinAPI {
     /// Fetch all colors associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch colors for
+    /// - parameter linkedProject: The styleguide's linked project
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///
     func getStyleguideColors(for styleguideID: Styleguide.ID,
+                             linkedProject: Project.ID,
                              page: Int = 1,
                              completion: @escaping (Result<[Color], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
         request(model: [Color].self,
-                from: "styleguides/\(styleguideID)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+                from: "styleguides/\(styleguideID)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
                 completion: completion)
     }
     
     /// Fetch all text styles associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch text styles for
+    /// - parameter linkedProject: The styleguide's linked project
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
     func getStyleguideTextStyles(for styleguideID: Styleguide.ID,
+                                 linkedProject: Project.ID,
                                  page: Int = 1,
                                  completion: @escaping (Result<[TextStyle], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
         request(model: [TextStyle].self,
-                from: "styleguides/\(styleguideID)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+                from: "styleguides/\(styleguideID)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
                 completion: completion)
     }
 
     /// Fetch all spacing tokens associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch spacing tokens for
+    /// - parameter linkedProject: The styleguide's linked project
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Spacing`s, or a `ZeplinAPI.Error` error
     func getStyleguideSpacings(for styleguideID: Styleguide.ID,
+                               linkedProject: Project.ID,
                                page: Int = 1,
                                completion: @escaping (Result<[Spacing], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
         request(model: [Spacing].self,
-                from: "styleguides/\(styleguideID)/spacing_tokens?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+                from: "styleguides/\(styleguideID)/spacing_tokens?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
                 completion: completion)
     }
 }

@@ -59,7 +59,10 @@ public class Prism {
                     group.enter()
                     api.getPagedItems(
                         work: { page, api, completion in
-                            api.getStyleguideColors(for: styleguide.id, page: page, completion: completion)
+                            api.getStyleguideColors(for: styleguide.id,
+                                                    linkedProject: projectId,
+                                                    page: page,
+                                                    completion: completion)
                         },
                         completion: { result in
                             result.appendValuesOrErrors(values: &colors, errors: &errors)
@@ -70,7 +73,10 @@ public class Prism {
                     group.enter()
                     api.getPagedItems(
                         work: { page, api, completion in
-                            api.getStyleguideTextStyles(for: styleguide.id, page: page, completion: completion)
+                            api.getStyleguideTextStyles(for: styleguide.id,
+                                                        linkedProject: projectId,
+                                                        page: page,
+                                                        completion: completion)
                         },
                         completion: { result in
                             result.appendValuesOrErrors(values: &textStyles, errors: &errors)
@@ -81,7 +87,10 @@ public class Prism {
                     group.enter()
                     api.getPagedItems(
                         work: { page, api, completion in
-                            api.getStyleguideSpacings(for: styleguide.id, page: page, completion: completion)
+                            api.getStyleguideSpacings(for: styleguide.id,
+                                                      linkedProject: projectId,
+                                                      page: page,
+                                                      completion: completion)
                         },
                         completion: { result in
                             result.appendValuesOrErrors(values: &spacings, errors: &errors)

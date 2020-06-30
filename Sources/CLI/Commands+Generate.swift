@@ -31,9 +31,8 @@ struct Generate: ParsableCommand {
     @Option(name: .shortAndLong, help: "Path to YAML configuration file")
     var configFile: String?
     
-    private let prismFolder = ".prism"
-
     func run() throws {
+        let prismFolder = ".prism"
         var configPath = configFile
 
         let defaultConfigPath = "\(prismFolder)/config.yml"
