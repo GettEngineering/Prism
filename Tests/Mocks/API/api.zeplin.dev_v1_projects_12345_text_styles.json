@@ -37,5 +37,24 @@
           "g": 182,
           "a": 1
         }
-    }
+    },
+    {
+      "id":"5cc5a7e87742612b7c212e8",
+      "name":"home.sub/inner/#primary_300/L",
+      "created":1517184000,
+      "postscript_name":"NewFont-Oblique",
+      "font_family":"NewFont",
+      "font_size":48,
+      "font_weight":550,
+      "font_style":"normal",
+      "line_height":52,
+      "font_stretch":1,
+      "text_align":"left",
+      "color": {
+        "r": 223,
+        "b": 105,
+        "g": 99,
+        "a": 0.79999995
+      }
+  },
 ]

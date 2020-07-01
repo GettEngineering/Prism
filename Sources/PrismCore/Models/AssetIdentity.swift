@@ -69,10 +69,8 @@ public extension Project {
             var words = [String]()
             var currentWord = ""
             let cleanName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                                .replacingOccurrences(of: "\\", with: "")
-                                .replacingOccurrences(of: "/", with: "")
-                                .replacingOccurrences(of: "-", with: " ")
-                                .replacingOccurrences(of: "_", with: " ")
+                                .components(separatedBy: CharacterSet.alphanumerics.inverted)
+                                .joined(separator: " ")
 
             for (idx, char) in cleanName.enumerated() {
                 guard idx > 0 else {

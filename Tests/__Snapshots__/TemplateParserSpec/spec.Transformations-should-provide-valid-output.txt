@@ -190,3 +190,35 @@ MyCustomFont_Light
 MyCustomFont_Light
 mycustomfont_light
 ==============================================
+No spaces on sides
+homesubinnerprimary300l
+HOME_SUB_INNER_PRIMARY_300_L
+NEWFONT-OBLIQUE
+NewFont_Oblique
+NewFont_Oblique
+newfont_oblique
+
+Spaces on both sides
+homesubinnerprimary300l
+HOME_SUB_INNER_PRIMARY_300_L
+NEWFONT-OBLIQUE
+NewFont_Oblique
+NewFont_Oblique
+newfont_oblique
+
+Space on left
+homesubinnerprimary300l
+HOME_SUB_INNER_PRIMARY_300_L
+NEWFONT-OBLIQUE
+NewFont_Oblique
+NewFont_Oblique
+newfont_oblique
+
+Space on right
+homesubinnerprimary300l
+HOME_SUB_INNER_PRIMARY_300_L
+NEWFONT-OBLIQUE
+NewFont_Oblique
+NewFont_Oblique
+newfont_oblique
+==============================================

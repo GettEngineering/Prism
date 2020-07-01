@@ -33,8 +33,16 @@ Some Structure {
         The text style Highlight has no alignment
         We can also access optional stuff without an IF, which will result in an empty string like so: 
     This is NOT the first text style
-    This is the last text style
+    This is NOT the last text style
     line height is 24, Large Heading, largeHeading, large_heading, large-heading, LargeHeading = MyCustomFont-Light, 32, 700, normal, 1.0, Clear Reddish, clearReddish, clear_reddish, clear-reddish, ClearReddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
+        This is an attempt of an indented multi-line
+        block containing a text alignment, which is left
+        and also capable of inlining another condition
+        like getting the ARGB value #ccdf6369, right?
+        We can also access optional stuff without an IF, which will result in an empty string like so: left
+    This is NOT the first text style
+    This is the last text style
+    line height is 52, home.sub/inner/#primary_300/L, homeSubInnerPrimary300L, home_sub_inner_primary_300_l, home-sub-inner-primary-300-l, HomeSubInnerPrimary300L = NewFont-Oblique, 48, 550, normal, 1.0, Clear Reddish, clearReddish, clear_reddish, clear-reddish, ClearReddish, #df6369, #ccdf6369, 223, 99, 105, 0.80, alignment is left
         This is an attempt of an indented multi-line
         block containing a text alignment, which is left
         and also capable of inlining another condition

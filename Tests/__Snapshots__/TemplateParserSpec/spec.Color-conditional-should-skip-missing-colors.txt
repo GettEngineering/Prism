@@ -46,6 +46,13 @@ Some Structure {
         clear_reddish, clear-reddish, ClearReddish, #df6369, #ccdf6369,
                223, 99, 105, 0.80
 ============
+    home.sub/inner/#primary_300/L
+    Clear Reddish
+    Clear Reddish
+    clearReddish,
+        clear_reddish, clear-reddish, ClearReddish, #df6369, #ccdf6369,
+               223, 99, 105, 0.80
+============
     Fake Style 2
 ============
 }

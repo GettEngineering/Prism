@@ -124,7 +124,7 @@ class AssetIdentitySpec: QuickSpec {
         describe("text style identities") {
             context("camel case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["baseHeading", "baseSubhead", "body", "body2", "highlight", "largeHeading"]
+                    let expectedIdentities = ["baseHeading", "baseSubhead", "body", "body2", "highlight", "largeHeading", "homeSubInnerPrimary300L"]
                     let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
@@ -133,7 +133,7 @@ class AssetIdentitySpec: QuickSpec {
 
             context("snake case") {
                 it("should return valid identities") {
-                    let expectedIdentities = ["base_heading", "base_subhead", "body", "body_2", "highlight", "large_heading"]
+                    let expectedIdentities = ["base_heading", "base_subhead", "body", "body_2", "highlight", "large_heading", "home_sub_inner_primary_300_l"]
                     let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
