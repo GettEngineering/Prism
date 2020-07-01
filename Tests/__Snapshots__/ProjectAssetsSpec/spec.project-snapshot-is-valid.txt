@@ -19,3 +19,4 @@ Text Styles:
     ✏️  Body 2 AssetIdentity(name: Body 2, raw: Body 2, camelcase: body2, snakecase: body_2, kebabcase: body-2, pascalcase: Body2) => font: MyCustomFont-Regular, size 14.0
     ✏️  Highlight AssetIdentity(name: Highlight, raw: Highlight, camelcase: highlight, snakecase: highlight, kebabcase: highlight, pascalcase: Highlight) => font: AppleGothic, size 18.0
     ✏️  Large Heading AssetIdentity(name: Large Heading, raw: Large Heading, camelcase: largeHeading, snakecase: large_heading, kebabcase: large-heading, pascalcase: LargeHeading) => font: MyCustomFont-Light, size 32.0
+    ✏️  home.sub/inner/#primary_300/L AssetIdentity(name: home.sub/inner/#primary_300/L, raw: home.sub/inner/#primary_300/L, camelcase: homeSubInnerPrimary300L, snakecase: home_sub_inner_primary_300_l, kebabcase: home-sub-inner-primary-300-l, pascalcase: HomeSubInnerPrimary300L) => font: NewFont-Oblique, size 48.0
