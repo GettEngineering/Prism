@@ -90,6 +90,19 @@ public extension ZeplinAPI {
 
 // MARK: - Styleguide-Specific APIs
 public extension ZeplinAPI {
+    /// Fetch all styleguides
+    ///
+    /// - parameter page: The current results page to ask for, defaults to 1
+    /// - parameter completion: A completion handler which can result in a successful array
+    ///                          of `Stylguide`s, or a `ZeplinAPI.Error` error
+    func getStyleguides(page: Int = 1,
+                        completion: @escaping (Result<[Styleguide], Error>) -> Void) {
+        let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        request(model: [Styleguide].self,
+                from: "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+                completion: completion)
+    }
+
     /// Fetch all styleguides associated with a specific Project
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
