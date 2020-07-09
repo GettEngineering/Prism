@@ -10,7 +10,8 @@ import Foundation
 
 enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidCommand
-    case missingProjectID
+    case missingOwner
+    case conflictingOwner
     case missingToken
     case failedDataConversion
     case templateFolderMissing
@@ -24,8 +25,10 @@ enum CommandError: Swift.Error, CustomStringConvertible {
         switch self {
         case .invalidCommand:
             return "Invalid command provided"
-        case .missingProjectID:
-            return "Missing Zeplin Project ID. Please use the -i flag or provide one in your config.yml"
+        case .missingOwner:
+            return "You must provide a Project ID or Styleguide ID. Please provide the approprate flags or provide one in your config.yml"
+        case .conflictingOwner:
+            return "Please provide either a Project ID or a Styleguide ID; not both."
         case .missingToken:
             return "Missing ZEPLIN_TOKEN environment variable"
         case .failedDataConversion:

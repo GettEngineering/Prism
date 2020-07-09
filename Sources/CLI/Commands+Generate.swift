@@ -10,7 +10,7 @@ import Foundation
 import ArgumentParser
 import PrismCore
 import Yams
-import struct ZeplinAPI.Project
+import ZeplinAPI
 
 // MARK: - Generate command
 struct Generate: ParsableCommand {
@@ -21,6 +21,9 @@ struct Generate: ParsableCommand {
     
     @Option(name: .shortAndLong, help: "Zeplin Project ID to generate text styles and colors from. Overrides any config files.")
     var projectId: Project.ID?
+
+    @Option(name: .shortAndLong, help: "Zeplin Styleguide ID to generate text styles and colors from. Overrides any config files.")
+    var styleguideId: Styleguide.ID?
     
     @Option(name: .shortAndLong, help: "Path to a folder containing *.prism template files. Overrides any config files.")
     var templatesPath: String?
@@ -41,7 +44,10 @@ struct Generate: ParsableCommand {
             configPath = defaultConfigPath
         }
 
-        // Configuration
+        // Configuration, if applicable
+        //
+        // It is valid to have _no_ configuration file, as long as the
+        // consumer manually specified runtime flags for everythiing.
         var config: Configuration?
         if let configPath = configPath {
             guard let configData = FileManager.default.contents(atPath: configPath),
@@ -61,9 +67,18 @@ struct Generate: ParsableCommand {
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
             throw CommandError.missingToken
         }
-        
-        guard let projectId = projectId ?? config?.projectId else {
-            throw CommandError.missingProjectID
+
+        let ownerProject = (projectId ?? config?.projectId).map { Assets.Owner.project(id: $0) }
+        let ownerStyleguide = (styleguideId ?? config?.styleguideId).map { Assets.Owner.styleguide(id: $0) }
+
+        // Make sure we have either a project or a styleguide
+        guard let owner = ownerProject ?? ownerStyleguide else {
+            throw CommandError.missingOwner
+        }
+
+        // Exclusive owner check (you can only have either, but not both)
+        if ownerProject != nil && ownerStyleguide != nil {
+            throw CommandError.conflictingOwner
         }
 
         let prism = Prism(jwtToken: jwtToken)
@@ -84,7 +99,7 @@ struct Generate: ParsableCommand {
             throw CommandError.outputFolderDoesntExist(path: outputPath)
         }
         
-        prism.getProjectAssets(for: projectId) { result in
+        prism.getAssets(for: owner) { result in
             do {
                 let project = try result.get()
                 
