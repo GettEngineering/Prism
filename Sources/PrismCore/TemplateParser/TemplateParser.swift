@@ -26,14 +26,14 @@ import ZeplinAPI
 //                                     └───────────────┘
 
 public class TemplateParser {
-    let project: ProjectAssets
+    let project: Assets
     let configuration: Configuration?
 
     /// Initialize a Template Parser object.
     ///
     /// - parameter project: Prism Project.
     /// - parameter configuration: Configuration object (Optional).
-    public init(project: ProjectAssets,
+    public init(project: Assets,
                 configuration: Configuration? = nil) {
         self.project = project
         self.configuration = configuration

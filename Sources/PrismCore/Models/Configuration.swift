@@ -11,6 +11,9 @@ import Foundation
 public struct Configuration {
     /// Zeplin Project ID
     public let projectId: String?
+
+    /// Zeplin Styleguide ID
+    public let styleguideId: String?
     
     /// Path to look for *.prism templates in
     public let templatesPath: String?
@@ -29,6 +32,7 @@ extension Configuration: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.projectId = try? container.decode(String.self, forKey: .projectId)
+        self.styleguideId = try? container.decode(String.self, forKey: .styleguideId)
         self.templatesPath = try? container.decode(String.self, forKey: .templatesPath)
         self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
@@ -37,6 +41,7 @@ extension Configuration: Codable {
     
     enum CodingKeys: String, CodingKey {
         case projectId = "project_id"
+        case styleguideId = "styleguide_id"
         case templatesPath = "templates_path"
         case outputPath = "output_path"
         case reservedColors = "reserved_colors"

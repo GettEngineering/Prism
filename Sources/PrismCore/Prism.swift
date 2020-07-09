@@ -18,126 +18,125 @@ public class Prism {
         self.api = ZeplinAPI(jwtToken: jwtToken)
     }
     
-    /// Get the project's assets, e.g. colors and text styles
-    /// and pack them into a single `ProjectAssets` object
+    /// Get text styles, colors and spacing tokens for a specified project
+    /// or styleguide and pack them into a single `Assets` object.
     ///
     /// - Note:
-    ///     Due to the nature of Zeplin's API, you can't get _all_ colors and
-    ///     text styles for a project in a single call. You have to get colors
-    ///     and text styles separately for each styleguide linked to a project.
+    ///     Due to the nature of Zeplin's API, you can't get _all_ assets for
+    ///     project or text style in a single call. You have to assets separaately
+    ///     for each child styleguide of a project or owner stylegguide.
     ///     Getting these styleguides also incurs an additional API call.
     ///
     ///     In essence, getting all colors and text styles for a project incurs:
     ///
     ///         ((number_of_linked_styleguides + 1) * 2) + 1 API Calls
     ///
-    ///     e.g. for a Project with 2 linkted styleguides, Prism performs 7 API calls
+    ///     e.g. for a Project with 2 linked styleguides, Prism performs 7 API calls
     ///
-    /// - parameter projectId: A Zeplin project ID
-    /// - parameter completion: A completion handler which can result in a successful `ProjectAssets`
+    /// - parameter owner: Assets owner, e.g. a project or styleguide
+    /// - parameter completion: A completion handler which can result in a successful `Assets`
     ///                         object, or a `ZeplinAPI.Error` error
-    public func getProjectAssets(for projectId: Project.ID,
-                                 completion: @escaping (Result<ProjectAssets, ZeplinAPI.Error>) -> Void) {
+    public func getAssets(for owner: Assets.Owner,
+                          completion: @escaping (Result<Assets, ZeplinAPI.Error>) -> Void) {
         let group = DispatchGroup()
         var colors = [Color]()
         var textStyles = [TextStyle]()
         var spacings = [Spacing]()
         var errors = [ZeplinAPI.Error]()
-        
-        /// Get linked style guides and their colors and
-        /// text styles for the project
-        group.enter()
-        api.getStyleguides(for: projectId) { [weak api] result in
-            defer { group.leave() }
-            guard let api = api else { return }
+        let projectId: String? = {
+            guard case .project(let id) = owner else { return nil }
+            return id
+        }()
 
-            switch result {
-            case .success(let styleguides):
-                // Get text styles, colors and spacing separately
-                // for each styleguide
-                for styleguide in styleguides {
-                    group.enter()
-                    api.getPagedItems(
-                        work: { page, api, completion in
-                            api.getStyleguideColors(for: styleguide.id,
-                                                    linkedProject: projectId,
-                                                    page: page,
-                                                    completion: completion)
-                        },
-                        completion: { result in
-                            result.appendValuesOrErrors(values: &colors, errors: &errors)
-                            group.leave()
-                        }
-                    )
-                    
-                    group.enter()
-                    api.getPagedItems(
-                        work: { page, api, completion in
-                            api.getStyleguideTextStyles(for: styleguide.id,
-                                                        linkedProject: projectId,
-                                                        page: page,
-                                                        completion: completion)
-                        },
-                        completion: { result in
-                            result.appendValuesOrErrors(values: &textStyles, errors: &errors)
-                            group.leave()
-                        }
-                    )
+        // Wait for styleguide IDs we wish to query
+        let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        errors.append(contentsOf: styleguideErrors)
 
-                    group.enter()
-                    api.getPagedItems(
-                        work: { page, api, completion in
-                            api.getStyleguideSpacings(for: styleguide.id,
-                                                      linkedProject: projectId,
-                                                      page: page,
-                                                      completion: completion)
-                        },
-                        completion: { result in
-                            result.appendValuesOrErrors(values: &spacings, errors: &errors)
-                            group.leave()
-                        }
-                    )
+        // Get text styles, colors and spacing separately
+        // for each styleguide
+        for styleguideID in styleguideIDs {
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getStyleguideColors(for: styleguideID,
+                                            linkedProject: projectId,
+                                            page: page,
+                                            completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &colors, errors: &errors)
+                    group.leave()
                 }
-            case .failure(let error):
-                errors.append(error)
-            }
-        }
-        
-        // Get project colors
-        group.enter()
-        api.getPagedItems(
-            work: { page, api, completion in
-                api.getProjectColors(for: projectId, page: page, completion: completion)
-            },
-            completion: { result in
-                result.appendValuesOrErrors(values: &colors, errors: &errors)
-                group.leave()
-            }
-        )
-        
-        // Get project text styles
-        group.enter()
-        api.getPagedItems(
-            work: { page, api, completion in
-                api.getProjectTextStyles(for: projectId, page: page, completion: completion)
-            },
-            completion: { result in
-                result.appendValuesOrErrors(values: &textStyles, errors: &errors)
-                group.leave()
-            }
-        )
+            )
 
-        // Get project spacing
-        group.enter()
-        api.getPagedItems(
-            work: { page, api, completion in
-                api.getProjectSpacings(for: projectId, page: page, completion: completion)
-            },
-            completion: { result in
-                result.appendValuesOrErrors(values: &spacings, errors: &errors)
-                group.leave()
-            }
-        )
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getStyleguideTextStyles(for: styleguideID,
+                                                linkedProject: projectId,
+                                                page: page,
+                                                completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &textStyles, errors: &errors)
+                    group.leave()
+                }
+            )
+
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getStyleguideSpacings(for: styleguideID,
+                                              linkedProject: projectId,
+                                              page: page,
+                                              completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &spacings, errors: &errors)
+                    group.leave()
+                }
+            )
+        }
+
+        // If the asset owner is a project, get that project's colors,
+        // text styles and spacing tokens as well
+        if let projectId = projectId {
+            // Get project colors
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getProjectColors(for: projectId, page: page, completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &colors, errors: &errors)
+                    group.leave()
+                }
+            )
+
+            // Get project text styles
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getProjectTextStyles(for: projectId, page: page, completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &textStyles, errors: &errors)
+                    group.leave()
+                }
+            )
+
+            // Get project spacing
+            group.enter()
+            api.getPagedItems(
+                work: { page, api, completion in
+                    api.getProjectSpacings(for: projectId, page: page, completion: completion)
+                },
+                completion: { result in
+                    result.appendValuesOrErrors(values: &spacings, errors: &errors)
+                    group.leave()
+                }
+            )
+        }
 
         /// It's required to wait and block here when running in CLI.
         /// Otherwise, Prism terminates without waiting for the result to
@@ -147,11 +146,93 @@ public class Prism {
         if !errors.isEmpty {
             completion(.failure(.compoundError(errors: errors)))
         } else {
-            completion(.success(ProjectAssets(id: projectId,
-                                              colors: colors.sorted { $0.name < $1.name },
-                                              textStyles: textStyles.sorted { $0.name < $1.name },
-                                              spacing: spacings.sorted(by: { $0.value < $1.value }))))
+            completion(.success(Assets(owner: owner,
+                                       colors: colors.sorted { $0.name < $1.name },
+                                       textStyles: textStyles.sorted { $0.name < $1.name },
+                                       spacing: spacings.sorted(by: { $0.value < $1.value }))))
         }
+    }
+
+    /// Get all styleguide IDs for a provided asset owner (e.g. project or styleguide)
+    ///
+    /// - note: This is a blocking, synchronous, method.
+    ///
+    /// - returns: Array of styleguide IDs and arraay of errors, if any occurred.
+    private func getStyleguideIDs(for owner: Assets.Owner) -> (ids: [Styleguide.ID], errors: [ZeplinAPI.Error]) {
+        let group = DispatchGroup()
+        var styleguideIDs = [Styleguide.ID]()
+        var errors = [ZeplinAPI.Error]()
+
+        switch owner {
+        case .styleguide(let styleguideId):
+            // Get styleguide and all parent styleguides
+            group.enter()
+            api.getStyleguide(styleguideId) { [weak api] result in
+                guard let api = api else { fatalError("Can't access API client") }
+
+                switch result {
+                case .success(let styleguide):
+                    styleguide.getParentStyleguides(api: api) { parentsResult in
+                        defer { group.leave() }
+                        switch parentsResult {
+                        case .success(let styleguides):
+                            styleguideIDs = styleguides.map(\.id) + [styleguideId]
+                        case .failure(let error):
+                            errors.append(error)
+                        }
+                    }
+                case .failure(let error):
+                    errors.append(error)
+                    group.leave()
+                }
+            }
+        case .project(let projectId):
+            // Get all linked project styleguides
+            group.enter()
+            api.getStyleguides(for: projectId) { result in
+                defer { group.leave() }
+
+                switch result {
+                case .success(let styleguides):
+                    styleguideIDs = styleguides.map(\.id)
+                case .failure(let error):
+                    errors.append(error)
+                }
+            }
+        }
+
+        group.wait()
+        return (styleguideIDs, errors)
+    }
+}
+
+// MARK: - Project assets
+private extension Styleguide {
+    func getParentStyleguides(api: ZeplinAPI,
+                              completion: @escaping (Result<[Styleguide], ZeplinAPI.Error>) -> Void) {
+        func addParent(of: Styleguide,
+                       to: [Styleguide],
+                       api: ZeplinAPI,
+                       completion: @escaping (Result<[Styleguide], ZeplinAPI.Error>) -> Void) {
+            guard let parent = of.parent else {
+                completion(.success(to))
+                return
+            }
+
+            api.getStyleguide(parent) { result in
+                switch result {
+                case .success(let styleguide):
+                    addParent(of: styleguide, to: to + [styleguide], api: api, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+
+        addParent(of: self,
+                  to: [],
+                  api: api,
+                  completion: completion)
     }
 }
 
