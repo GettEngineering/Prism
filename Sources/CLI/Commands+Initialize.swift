@@ -25,11 +25,10 @@ struct Initialize: ParsableCommand {
         }
 
         let configPath = ".prism/config.yml"
-        let api = ZeplinAPI(jwtToken: jwtToken)
         let fileManager = FileManager.default
+        let api = ZeplinAPI(jwtToken: jwtToken)
         
         // Information needed for config.yml creation
-        let project: Project
         var outputPath = ""
 
         guard !fileManager.fileExists(atPath: configPath) ||
@@ -44,40 +43,20 @@ struct Initialize: ParsableCommand {
 
         This quick wizard will get you started with configuring your project.
         """)
-        
-        let isReady: Bool = UserInput(message: "Ready to get started?").request()
-        guard isReady else { return }
 
-        // Let user select a project
-        print("⏳ Getting your projects ...")
+        guard UserInput(message: "Ready to get started?").request() else { return }
+
+        let assetType: AssetType = UserInput(message: "🎨 Use a project or style guide?").request()
         
         let group = DispatchGroup()
-        group.enter()
-        var projects = [Project]()
-        
-        api.getProjects { result in
-            do {
-                defer { group.leave() }
-                projects = try result.get().filter { $0.status == .active }
-            } catch let err {
-                terminate(with: "Failed fetching projects: \(err)")
-            }
+        var config = [String]()
+
+        switch assetType {
+        case .project:
+            pickProject(api: api, config: &config, dispatchGroup: group)
+        case .styleguide:
+            pickStyleguide(api: api, config: &config, dispatchGroup: group)
         }
-        
-        group.wait()
-        
-        guard !projects.isEmpty else {
-            terminate(with: "❌ No projects found for your user!")
-        }
-        
-        print("🔎 Found \(projects.count) projects:")
-        
-        for (idx, project) in projects.enumerated() {
-            print("  \(idx+1)) \(project.platform.emoji) \(project.name)")
-        }
-        
-        let projectNumber = UserInput(message: "Pick a project").request(range: 1...projects.count)
-        project = projects[projectNumber - 1]
         
         // Get output folder for Prism template output
         if UserInput(message: "📂 Use current folder as output folder for Prism?").request() {
@@ -115,9 +94,6 @@ struct Initialize: ParsableCommand {
 
         // Assemble config.yml file
         print("💾 Saving your configuration...")
-        var config = [String]()
-        
-        config.append("project_id: \"\(project.id)\"")
         config.append("templates_path: \".prism\"")
         config.append("output_path: \"\(outputPath)\"")
         
@@ -141,57 +117,89 @@ struct Initialize: ParsableCommand {
          3️⃣  Your processed files will live inside your output folder: '\(outputPath)'
         """)
     }
-}
 
-// MARK: - User Input
-struct UserInput {
-    let message: String
-    
-    private func getInput() -> String {
-        guard let value = readLine() else {
-            fatalError("Failed fetching user input")
+    /// Let the user pick a single Zeplin project for Prism
+    /// to generate your design code from
+    ///
+    /// - parameter api: An instance of a Zeplin API
+    /// - parameter config: An `inout` array representing prism options
+    /// - parameter disaptchGroup: A `DispatchGroup` for the API requests
+    private func pickProject(api: ZeplinAPI,
+                             config: inout [String],
+                             dispatchGroup: DispatchGroup) {
+        // Let user select a project
+        print("⏳ Getting your projects ...")
+
+        dispatchGroup.enter()
+        var projects = [Project]()
+
+        api.getProjects { result in
+            do {
+                defer { dispatchGroup.leave() }
+                projects = try result.get().filter { $0.status == .active }
+            } catch let err {
+                terminate(with: "Failed fetching projects: \(err)")
+            }
         }
-        
-        return value
+
+        dispatchGroup.wait()
+
+        guard !projects.isEmpty else {
+            terminate(with: "❌ No projects found for your user!")
+        }
+
+        print("🔎 Found \(projects.count) projects:")
+
+        for (idx, project) in projects.enumerated() {
+            print("  \(idx+1)) \(project.platform.emoji) \(project.name)")
+        }
+
+        let projectNumber = UserInput(message: "Pick a project").request(range: 1...projects.count)
+        let project = projects[projectNumber - 1]
+
+        config.append("project_id: \"\(project.id)\"")
     }
-    
-    func request() -> Bool {
-        print("\(message) [Y/n]: ", terminator: "")
-        let input = getInput()
-        
-        switch input {
-        case "Y":
-            return true
-        case "n":
-            return false
-        default:
-            print("❌ '\(input)' is not a valid value. Valid options are `Y` for yes or `n` for no.")
-            return request()
+
+    /// Let the user pick a single Zeplin style guide for Prism
+    /// to generate your design code from
+    ///
+    /// - parameter api: An instance of a Zeplin API
+    /// - parameter config: An `inout` array representing prism options
+    /// - parameter disaptchGroup: A `DispatchGroup` for the API requests
+    private func pickStyleguide(api: ZeplinAPI,
+                                config: inout [String],
+                                dispatchGroup: DispatchGroup) {
+        // Let user select a project
+        print("⏳ Getting your styleguides ...")
+
+        dispatchGroup.enter()
+        var styleguides = [Styleguide]()
+
+        api.getStyleguides { result in
+            do {
+                defer { dispatchGroup.leave() }
+                styleguides = try result.get().filter { $0.status == .active }
+            } catch let err {
+                terminate(with: "Failed fetching styleguides: \(err)")
+            }
         }
-    }
-    
-    func request() -> String {
-        print("\(message): ", terminator: "")
-        let input = getInput()
-        return input
-    }
-    
-    func request(range: ClosedRange<Int>? = nil) -> Int {
-        print("\(message): ", terminator: "")
-        let input = getInput()
-        
-        guard let value = Int(input) else {
-            print("❌ '\(input)' is not a valid number. Please try again.")
-            return request()
+
+        dispatchGroup.wait()
+
+        guard !styleguides.isEmpty else {
+            terminate(with: "❌ No styleguides found for your user!")
         }
-        
-        if let range = range,
-           !range.contains(value) {
-            print("❌ '\(value)' should be between \(range.lowerBound) and \(range.upperBound). Please try again.")
-            return request()
+
+        print("🔎 Found \(styleguides.count) styleguides:")
+
+        for (idx, project) in styleguides.enumerated() {
+            print("  \(idx+1)) \(project.platform.emoji) \(project.name)")
         }
-        
-        return value
+
+        let projectNumber = UserInput(message: "Pick a stylegude").request(range: 1...styleguides.count)
+        let styleguide = styleguides[projectNumber - 1]
+
+        config.append("styleguide_id: \"\(styleguide.id)\"")
     }
 }
 
@@ -200,5 +208,19 @@ extension FileManager {
     func folderExists(at path: String) -> Bool {
         var isDir: ObjCBool = false
         return fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
+    }
+}
+
+private enum AssetType: InputOption, CaseIterable {
+    case project
+    case styleguide
+
+    var aliases: [String] {
+        switch self {
+        case .project:
+            return ["project", "p"]
+        case .styleguide:
+            return ["styleguide", "s"]
+        }
     }
 }
