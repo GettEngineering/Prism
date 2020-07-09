@@ -90,82 +90,105 @@ public extension ZeplinAPI {
 
 // MARK: - Styleguide-Specific APIs
 public extension ZeplinAPI {
-    /// Fetch all styleguides
+    /// Fetch a specific styleguide
     ///
-    /// - parameter page: The current results page to ask for, defaults to 1
-    /// - parameter completion: A completion handler which can result in a successful array
-    ///                          of `Stylguide`s, or a `ZeplinAPI.Error` error
-    func getStyleguides(page: Int = 1,
-                        completion: @escaping (Result<[Styleguide], Error>) -> Void) {
-        let offset = (page - 1) * ZeplinAPI.itemsPerPage
-        request(model: [Styleguide].self,
-                from: "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+    /// - parameter id: The styleguide's ID
+    /// - parameter completion: A completion handler which can result in a successful
+    ///                         `Stylguide`, or a `ZeplinAPI.Error` error
+    func getStyleguide(_ id: Styleguide.ID,
+                       completion: @escaping (Result<Styleguide, Error>) -> Void) {
+        request(model: Styleguide.self,
+                from: "styleguides/\(id)",
                 completion: completion)
     }
 
-    /// Fetch all styleguides associated with a specific Project
+    /// Fetch all styleguides
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
-    ///                          of `Stylguide`s, or a `ZeplinAPI.Error` error
-    func getStyleguides(for projectId: Project.ID,
+    ///                         of `Stylguide`s, or a `ZeplinAPI.Error` error
+    func getStyleguides(for projectId: Project.ID? = nil,
                         page: Int = 1,
                         completion: @escaping (Result<[Styleguide], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        var path = "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)"
+
+        if let projectId = projectId {
+            path.append("&linked_project=\(projectId)")
+        }
+
         request(model: [Styleguide].self,
-                from: "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(projectId)",
+                from: path,
                 completion: completion)
     }
-    
+
     /// Fetch all colors associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch colors for
-    /// - parameter linkedProject: The styleguide's linked project
+    /// - parameter linkedProject: The styleguide's linked project, if applicable
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///
     func getStyleguideColors(for styleguideID: Styleguide.ID,
-                             linkedProject: Project.ID,
+                             linkedProject: Project.ID?,
                              page: Int = 1,
                              completion: @escaping (Result<[Color], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        var path = "styleguides/\(styleguideID)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)"
+
+        if let linkedProject = linkedProject {
+            path.append("&linked_project=\(linkedProject)")
+        }
+
         request(model: [Color].self,
-                from: "styleguides/\(styleguideID)/colors?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
+                from: path,
                 completion: completion)
     }
     
     /// Fetch all text styles associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch text styles for
-    /// - parameter linkedProject: The styleguide's linked project
+    /// - parameter linkedProject: The styleguide's linked project, if applicable
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `TextStyle`s, or a `ZeplinAPI.Error` error
     func getStyleguideTextStyles(for styleguideID: Styleguide.ID,
-                                 linkedProject: Project.ID,
+                                 linkedProject: Project.ID?,
                                  page: Int = 1,
                                  completion: @escaping (Result<[TextStyle], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        var path = "styleguides/\(styleguideID)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)"
+
+        if let linkedProject = linkedProject {
+            path.append("&linked_project=\(linkedProject)")
+        }
+
         request(model: [TextStyle].self,
-                from: "styleguides/\(styleguideID)/text_styles?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
+                from: path,
                 completion: completion)
     }
 
     /// Fetch all spacing tokens associated with a specific Zeplin Styleguide
     ///
     /// - parameter styleguideID: A Zeplin Styleguide ID to fetch spacing tokens for
-    /// - parameter linkedProject: The styleguide's linked project
+    /// - parameter linkedProject: The styleguide's linked project, if applicable
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Spacing`s, or a `ZeplinAPI.Error` error
     func getStyleguideSpacings(for styleguideID: Styleguide.ID,
-                               linkedProject: Project.ID,
+                               linkedProject: Project.ID?,
                                page: Int = 1,
                                completion: @escaping (Result<[Spacing], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
+        var path = "styleguides/\(styleguideID)/spacing_tokens?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)"
+
+        if let linkedProject = linkedProject {
+            path.append("&linked_project=\(linkedProject)")
+        }
+
         request(model: [Spacing].self,
-                from: "styleguides/\(styleguideID)/spacing_tokens?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)&linked_project=\(linkedProject)",
+                from: path,
                 completion: completion)
     }
 }
