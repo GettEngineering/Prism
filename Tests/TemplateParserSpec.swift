@@ -16,33 +16,38 @@ import SnapshotTesting
 class TemplateParserSpec: QuickSpec {
     override func spec() {
         describe("Color Loop") {
-            it("should produce valid output") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
-                let project = try! projectResult.get()
-                let parser = TemplateParser(project: project)
+            let template = """
+            /// This file was generated using Prism
 
-                let template = """
-                /// This file was generated using Prism
+            fake line 1
+            fake line 2
 
-                fake line 1
-                fake line 2
+            Some Structure {
+                {{% FOR color %}}
+                {{%color.identity%}}, {{% IF color.isFirst %}}This is the first color, {{% ENDIF %}}{{% IF color.isLast %}}This is the last color, {{% ENDIF %}}{{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}, {{% IF color.argb %}}inline conditionally getting the ARGB value {{%color.argb%}}, right?{{% ENDIF %}}
+                {{% END color %}}
+            }
+            """
 
-                Some Structure {
-                    {{% FOR color %}}
-                    {{%color.identity%}}, {{% IF color.isFirst %}}This is the first color, {{% ENDIF %}}{{% IF color.isLast %}}This is the last color, {{% ENDIF %}}{{%color.identity.camelcase%}}, {{%color.identity.snakecase%}} = {{%color.r%}}, {{%color.g%}}, {{%color.b%}}, {{%color.a%}}, {{%color.argb%}}, {{%color.ARGB%}}, {{%color.rgb%}}, {{%color.RGB%}}, {{% IF color.argb %}}inline conditionally getting the ARGB value {{%color.argb%}}, right?{{% ENDIF %}}
-                    {{% END color %}}
+            for type in [MockType.successfulProject, MockType.successfulStyleguide] {
+                let name = type == .successfulProject ? "project" : "styleguide"
+                context(name) {
+                    it("should produce valid output") {
+                        let projectResult = Prism(jwtToken: "fake").mock(type: type)
+                        let project = try! projectResult.get()
+                        let parser = TemplateParser(project: project)
+
+                        assertSnapshot(matching: try! parser.parse(template: template),
+                                       as: .lines,
+                                       named: "Color Loop should provide valid output for \(name)")
+                    }
                 }
-                """
-
-                assertSnapshot(matching: try! parser.parse(template: template),
-                               as: .lines,
-                               named: "Color Loop should provide valid output")
             }
         }
 
         describe("Single Color Loop") {
             it("should match both isFirst and isLast") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = Assets(owner: .project(id: "12345"),
                                      colors: [try! projectResult.get().colors.first!],
                                      textStyles: [],
@@ -70,47 +75,52 @@ class TemplateParserSpec: QuickSpec {
         }
 
         describe("Text Styles Loop") {
-            it("should produce valid output") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
-                let project = try! projectResult.get()
-                let parser = TemplateParser(project: project)
+            let template = """
+            /// This file was generated using Prism
 
-                let template = """
-                /// This file was generated using Prism
+            fake line 1
+            fake line 2
 
-                fake line 1
-                fake line 2
+            Some Structure {
+                {{% FOR textStyle %}}
+                {{% IF textStyle.isFirst %}}This is the first text style{{% ENDIF %}}
+                {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
+                {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
+                {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
+                {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}}, {{%textStyle.identity.kebabcase%}}, {{%textstyle.identity.pascalcase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.identity.kebabcase%}}, {{%textStyle.color.identity.pascalcase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                    {{% IF textStyle.alignment %}}
+                    This is an attempt of an indented multi-line
+                    block containing a text alignment, which is {{%textStyle.alignment%}}
+                    and also capable of inlining another condition
+                    like {{% IF textStyle.color.argb %}}getting the ARGB value {{%textStyle.color.argb%}}, right?{{% ENDIF %}}
+                    {{% ENDIF %}}
+                    {{% IF !textStyle.alignment %}}
+                    The text style {{% textStyle.identity %}} has no alignment
+                    {{% ENDIF %}}
+                    We can also access optional stuff without an IF, which will result in an empty string like so: {{%textStyle.alignment%}}
+                {{% END textStyle %}}
+            }
+            """
 
-                Some Structure {
-                    {{% FOR textStyle %}}
-                    {{% IF textStyle.isFirst %}}This is the first text style{{% ENDIF %}}
-                    {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
-                    {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
-                    {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
-                    {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}}, {{%textStyle.identity.kebabcase%}}, {{%textstyle.identity.pascalcase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.identity.kebabcase%}}, {{%textStyle.color.identity.pascalcase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
-                        {{% IF textStyle.alignment %}}
-                        This is an attempt of an indented multi-line
-                        block containing a text alignment, which is {{%textStyle.alignment%}}
-                        and also capable of inlining another condition
-                        like {{% IF textStyle.color.argb %}}getting the ARGB value {{%textStyle.color.argb%}}, right?{{% ENDIF %}}
-                        {{% ENDIF %}}
-                        {{% IF !textStyle.alignment %}}
-                        The text style {{% textStyle.identity %}} has no alignment
-                        {{% ENDIF %}}
-                        We can also access optional stuff without an IF, which will result in an empty string like so: {{%textStyle.alignment%}}
-                    {{% END textStyle %}}
+            for type in [MockType.successfulProject, MockType.successfulStyleguide] {
+                let name = type == .successfulProject ? "project" : "styleguide"
+                context(name) {
+                    it("should produce valid output") {
+                        let projectResult = Prism(jwtToken: "fake").mock(type: type)
+                        let project = try! projectResult.get()
+                        let parser = TemplateParser(project: project)
+
+                        assertSnapshot(matching: try! parser.parse(template: template),
+                                       as: .lines,
+                                       named: "Text Styles Loop should provide valid output for \(name)")
+                    }
                 }
-                """
-
-                assertSnapshot(matching: try! parser.parse(template: template),
-                               as: .lines,
-                               named: "Text Styles Loop should provide valid output")
             }
         }
 
         describe("Text Style Color Conditional") {
             it("should ignore color tokens") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let baseProject = try! projectResult.get()
                 let noColorTextStyle = TextStyle(id: "42142141",
                                                  name: "Fake Style 2",
@@ -158,34 +168,39 @@ class TemplateParserSpec: QuickSpec {
         }
 
         describe("Spacing Loop") {
-            it("should produce valid output") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
-                let project = try! projectResult.get()
-                let parser = TemplateParser(project: project)
+            let template = """
+            /// This file was generated using Prism
 
-                let template = """
-                /// This file was generated using Prism
+            fake line 1
+            fake line 2
 
-                fake line 1
-                fake line 2
+            Some SpacingSructure {
+                {{% FOR spacing %}}
+                {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}}, {{%spacing.identity.kebabcase%}}, {{%spacing.identity.pascalcase%}} = {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
+                {{% END spacing %}}
+            }
+            """
 
-                Some SpacingSructure {
-                    {{% FOR spacing %}}
-                    {{%spacing.identity%}}, {{% spacing.identity.camelcase %}}, {{%spacing.identity.snakecase%}}, {{%spacing.identity.kebabcase%}}, {{%spacing.identity.pascalcase%}} = {{% spacing.value %}}{{% IF !spacing.isLast %}},{{% ENDIF %}}
-                    {{% END spacing %}}
+            for type in [MockType.successfulProject, MockType.successfulStyleguide] {
+                let name = type == .successfulProject ? "project" : "styleguide"
+                context(name) {
+                    it("should produce valid output") {
+                        let projectResult = Prism(jwtToken: "fake").mock(type: type)
+                        let project = try! projectResult.get()
+                        let parser = TemplateParser(project: project)
+
+                        assertSnapshot(matching: try! parser.parse(template: template),
+                                       as: .lines,
+                                       named: "Spacing Loop should provide valid output for \(name)")
+                    }
                 }
-                """
-
-                assertSnapshot(matching: try! parser.parse(template: template),
-                               as: .lines,
-                               named: "Spacing Loop should provide valid output")
             }
         }
         
         describe("Invalid tokens") {
             context("text style") {
                 it("should throw an error") {
-                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
                     let parser = TemplateParser(project: projectResult)
 
                     expect {
@@ -200,7 +215,7 @@ class TemplateParserSpec: QuickSpec {
             
             context("colors") {
                 it("should throw an error") {
-                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
                     let parser = TemplateParser(project: projectResult)
 
                     expect {
@@ -215,7 +230,7 @@ class TemplateParserSpec: QuickSpec {
 
             context("spacing") {
                 it("should throw an error") {
-                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                    let projectResult = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
                     let parser = TemplateParser(project: projectResult)
 
                     expect {
@@ -231,7 +246,7 @@ class TemplateParserSpec: QuickSpec {
         
         describe("Text Style without color identity") {
             it("should throw error when accessed") {
-                let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+                let projectResult = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
                 let modifiedResult = Assets(owner: projectResult.owner,
                                             colors: [],
                                             textStyles: Array(projectResult.textStyles.prefix(1)),
@@ -293,7 +308,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Open loop with no closing") {
             it("should throw error") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -316,7 +331,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Unknown Loop") {
             it("should throw error") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -341,7 +356,7 @@ class TemplateParserSpec: QuickSpec {
         describe("Errors") {
             context("localized description") {
                 it("should have valid descriptions") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                     let project = try! projectResult.get()
                     
                     let errors: [TemplateParser.Error] = [.openBlock(keyword: "FOR", identifier: "color"),
@@ -369,7 +384,7 @@ class TemplateParserSpec: QuickSpec {
         describe("Token") {
             context("unknown token") {
                 it("should return nil") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                     let project = try! projectResult.get()
                     expect { try TemplateParser.Token(rawColorToken: UUID().uuidString,
                                                       color: project.colors[0]) }.to(throwError())
@@ -383,7 +398,7 @@ class TemplateParserSpec: QuickSpec {
 
             context("unknown color identity") {
                 it("should return nil token") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                    let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                     let project = try! projectResult.get()
                     for style in Project.AssetIdentity.Style.allCases.dropFirst() {
                         expect { try TemplateParser
@@ -400,7 +415,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Transormations") {
             it("should produce valid output") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -464,7 +479,7 @@ class TemplateParserSpec: QuickSpec {
         }
 
         describe("Prohibited Identifiers") {
-            let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+            let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
             let project = try! projectResult.get()
 
             context("camel cased") {
@@ -500,7 +515,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Letter spacing") {
             it("should be rounded") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 
@@ -518,7 +533,7 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Line Height") {
             it("should be rounded") {
-                let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
+                let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
                 let parser = TemplateParser(project: project)
 

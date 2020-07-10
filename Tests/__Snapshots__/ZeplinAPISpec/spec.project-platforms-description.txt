@@ -1,0 +1,5 @@
+Android: 🤖
+Base: 🎯
+Web: 🌐
+iOS: 📱
+macOS: 💻

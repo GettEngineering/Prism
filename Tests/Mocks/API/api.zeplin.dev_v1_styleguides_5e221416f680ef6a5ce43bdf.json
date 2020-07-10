@@ -1,0 +1,14 @@
+{
+    "id":"5e221416f680ef6a5ce43bdf",
+    "name":"Base styleguide",
+    "description":"My parent styleguide.",
+    "platform":"base",
+    "thumbnail":"http://gett.com/test",
+    "status":"active",
+    "created":1517184000,
+    "updated":1572347818,
+    "number_of_members":1,
+    "number_of_components":241,
+    "number_of_text_styles":48,
+    "number_of_colors":37
+}

@@ -1,5 +1,5 @@
 //
-//  ProjectSpec.swift
+//  ZeplinAPISpec.swift
 //  Prism
 //
 //  Created by Shai Mishali on 15/12/2019.
@@ -10,21 +10,21 @@ import Foundation
 import Quick
 import Nimble
 import SnapshotTesting
-@testable import PrismCore
 @testable import ZeplinAPI
 
 class ZeplinAPISpec: QuickSpec {
     override func spec() {
-        describe("Prism+Project") {
-            it("should have valid Prism metadata") {
+        describe("Project Platform") {
+            it("should have valid platform description") {
                 let output = Project.Platform
                     .allCases
+                    .sorted(by: { $0.name < $1.name })
                     .map { "\($0.name): \($0.emoji)" }
                     .joined(separator: "\n")
                 
                 assertSnapshot(matching: output,
                                as: .lines,
-                               named: "Zeplin project Prism metadata")
+                               named: "project platforms description")
             }
         }
         
