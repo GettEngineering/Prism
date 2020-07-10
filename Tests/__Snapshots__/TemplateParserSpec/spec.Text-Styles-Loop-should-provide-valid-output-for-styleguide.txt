@@ -1,0 +1,27 @@
+/// This file was generated using Prism
+
+fake line 1
+fake line 2
+
+Some Structure {
+    This is the first text style
+    This is NOT the last text style
+    line height is 26, Base Heading, baseHeading, base_heading, base-heading, BaseHeading = LucidaGrande-Bold, 26, 700, normal, 1.0, green, green, green, green, Green, letter spacing is: 0.4, #62a60e, #ff62a60e, 98, 166, 14, 1.00
+        The text style Base Heading has no alignment
+        We can also access optional stuff without an IF, which will result in an empty string like so: 
+    This is NOT the first text style
+    This is NOT the last text style
+    line height is 22.53, Base Subhead, baseSubhead, base_subhead, base-subhead, BaseSubhead = LucidaGrande-Bold, 22, 700, normal, 1.0, red, red, red, red, Red, letter spacing is: 0.49, #a60e0e, #ffa60e0e, 166, 14, 14, 1.00
+        The text style Base Subhead has no alignment
+        We can also access optional stuff without an IF, which will result in an empty string like so: 
+    This is NOT the first text style
+    This is NOT the last text style
+    Body, body, body, body, Body = LucidaGrande, 14, 400, normal, 1.0, blue, blue, blue, blue, Blue, letter spacing is: 0.5, #0e28a6, #ff0e28a6, 14, 40, 166, 1.00
+        The text style Body has no alignment
+        We can also access optional stuff without an IF, which will result in an empty string like so: 
+    This is NOT the first text style
+    This is the last text style
+    Highlight, highlight, highlight, highlight, Highlight = AppleGothic, 18, 400, normal, 1.0, purple, purple, purple, purple, Purple, #a30ea6, #ffa30ea6, 163, 14, 166, 1.00
+        The text style Highlight has no alignment
+        We can also access optional stuff without an IF, which will result in an empty string like so: 
+}

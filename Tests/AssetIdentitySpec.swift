@@ -13,7 +13,7 @@ import Nimble
 @testable import ZeplinAPI
 
 class AssetIdentitySpec: QuickSpec {
-    let project = try! Prism(jwtToken: "fake").mock(type: .successful).get()
+    let project = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
 
     override func spec() {
         describe("raw identities") {

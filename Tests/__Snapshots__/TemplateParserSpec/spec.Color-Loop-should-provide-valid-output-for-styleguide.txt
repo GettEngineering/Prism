@@ -1,0 +1,13 @@
+/// This file was generated using Prism
+
+fake line 1
+fake line 2
+
+Some Structure {
+    blue, This is the first color, blue, blue = 14, 40, 166, 1.00, #ff0e28a6, #ff0e28a6, #0e28a6, #0e28a6, inline conditionally getting the ARGB value #ff0e28a6, right?
+    green, green, green = 98, 166, 14, 1.00, #ff62a60e, #ff62a60e, #62a60e, #62a60e, inline conditionally getting the ARGB value #ff62a60e, right?
+    mud, mud, mud = 166, 137, 14, 1.00, #ffa6890e, #ffa6890e, #a6890e, #a6890e, inline conditionally getting the ARGB value #ffa6890e, right?
+    purple, purple, purple = 163, 14, 166, 1.00, #ffa30ea6, #ffa30ea6, #a30ea6, #a30ea6, inline conditionally getting the ARGB value #ffa30ea6, right?
+    red, red, red = 166, 14, 14, 1.00, #ffa60e0e, #ffa60e0e, #a60e0e, #a60e0e, inline conditionally getting the ARGB value #ffa60e0e, right?
+    teal, This is the last color, teal, teal = 14, 126, 166, 1.00, #ff0e7ea6, #ff0e7ea6, #0e7ea6, #0e7ea6, inline conditionally getting the ARGB value #ff0e7ea6, right?
+}

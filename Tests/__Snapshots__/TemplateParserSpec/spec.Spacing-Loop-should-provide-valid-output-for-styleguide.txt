@@ -1,0 +1,13 @@
+/// This file was generated using Prism
+
+fake line 1
+fake line 2
+
+Some SpacingSructure {
+    spacing-xxs, spacingXXS, spacing_xxs, spacing-xxs, SpacingXXS = 4,
+    spacing-xs, spacingXS, spacing_xs, spacing-xs, SpacingXS = 8,
+    spacing-s, spacingS, spacing_s, spacing-s, SpacingS = 12,
+    spacing-m, spacingM, spacing_m, spacing-m, SpacingM = 16,
+    spacing-l, spacingL, spacing_l, spacing-l, SpacingL = 24,
+    spacing-xl, spacingXL, spacing_xl, spacing-xl, SpacingXL = 32
+}

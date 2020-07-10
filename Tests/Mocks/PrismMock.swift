@@ -31,7 +31,7 @@ extension Prism {
                 .replacingOccurrences(of: "?\(url.query ?? "")", with: "")
                 .replacingOccurrences(of: "/", with: "_")
             
-            guard type == .successful else {
+            guard type == .successfulProject || type == .successfulStyleguide else {
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
             }
 
@@ -44,7 +44,7 @@ extension Prism {
         }
 
         var outResult: Result<Assets, ZeplinAPI.Error>!
-        self.getAssets(for: .project(id: "12345")) { result in
+        self.getAssets(for: type == .successfulProject ? .project(id: "12345") : .styleguide(id: "5e22156db411bc53c115c475")) { result in
             outResult = result
         }
 
@@ -61,7 +61,7 @@ extension Project {
             guard let path = request.url?.absoluteString else { return nil }
             
             switch (path, type) {
-            case ("https://api.zeplin.dev/v1/projects", .successful):
+            case ("https://api.zeplin.dev/v1/projects", .successfulProject):
                 let projectsMockJSON = """
                 [
                     {
@@ -84,7 +84,9 @@ extension Project {
                 """
                 
                 return try? MockResponse(for: request, data: projectsMockJSON.data(using: .utf8))
-            case (_, .successful):
+            case (_, .successfulProject):
+                return nil
+            case (_, .successfulStyleguide):
                 return nil
             case (_, .failure):
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
@@ -117,7 +119,8 @@ extension Project {
 }
 
 enum MockType {
-    case successful
+    case successfulProject
+    case successfulStyleguide
     case failure
     case faultyJSON
     case apiError
