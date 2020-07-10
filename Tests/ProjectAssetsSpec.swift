@@ -26,37 +26,6 @@ class ProjectAssetsSpec: QuickSpec {
             }
         }
 
-        describe("project decoding from JSON") {
-            context("successful") {
-                it("should suceed and return valid Project") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
-                    let project = try! projectResult.get()
-
-                    expect(project.id) == "12345"
-                    expect(project.colors.map { $0.argbValue }.joined(separator: ", ")) == "#ff62b6df, #ccdf6369, #ff0e28a6, #ff62a60e, #ffa6890e, #ffa30ea6, #ffa60e0e, #ff0e7ea6"
-                    expect(project.textStyles.map { $0.name }.joined(separator: ", ")) == "Base Heading, Base Subhead, Body, Body 2, Highlight, Large Heading, home.sub/inner/#primary_300/L"
-
-                    let encoded = try! project.encode()
-                    let decoded = try! ProjectAssets.decode(from: encoded)
-
-                    expect(project) == decoded
-                }
-            }
-
-            context("failed") {
-                it("should fail decoding") {
-                    let projectResult = Prism(jwtToken: "fake").mock(type: .faultyJSON)
-
-                    guard case .failure = projectResult else {
-                        fail("Expected error, got \(projectResult)")
-                        return
-                    }
-
-                    expect(try? projectResult.get()).to(beNil())
-                }
-            }
-        }
-
         describe("failed server response") {
             it("should return failed result") {
                 let projectResult = Prism(jwtToken: "fake").mock(type: .failure)
@@ -72,8 +41,8 @@ class ProjectAssetsSpec: QuickSpec {
 
         describe("invalid project ID causing invalid API URL") {
             it("should fail with error") {
-                var result: Result<ProjectAssets, ZeplinAPI.Error>?
-                Prism(jwtToken: "dsadas").getProjectAssets(for: "|||") { res in result = res }
+                var result: Result<Assets, ZeplinAPI.Error>?
+                Prism(jwtToken: "dsadas").getAssets(for: .project(id: "|||")) { res in result = res }
 
                 switch result {
                 case .some(.failure(let error)):

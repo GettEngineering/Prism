@@ -20,3 +20,13 @@ Text Styles:
     ✏️  Highlight AssetIdentity(name: Highlight, raw: Highlight, camelcase: highlight, snakecase: highlight, kebabcase: highlight, pascalcase: Highlight) => font: AppleGothic, size 18.0
     ✏️  Large Heading AssetIdentity(name: Large Heading, raw: Large Heading, camelcase: largeHeading, snakecase: large_heading, kebabcase: large-heading, pascalcase: LargeHeading) => font: MyCustomFont-Light, size 32.0
     ✏️  home.sub/inner/#primary_300/L AssetIdentity(name: home.sub/inner/#primary_300/L, raw: home.sub/inner/#primary_300/L, camelcase: homeSubInnerPrimary300L, snakecase: home_sub_inner_primary_300_l, kebabcase: home-sub-inner-primary-300-l, pascalcase: HomeSubInnerPrimary300L) => font: NewFont-Oblique, size 48.0
+
+Spacing Tokens:
+=========
+    ↔️ spacing-xxs => 4.0
+    ↔️ spacing-xs => 8.0
+    ↔️ spacing-s => 12.0
+    ↔️ spacing-m => 16.0
+    ↔️ spacing-l => 24.0
+    ↔️ spacing-xl => 32.0
+    ↔️ spacing-xxl => 40.2

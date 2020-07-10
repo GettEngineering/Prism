@@ -43,10 +43,10 @@ class TemplateParserSpec: QuickSpec {
         describe("Single Color Loop") {
             it("should match both isFirst and isLast") {
                 let projectResult = Prism(jwtToken: "fake").mock(type: .successful)
-                let project = ProjectAssets(id: "12345",
-                                            colors: [try! projectResult.get().colors.first!],
-                                            textStyles: [],
-                                            spacing: [])
+                let project = Assets(owner: .project(id: "12345"),
+                                     colors: [try! projectResult.get().colors.first!],
+                                     textStyles: [],
+                                     spacing: [])
                 let parser = TemplateParser(project: project)
 
                 let template = """
@@ -124,10 +124,10 @@ class TemplateParserSpec: QuickSpec {
                                                  letterSpacing: nil,
                                                  textAlign: nil,
                                                  color: nil)
-                let project = ProjectAssets(id: baseProject.id,
-                                            colors: baseProject.colors,
-                                            textStyles: baseProject.textStyles + [noColorTextStyle],
-                                            spacing: baseProject.spacing)
+                let project = Assets(owner: baseProject.owner,
+                                     colors: baseProject.colors,
+                                     textStyles: baseProject.textStyles + [noColorTextStyle],
+                                     spacing: baseProject.spacing)
                 let parser = TemplateParser(project: project)
 
                 let template = """
@@ -232,10 +232,10 @@ class TemplateParserSpec: QuickSpec {
         describe("Text Style without color identity") {
             it("should throw error when accessed") {
                 let projectResult = try! Prism(jwtToken: "fake").mock(type: .successful).get()
-                let modifiedResult = ProjectAssets(id: projectResult.id,
-                                                   colors: [],
-                                                   textStyles: Array(projectResult.textStyles.prefix(1)),
-                                                   spacing: [])
+                let modifiedResult = Assets(owner: projectResult.owner,
+                                            colors: [],
+                                            textStyles: Array(projectResult.textStyles.prefix(1)),
+                                            spacing: [])
                 
                 let parser = TemplateParser(project: modifiedResult)
                 expect {
@@ -250,8 +250,8 @@ class TemplateParserSpec: QuickSpec {
 
         describe("Text Style color accessed with no color") {
             it("should throw an error when accessed") {
-                let assets = ProjectAssets(
-                    id: "12345",
+                let assets = Assets(
+                    owner: .project(id: "12345"),
                     colors: [Color(name: "Fake", r: 255, g: 100, b: 100, a: 1.0)],
                     textStyles: [TextStyle(id: "12321312",
                                            name: "Fake Style",
@@ -470,6 +470,7 @@ class TemplateParserSpec: QuickSpec {
             context("camel cased") {
                 it("should throw an error") {
                     let configuration = PrismCore.Configuration(projectId: "12345",
+                                                                styleguideId: nil,
                                                                 templatesPath: "./",
                                                                 outputPath: "./",
                                                                 reservedColors: ["blueSky", "clearReddish"],
@@ -483,7 +484,8 @@ class TemplateParserSpec: QuickSpec {
 
             context("snake cased") {
                 it("should throw an error") {
-                    let configuration = PrismCore.Configuration(projectId: "12345",
+                    let configuration = PrismCore.Configuration(projectId: nil,
+                                                                styleguideId: "12345",
                                                                 templatesPath: "./",
                                                                 outputPath: "./",
                                                                 reservedColors: ["blue_sky", "clear_reddish"],
