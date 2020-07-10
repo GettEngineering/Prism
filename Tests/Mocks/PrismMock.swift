@@ -15,7 +15,7 @@ import MockDuck
 
 extension Prism {
     func mock(type: MockType,
-              file: StaticString = #file) -> Result<ProjectAssets, ZeplinAPI.Error> {
+              file: StaticString = #file) -> Result<Assets, ZeplinAPI.Error> {
         MockDuck.shouldFallbackToNetwork = false
         MockDuck.unregisterAllRequestHandlers()
         
@@ -43,8 +43,8 @@ extension Prism {
             return try? MockResponse(for: request, data: data)
         }
 
-        var outResult: Result<ProjectAssets, ZeplinAPI.Error>!
-        self.getProjectAssets(for: "12345") { result in
+        var outResult: Result<Assets, ZeplinAPI.Error>!
+        self.getAssets(for: .project(id: "12345")) { result in
             outResult = result
         }
 
