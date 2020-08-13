@@ -1,7 +1,5 @@
-Base Heading 26
-Base Subhead 22.53
-Body 
-Body 2 24
-Highlight 
-Large Heading 24
-home.sub/inner/#primary_300/L 52
+Base Heading 27 26 1
+Base Subhead 25.53 22 3.53
+Body 2 16.5 14 2.5
+Large Heading 36 32 4
+home.sub/inner/#primary_300/L 52 48 4

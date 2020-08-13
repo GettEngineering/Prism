@@ -47,6 +47,7 @@ These tokens specifically work in the scope of a loop (e.g. `FOR textStyle`)
 | `textStyle.fontSize`           | The text style's font size                                                          |
 | `textStyle.alignment`          | The text style's alignment, if exists. Can be left, right, center or justify        |
 | `textStyle.lineHeight`         | The text style's line height, if exists                                             |
+| `textStyle.lineSpacing`        | The text style's line height (if exists) minus its font size                        |
 | `textStyle.letterSpacing`      | The text style's letter spacing, if exists                                          |
 | `textStyle.identity`           | The identity/name of the text style as defined on Zeplin                            |
 | `textStyle.identity.camelcase` | The identity/name of the text style, formatted in camel case (e.g. `myTextStyle`)   |
