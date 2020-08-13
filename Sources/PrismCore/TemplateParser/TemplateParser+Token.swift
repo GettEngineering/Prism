@@ -35,6 +35,7 @@ extension TemplateParser {
         case textStyleFontStretch(Float)
         case textStyleAlignment(String?)
         case textStyleLineHeight(Float?)
+        case textStyleLineSpacing(Float?)
         case textStyleLetterSpacing(Float?)
 
         // Spacing
@@ -141,6 +142,8 @@ extension TemplateParser {
                 self = .textStyleAlignment(textStyle.textAlign?.rawValue)
             case "lineheight":
                 self = .textStyleLineHeight(textStyle.lineHeight)
+            case "linespacing":
+                self = .textStyleLineSpacing(textStyle.lineSpacing)
             case "letterspacing":
                 self = .textStyleLetterSpacing(textStyle.letterSpacing)
             default:
@@ -243,14 +246,10 @@ extension TemplateParser {
                 baseString = "\(stretch)"
             case .textStyleAlignment(let alignment):
                 baseString = alignment
-            case .textStyleLetterSpacing(let spacing):
-                if let spacing = spacing {
-                    baseString = spacing.roundedToNearest()
-                }
-            case .textStyleLineHeight(let height):
-                if let height = height {
-                    baseString = height.roundedToNearest()
-                }
+            case .textStyleLetterSpacing(let value),
+                 .textStyleLineSpacing(let value),
+                 .textStyleLineHeight(let value):
+                baseString = value.map { $0.roundedToNearest() }
             case .spacingValue(let value):
                 baseString = value.roundedToNearest()
             }

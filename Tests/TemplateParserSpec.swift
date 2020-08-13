@@ -87,7 +87,7 @@ class TemplateParserSpec: QuickSpec {
                 {{% IF !textStyle.isFirst %}}This is NOT the first text style{{% ENDIF %}}
                 {{% IF textStyle.isLast %}}This is the last text style{{% ENDIF %}}
                 {{% IF !textStyle.isLast %}}This is NOT the last text style{{% ENDIF %}}
-                {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}}, {{%textStyle.identity.kebabcase%}}, {{%textstyle.identity.pascalcase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.identity.kebabcase%}}, {{%textStyle.color.identity.pascalcase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
+                {{% IF textStyle.lineHeight %}}line height is {{%textStyle.lineHeight%}}, line spacing is {{%textStyle.lineSpacing%}} {{% ENDIF %}}{{%textStyle.identity%}}, {{%textStyle.identity.camelcase%}}, {{%textStyle.identity.snakecase%}}, {{%textStyle.identity.kebabcase%}}, {{%textstyle.identity.pascalcase%}} = {{%textStyle.fontName%}}, {{%textStyle.fontSize%}}, {{%textStyle.fontWeight%}}, {{%textStyle.fontStyle%}}, {{%textStyle.fontStretch%}}, {{%textStyle.color.identity%}}, {{%textStyle.color.identity.camelcase%}}, {{%textStyle.color.identity.snakecase%}}, {{%textStyle.color.identity.kebabcase%}}, {{%textStyle.color.identity.pascalcase%}}, {{% IF textStyle.letterSpacing %}}letter spacing is: {{%textStyle.letterSpacing%}}, {{% ENDIF %}}{{%textStyle.color.rgb%}}, {{%textStyle.color.argb%}}, {{%textStyle.color.r%}}, {{%textStyle.color.g%}}, {{%textStyle.color.b%}}, {{%textStyle.color.a%}}{{% IF textStyle.alignment %}}, alignment is {{%textStyle.alignment%}}{{% ENDIF %}}
                     {{% IF textStyle.alignment %}}
                     This is an attempt of an indented multi-line
                     block containing a text alignment, which is {{%textStyle.alignment%}}
@@ -531,7 +531,7 @@ class TemplateParserSpec: QuickSpec {
             }
         }
 
-        describe("Line Height") {
+        describe("Line height, font size and line spacing") {
             it("should be rounded") {
                 let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                 let project = try! projectResult.get()
@@ -539,7 +539,9 @@ class TemplateParserSpec: QuickSpec {
 
                 let template = """
                 {{% FOR textStyle %}}
-                {{%textStyle.identity%}} {{%textStyle.lineHeight%}}
+                {{% IF textStyle.lineHeight %}}
+                {{% textStyle.identity %}} {{% textStyle.lineHeight %}} {{% textStyle.fontSize %}} {{% textStyle.lineSpacing %}}
+                {{% ENDIF %}}
                 {{% END textStyle %}}
                 """
 

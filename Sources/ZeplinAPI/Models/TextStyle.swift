@@ -37,6 +37,12 @@ public struct TextStyle: Codable, Equatable {
     
     /// Text style's line height
     public let lineHeight: Float?
+
+    /// The text style's line spacing
+    /// e.g., its line height minus its font size
+    public var lineSpacing: Float? {
+        lineHeight.map { $0 - fontSize }
+    }
     
     /// Text style's letter spacing
     public let letterSpacing: Float?
