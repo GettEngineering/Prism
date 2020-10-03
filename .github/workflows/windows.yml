@@ -35,5 +35,7 @@ jobs:
         copy "%SDKROOT%\usr\share\visualc.modulemap" "%VCToolsInstallDir%\include\module.modulemap"
         copy "%SDKROOT%\usr\share\visualc.apinotes" "%VCToolsInstallDir%\include\visualc.apinotes"
         copy "%SDKROOT%\usr\share\winsdk.modulemap" "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
+    - name: Test
+      run: swift test --enable-test-discovery
     - name: Build
-      run: swift build -v --enable-test-discovery
+      run: swift build -c release --enable-test-discovery
