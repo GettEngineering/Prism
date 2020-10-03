@@ -37,3 +37,8 @@ jobs:
         copy "%SDKROOT%\usr\share\winsdk.modulemap" "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
     - name: Build
       run: swift build -c release --enable-test-discovery
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Artifacts
+        path: .build/release/prism*
