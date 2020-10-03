@@ -9,6 +9,9 @@
 #if os(Linux)
 import Glibc
 let os_exit: (Int32) -> Never = Glibc.exit
+#elseif os(Windows)
+import ucrt
+let os_exit: (Int32) -> Never = ucrt.exit
 #else
 import Darwin
 let os_exit: (Int32) -> Never = Darwin.exit
