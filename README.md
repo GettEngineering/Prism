@@ -67,6 +67,18 @@ Here are two short example of generating colors code for iOS and Android using P
 
 ![Color.swift Android Prism Template](Assets/gh/Colors-Android.gif "Color.swift Android Prism Template")
     
+## Running on Windows (Experimental)
+
+Due to the official release of Swift for Windows, an experimental build of `prism` is now available for Windows.
+
+You'll need to install a few dependencies before running for the first time:
+
+- Install the [Microsoft Visual C++ Redistributable for Visual Studio 2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads).
+- Install the latest [Swift Toolchain for Windows](https://swift.org/download/#releases).
+- Finally, get the **prism.exe** executable from the Releases page. 
+
+> **Note**: Building from source is somewhat more involved. Let me know if you're interested in doing so and I'll do my best to assist.
+
 ## Development
 
 * Run `make` or `make install` to build a release binary of the `prism` CLI tool and install it to **/usr/local/bin**.
