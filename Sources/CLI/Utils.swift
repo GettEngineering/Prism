@@ -21,3 +21,15 @@ func terminate(with message: String?) -> Never {
 
     os_exit(1)
 }
+
+extension String {
+    func droppingPrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(dropFirst(prefix.count))
+    }
+
+    func droppingSuffix(_ suffix: String) -> String {
+        guard hasSuffix(suffix) else { return self }
+        return String(dropLast(suffix.count))
+    }
+}

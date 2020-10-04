@@ -8,9 +8,9 @@
         },
         "fontName": "{{% textStyle.fontName %}}",
         "font": "{{% textStyle.font %}}",
-        {{% IF textStyle.alignment %}}"alignment": textStyle.alignment,{{% ENDIF %}}
-        {{% IF textStyle.lineHeight %}}"lineHeight": textStyle.lineHeight,{{% ENDIF %}}
-        {{% IF textStyle.letterSpacing %}}"letterSpacing": textStyle.letterSpacing,{{% ENDIF %}}
+        {{% IF textStyle.alignment %}}"alignment": "{{%textStyle.alignment%}}",{{% ENDIF %}}
+        {{% IF textStyle.lineHeight %}}"lineHeight": {{% textStyle.lineHeight %}},{{% ENDIF %}}
+        {{% IF textStyle.letterSpacing %}}"letterSpacing": {{% textStyle.letterSpacing %}},{{% ENDIF %}}
         {{% IF textStyle.color %}}
         "color": {
             "identity": {

@@ -124,6 +124,7 @@ struct Generate: ParsableCommand {
                     throw CommandError.noTemplateFiles
                 }
 
+                let baseURL = URL(fileURLWithPath: outputPath)
                 let parser = TemplateParser(project: project, configuration: config)
 
                 for templateFile in templateFiles {
@@ -131,11 +132,18 @@ struct Generate: ParsableCommand {
                     let parsed = try parser.parse(template: template ?? "")
 
                     let parsedData = parsed.data(using: .utf8) ?? Data()
-                    let filename = templateFile.components(separatedBy: "/").last ?? ""
-                    let outFile = String(filename.dropLast(6))
-                    let outPath = "\(outputPath)/\(outFile)"
+                    let filePath = templateFile.droppingPrefix(templatesPath + "/").droppingSuffix(".prism")
+                    let outputURL = baseURL.appendingPathComponent(filePath)
+                    let outputFolder = outputURL.deletingLastPathComponent()
 
-                    try parsedData.write(to: URL(fileURLWithPath: outPath))
+                    // Create path to file if doesn't exist
+                    if !fileManager.fileExists(atPath: outputFolder.path) {
+                        try fileManager.createDirectory(at: outputFolder,
+                                                        withIntermediateDirectories: true,
+                                                        attributes: nil)
+                    }
+
+                    try parsedData.write(to: outputURL)
                 }
 
                 sema.signal()
