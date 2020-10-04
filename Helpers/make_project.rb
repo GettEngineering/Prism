@@ -37,6 +37,7 @@ fi
         target.build_phases.move_from(index, 0)
     else
         target.build_configurations.each do |config|
+            config.build_settings['CLANG_ENABLE_MODULES'] = 'YES' if target.name == "QuickObjCRuntime"
             config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
             config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -suppress-warnings'
         end

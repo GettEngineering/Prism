@@ -17,8 +17,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1"),
-        .package(url: "https://github.com/Quick/Quick", from: "2.0.0"),
-        .package(url: "https://github.com/Quick/Nimble", from: "8.0.0"),
+        .package(url: "https://github.com/Quick/Quick", from: "3.0.0"),
+        .package(url: "https://github.com/Quick/Nimble", from: "9.0.0"),
         .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.5.0"),
         .package(url: "https://github.com/BuzzFeed/MockDuck", .branch("master")),
         .package(url: "https://github.com/jpsim/Yams", from: "3.0.0")
