@@ -18,4 +18,10 @@ struct PrismCLI: ParsableCommand {
     )
 }
 
+#if canImport(WinSDK)
+// Enable unicode for Windowws, if available
+import WinSDK
+SetConsoleOutputCP(65001)
+#endif
+
 PrismCLI.main()
