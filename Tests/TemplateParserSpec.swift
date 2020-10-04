@@ -493,7 +493,7 @@ class TemplateParserSpec: QuickSpec {
                     let parser = TemplateParser(project: project, configuration: configuration)
 
                     expect { try parser.parse(template: "") }
-                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blueSky, clearReddish, body, largeHeading")))
+                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blueSky, body, clearReddish, largeHeading")))
                 }
             }
 
@@ -508,7 +508,7 @@ class TemplateParserSpec: QuickSpec {
                     let parser = TemplateParser(project: project, configuration: configuration)
 
                     expect { try parser.parse(template: "") }
-                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blue_sky, clear_reddish, body, large_heading")))
+                        .to(throwError(TemplateParser.Error.prohibitedIdentities(identities: "blue_sky, body, clear_reddish, large_heading")))
                 }
             }
         }

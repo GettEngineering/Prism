@@ -67,7 +67,7 @@ public class TemplateParser {
         }
 
         guard allReservedIdentities.isEmpty else {
-            throw Error.prohibitedIdentities(identities: allReservedIdentities.joined(separator: ", "))
+            throw Error.prohibitedIdentities(identities: allReservedIdentities.sorted(by: <).joined(separator: ", "))
         }
 
         /// If everything's OK, try to recrusively parse the provided template.
@@ -325,7 +325,7 @@ public class TemplateParser {
 }
 
 extension TemplateParser {
-    enum Error: Swift.Error, CustomStringConvertible {
+    enum Error: Swift.Error, CustomStringConvertible, Equatable {
         /// An unknown FOR loop identifier error
         case unknownLoop(identifier: String)
 
