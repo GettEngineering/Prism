@@ -31,14 +31,16 @@ public extension ZeplinAPI {
     /// Fetch all projects associated with the user whose token is used
     /// for the APIs
     ///
+    /// - parameter status: Filter by project status
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                          of `Project`s, or a `ZeplinAPI.Error` error
-    func getProjects(page: Int = 1,
+    func getProjects(status: Project.Status = .active,
+                     page: Int = 1,
                      completion: @escaping (Result<[Project], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
         request(model: [Project].self,
-                from: "projects?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)",
+                from: "projects?offset=\(offset)&status=\(status.rawValue)&limit=\(ZeplinAPI.itemsPerPage)",
                 completion: completion)
     }
     
@@ -96,6 +98,7 @@ public extension ZeplinAPI {
     /// - parameter completion: A completion handler which can result in a successful
     ///                         `Stylguide`, or a `ZeplinAPI.Error` error
     func getStyleguide(_ id: Styleguide.ID,
+                       status: Project.Status = .active,
                        completion: @escaping (Result<Styleguide, Error>) -> Void) {
         request(model: Styleguide.self,
                 from: "styleguides/\(id)",
@@ -105,14 +108,16 @@ public extension ZeplinAPI {
     /// Fetch all styleguides
     ///
     /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
+    /// - parameter status: Filter by project status
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                         of `Stylguide`s, or a `ZeplinAPI.Error` error
     func getStyleguides(for projectId: Project.ID? = nil,
+                        status: Project.Status = .active,
                         page: Int = 1,
                         completion: @escaping (Result<[Styleguide], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
-        var path = "styleguides?offset=\(offset)&limit=\(ZeplinAPI.itemsPerPage)"
+        var path = "styleguides?offset=\(offset)&status=\(status.rawValue)&limit=\(ZeplinAPI.itemsPerPage)"
 
         if let projectId = projectId {
             path.append("&linked_project=\(projectId)")
