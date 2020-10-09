@@ -23,8 +23,8 @@ public class Prism {
     ///
     /// - Note:
     ///     Due to the nature of Zeplin's API, you can't get _all_ assets for
-    ///     project or text style in a single call. You have to assets separaately
-    ///     for each child styleguide of a project or owner stylegguide.
+    ///     project or text style in a single call. You have to get assets separately
+    ///     for each child styleguide of a project or owner styleguide.
     ///     Getting these styleguides also incurs an additional API call.
     ///
     ///     In essence, getting all colors and text styles for a project incurs:
@@ -36,7 +36,7 @@ public class Prism {
     /// - parameter owner: Assets owner, e.g. a project or styleguide
     /// - parameter completion: A completion handler which can result in a successful `Assets`
     ///                         object, or a `ZeplinAPI.Error` error
-    public func getAssets(for owner: Assets.Owner,
+    public func getAssets(for owner: AssetOwner,
                           completion: @escaping (Result<Assets, ZeplinAPI.Error>) -> Void) {
         let group = DispatchGroup()
         var colors = [Color]()
@@ -50,6 +50,7 @@ public class Prism {
 
         // Wait for styleguide IDs we wish to query
         let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+
         errors.append(contentsOf: styleguideErrors)
 
         // Get text styles, colors and spacing separately
@@ -158,46 +159,21 @@ public class Prism {
     /// - note: This is a blocking, synchronous, method.
     ///
     /// - returns: Array of styleguide IDs and arraay of errors, if any occurred.
-    private func getStyleguideIDs(for owner: Assets.Owner) -> (ids: [Styleguide.ID], errors: [ZeplinAPI.Error]) {
+    private func getStyleguideIDs(for owner: AssetOwner) -> (ids: [Styleguide.ID], errors: [ZeplinAPI.Error]) {
         let group = DispatchGroup()
         var styleguideIDs = [Styleguide.ID]()
         var errors = [ZeplinAPI.Error]()
 
-        switch owner {
-        case .styleguide(let styleguideId):
-            // Get styleguide and all parent styleguides
-            group.enter()
-            api.getStyleguide(styleguideId) { [weak api] result in
-                guard let api = api else { fatalError("Can't access API client") }
+        // Get all linked project or styleguide styleguides
+        group.enter()
+        api.getStyleguides(for: owner) { result in
+            defer { group.leave() }
 
-                switch result {
-                case .success(let styleguide):
-                    styleguide.getParentStyleguides(api: api) { parentsResult in
-                        defer { group.leave() }
-                        switch parentsResult {
-                        case .success(let styleguides):
-                            styleguideIDs = styleguides.map(\.id) + [styleguideId]
-                        case .failure(let error):
-                            errors.append(error)
-                        }
-                    }
-                case .failure(let error):
-                    errors.append(error)
-                    group.leave()
-                }
-            }
-        case .project(let projectId):
-            // Get all linked project styleguides
-            group.enter()
-            api.getStyleguides(for: projectId) { result in
-                defer { group.leave() }
-
-                switch result {
-                case .success(let styleguides):
-                    styleguideIDs = styleguides.map(\.id)
-                case .failure(let error):
-                    errors.append(error)
-                }
+            switch result {
+            case .success(let styleguides):
+                styleguideIDs = styleguides.map(\.id)
+            case .failure(let error):
+                errors.append(error)
             }
         }
 

@@ -107,20 +107,25 @@ public extension ZeplinAPI {
 
     /// Fetch all styleguides
     ///
-    /// - parameter projectId: A Zeplin Project ID to fetch styleguides for
+    /// - parameter owner: A linked asset owner to fetch ancestor styleguides for (either a project or styleguiide)
     /// - parameter status: Filter by project status
     /// - parameter page: The current results page to ask for, defaults to 1
     /// - parameter completion: A completion handler which can result in a successful array
     ///                         of `Stylguide`s, or a `ZeplinAPI.Error` error
-    func getStyleguides(for projectId: Project.ID? = nil,
+    func getStyleguides(for owner: AssetOwner? = nil,
                         status: Project.Status = .active,
                         page: Int = 1,
                         completion: @escaping (Result<[Styleguide], Error>) -> Void) {
         let offset = (page - 1) * ZeplinAPI.itemsPerPage
         var path = "styleguides?offset=\(offset)&status=\(status.rawValue)&limit=\(ZeplinAPI.itemsPerPage)"
 
-        if let projectId = projectId {
-            path.append("&linked_project=\(projectId)")
+        switch owner {
+        case .some(.project(let id)):
+            path.append("&linked_project=\(id)")
+        case .some(.styleguide(let id)):
+            path.append("&linked_styleguide=\(id)")
+        case .none:
+            break
         }
 
         request(model: [Styleguide].self,
