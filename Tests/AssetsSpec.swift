@@ -78,7 +78,7 @@ class AssetsSpec: QuickSpec {
 
         describe("owner description") {
             it("should return correct id for either owner") {
-                let owners: [Assets.Owner] = [
+                let owners: [AssetOwner] = [
                     .project(id: "123"),
                     .styleguide(id: "321"),
                     .styleguide(id: "sg"),
@@ -94,7 +94,7 @@ class AssetsSpec: QuickSpec {
 
         describe("owner id") {
             it("should return correct id for either owner") {
-                let owners: [Assets.Owner] = [
+                let owners: [AssetOwner] = [
                     .project(id: "123"),
                     .styleguide(id: "321"),
                     .styleguide(id: "sg"),

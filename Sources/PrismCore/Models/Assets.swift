@@ -12,7 +12,7 @@ import ZeplinAPI
 /// Prism Assets, representing different colors, text styles and spacing tokens.
 public struct Assets: Equatable {
     /// Assets owner.
-    public let owner: Owner
+    public let owner: AssetOwner
 
     /// Colors.
     public let colors: [Color]
@@ -22,28 +22,6 @@ public struct Assets: Equatable {
 
     /// Spacing tokens.
     public let spacing: [Spacing]
-}
-
-public extension Assets {
-    enum Owner: Equatable, CustomStringConvertible {
-        case project(id: Project.ID)
-        case styleguide(id: Styleguide.ID)
-
-        public var id: String {
-            switch self {
-            case .project(let id),
-                 .styleguide(let id):
-                return id
-            }
-        }
-
-        public var description: String {
-            switch self {
-            case .project(let id): return "Project \(id)"
-            case .styleguide(let id): return "Styleguide \(id)"
-            }
-        }
-    }
 }
 
 extension Assets: CustomStringConvertible {
