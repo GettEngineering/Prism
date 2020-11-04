@@ -69,7 +69,6 @@ struct Generate: ParsableCommand {
         }
 
         let ownerProject = (projectId ?? config?.projectId).map { AssetOwner.project(id: $0) }
-
         let ownerStyleguide = (styleguideId ?? config?.styleguideId).map { AssetOwner.styleguide(id: $0) }
 
         // Make sure we have either a project or a styleguide

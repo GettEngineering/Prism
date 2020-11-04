@@ -13,7 +13,6 @@ public enum AssetOwner: Equatable, CustomStringConvertible {
     case project(id: Project.ID)
     case styleguide(id: Styleguide.ID)
 
-
     public var id: String {
         switch self {
         case .project(let id),
