@@ -26,6 +26,9 @@ public struct Configuration {
 
     /// A list of reserved text style identities that cannot be used.
     public let reservedTextStyles: [String]
+
+    /// A list of ignored style guide ids, that will not be fetched.
+    public let ignoredStyleGuideIds: [String]
 }
 
 extension Configuration: Codable {
@@ -37,6 +40,7 @@ extension Configuration: Codable {
         self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
         self.reservedTextStyles = (try? container.decode([String].self, forKey: .reservedTextStyles)) ?? []
+        self.ignoredStyleGuideIds = (try? container.decode([String].self, forKey: .ignoredStyleGuideIds)) ?? []
     }
     
     enum CodingKeys: String, CodingKey {
@@ -46,5 +50,6 @@ extension Configuration: Codable {
         case outputPath = "output_path"
         case reservedColors = "reserved_colors"
         case reservedTextStyles = "reserved_textstyles"
+        case ignoredStyleGuideIds = "ignored_style_guides_ids"
     }
 }

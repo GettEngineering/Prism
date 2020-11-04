@@ -44,17 +44,20 @@ public class Prism {
         var spacings = [Spacing]()
         var errors = [ZeplinAPI.Error]()
         let projectId: String? = {
-            guard case .project(let id) = owner else { return nil }
+            guard case .project(let id, _) = owner else { return nil }
             return id
         }()
 
         // Wait for styleguide IDs we wish to query
-        let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        let (unfilteredStyleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
 
         errors.append(contentsOf: styleguideErrors)
 
         // Get text styles, colors and spacing separately
         // for each styleguide
+
+        let styleguideIDs = unfilteredStyleguideIDs.filter { id in !owner.ignoredStyleGuideIds.contains(id) }
+
         for styleguideID in styleguideIDs {
             group.enter()
             api.getPagedItems(

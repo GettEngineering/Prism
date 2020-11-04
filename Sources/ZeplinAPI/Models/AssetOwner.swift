@@ -10,20 +10,34 @@ import Foundation
 
 /// An asset owner: either a Project or a Styleguide
 public enum AssetOwner: Equatable, CustomStringConvertible {
-    case project(id: Project.ID)
+    case project(id: Project.ID, ignoredStyleGuideIds: [String])
     case styleguide(id: Styleguide.ID)
+
+    public static func project(id: Project.ID) -> Self {
+        .project(id: id, ignoredStyleGuideIds: [])
+    }
 
     public var id: String {
         switch self {
-        case .project(let id),
+        case .project(let id, _),
              .styleguide(let id):
             return id
         }
     }
 
+    public var ignoredStyleGuideIds: [String] {
+        switch  self {
+        case .project(_, let ignoredStyleGuideIds):
+            return ignoredStyleGuideIds
+
+        default:
+            return []
+        }
+    }
+
     public var description: String {
         switch self {
-        case .project(let id): return "Project \(id)"
+        case .project(let id, _): return "Project \(id)"
         case .styleguide(let id): return "Styleguide \(id)"
         }
     }
