@@ -68,9 +68,7 @@ struct Generate: ParsableCommand {
             throw CommandError.missingToken
         }
 
-        let ownerProject = (projectId ?? config?.projectId) .map {
-            AssetOwner.project(id: $0, ignoredStyleGuideIds: config?.ignoredStyleGuideIds ?? [])
-        }
+        let ownerProject = (projectId ?? config?.projectId).map { AssetOwner.project(id: $0) }
 
         let ownerStyleguide = (styleguideId ?? config?.styleguideId).map { AssetOwner.styleguide(id: $0) }
 
@@ -102,7 +100,7 @@ struct Generate: ParsableCommand {
             throw CommandError.outputFolderDoesntExist(path: outputPath)
         }
         
-        prism.getAssets(for: owner) { result in
+        prism.getAssets(for: owner, ignoredStyleGuideIds: config?.ignoredStyleGuideIds ?? []) { result in
             do {
                 let project = try result.get()
                 

@@ -120,7 +120,7 @@ public extension ZeplinAPI {
         var path = "styleguides?offset=\(offset)&status=\(status.rawValue)&limit=\(ZeplinAPI.itemsPerPage)"
 
         switch owner {
-        case .some(.project(let id, _)):
+        case .some(.project(let id)):
             path.append("&linked_project=\(id)")
         case .some(.styleguide(let id)):
             path.append("&linked_styleguide=\(id)")
