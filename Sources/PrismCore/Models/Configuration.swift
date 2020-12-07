@@ -27,7 +27,7 @@ public struct Configuration {
     /// A list of reserved text style identities that cannot be used.
     public let reservedTextStyles: [String]
 
-    /// A list of ignored style guide ids, that will not be fetched.
+    /// A list of ignored Style Guide IDs, that will not be fetched.
     public let ignoredStyleGuideIds: [String]
 }
 
