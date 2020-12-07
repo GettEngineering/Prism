@@ -51,7 +51,7 @@ public class Prism {
         }()
 
         // Wait for styleguide IDs we wish to query
-        let (unfilteredStyleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        let (allStyleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
 
         errors.append(contentsOf: styleguideErrors)
 

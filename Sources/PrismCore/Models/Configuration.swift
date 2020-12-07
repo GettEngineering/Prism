@@ -28,7 +28,7 @@ public struct Configuration {
     public let reservedTextStyles: [String]
 
     /// A list of ignored Style Guide IDs, that will not be fetched.
-    public let ignoredStyleGuideIds: [String]
+    public let ignoredStyleGuideIDs: [String]
 }
 
 extension Configuration: Codable {
@@ -50,6 +50,6 @@ extension Configuration: Codable {
         case outputPath = "output_path"
         case reservedColors = "reserved_colors"
         case reservedTextStyles = "reserved_textstyles"
-        case ignoredStyleGuideIds = "ignored_style_guides_ids"
+        case ignoredStyleGuideIds = "ignored_styleguides"
     }
 }
