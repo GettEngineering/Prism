@@ -51,14 +51,14 @@ public class Prism {
         }()
 
         // Wait for styleguide IDs we wish to query
-        let (allStyleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        let (allStyleguideIds, styleguideErrors) = getStyleguideIDs(for: owner)
 
         errors.append(contentsOf: styleguideErrors)
 
         // Get text styles, colors and spacing separately
         // for each styleguide
 
-        let styleguideIDs = unfilteredStyleguideIDs.filter { id in !ignoredStyleGuideIds.contains(id) }
+        let styleguideIDs = allStyleguideIds.filter { id in !ignoredStyleGuideIds.contains(id) }
 
         for styleguideID in styleguideIDs {
             group.enter()
