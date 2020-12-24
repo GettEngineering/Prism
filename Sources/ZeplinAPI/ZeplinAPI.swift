@@ -263,7 +263,10 @@ extension ZeplinAPI {
         case unknownAPIError(statusCode: Int, url: String, message: String)
         case apiError(message: String)
         case compoundError(errors: [ZeplinAPI.Error])
-
+        case duplicateColors(identities: [String])
+        case duplicateTextStyles(identities: [String])
+        case duplicateSpacings(identities: [String])
+        
         public var description: String {
             switch self {
             case .invalidRequestURL(let path):
@@ -275,7 +278,13 @@ extension ZeplinAPI {
             case .apiError(let message):
                 return "Zeplin API Failure: \(message)"
             case .compoundError(let errors):
-                return errors.map { $0.description }.joined(separator: "\n")
+                return errors.map(\.description).joined(separator: "\n")
+            case .duplicateColors(let identities):
+                return "Duplicate colors found: \(identities.joined(separator: ", "))"
+            case .duplicateTextStyles(let identities):
+                return "Duplicate text styles found: \(identities.joined(separator: ", "))"
+            case .duplicateSpacings(let identities):
+                return "Duplicate spacings found: \(identities.joined(separator: ", "))"
             }
         }
     }

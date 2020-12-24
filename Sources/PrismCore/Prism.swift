@@ -143,7 +143,24 @@ public class Prism {
         /// Otherwise, Prism terminates without waiting for the result to
         /// come back.
         group.wait()
-
+        
+        /// Fail if any asset identity is duplicated
+        let duplicateColors = colors.map(\.identity.name).duplicates().sorted(by: <)
+        let duplicateTextStyles = textStyles.map(\.identity.name).duplicates().sorted(by: <)
+        let duplicateSpacings = spacings.map(\.identity.name).duplicates().sorted(by: <)
+        
+        if !duplicateSpacings.isEmpty {
+            errors.append(.duplicateColors(identities: duplicateColors))
+        }
+        
+        if !duplicateTextStyles.isEmpty {
+            errors.append(.duplicateTextStyles(identities: duplicateTextStyles))
+        }
+        
+        if !duplicateSpacings.isEmpty {
+            errors.append(.duplicateSpacings(identities: duplicateSpacings))
+        }
+        
         if !errors.isEmpty {
             completion(.failure(.compoundError(errors: errors)))
         } else {
@@ -254,5 +271,15 @@ private extension Result {
         case .failure(let error):
             errors.append(error)
         }
+    }
+}
+
+private extension Array where Element: Hashable {
+    /// Return a list of duplicates entires in a `Hashable` array
+    func duplicates() -> Self {
+        let groups = Dictionary(grouping: self, by: { $0 })
+        let duplicateGroups = groups.filter { $1.count > 1 }
+        let duplicates = Array(duplicateGroups.keys)
+        return duplicates
     }
 }

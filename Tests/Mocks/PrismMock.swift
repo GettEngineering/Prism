@@ -31,13 +31,24 @@ extension Prism {
                 .replacingOccurrences(of: "?\(url.query ?? "")", with: "")
                 .replacingOccurrences(of: "/", with: "_")
             
-            guard type == .successfulProject || type == .successfulStyleguide else {
+            guard [.successfulProject, .successfulStyleguide, .duplicateAssets].contains(type) else {
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
             }
 
             let mockPath = mocksURL.appendingPathComponent("\(path).json")
             guard let data = try? Data(contentsOf: mockPath) else {
                 fatalError("Can't find mock for \(url) at \(mockPath)")
+            }
+            
+            // Fake duplication of results in mock response
+            if type == .duplicateAssets {
+                var json = try! JSONSerialization.jsonObject(with: data) as! [Any]
+                json.append(json[0])
+
+                return try? MockResponse(
+                    for: request,
+                    data: try! JSONSerialization.data(withJSONObject: json)
+                )
             }
             
             return try? MockResponse(for: request, data: data)
@@ -84,9 +95,9 @@ extension Project {
                 """
                 
                 return try? MockResponse(for: request, data: projectsMockJSON.data(using: .utf8))
-            case (_, .successfulProject):
-                return nil
-            case (_, .successfulStyleguide):
+            case (_, .successfulProject),
+                 (_, .successfulStyleguide),
+                 (_, .duplicateAssets):
                 return nil
             case (_, .failure):
                 return try? MockResponse(for: request, data: ",|[".data(using: .utf8))
@@ -122,6 +133,7 @@ enum MockType {
     case successfulProject
     case successfulStyleguide
     case failure
+    case duplicateAssets
     case faultyJSON
     case apiError
     case unknownApiError
