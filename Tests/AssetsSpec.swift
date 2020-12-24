@@ -38,6 +38,23 @@ class AssetsSpec: QuickSpec {
                 expect(try? projectResult.get()).to(beNil())
             }
         }
+        
+        describe("duplicate asset identities") {
+            it("should fail with error") {
+                let result = Prism(jwtToken: "fake").mock(type: .duplicateAssets)
+
+                switch result {
+                case .failure(let error):
+                    expect(error.description) == """
+                        Duplicate colors found: green, mud, purple, teal
+                        Duplicate text styles found: Base Heading, Body, Highlight
+                        Duplicate spacings found: spacing-m, spacing-xl, spacing-xs, spacing-xxs
+                        """
+                default:
+                    fail("Expected invalid project ID error, got \(String(describing: result))")
+                }
+            }
+        }
 
         describe("invalid project ID causing invalid API URL") {
             it("should fail with error") {
