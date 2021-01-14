@@ -42,15 +42,15 @@ class ConfigurationSpec: QuickSpec {
                         - fake3
                         - fake4
                     ignored_styleguides:
-                        - "12"
-                        - "13"
+                        - fake5
+                        - fake6
                     """
                     let config = try! decoder.decode(PrismCore.Configuration.self,
                                                      from: yaml)
-
-                    expect(config.ignoredStyleGuides) == ["12", "13"]
+                    
                     expect(config.reservedColors) == ["fake1", "fake2"]
                     expect(config.reservedTextStyles) == ["fake3", "fake4"]
+                    expect(config.ignoredStyleGuides) == ["fake5", "fake6"]
                 }
             }
         }
