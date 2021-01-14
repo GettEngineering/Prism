@@ -99,7 +99,7 @@ struct Generate: ParsableCommand {
             throw CommandError.outputFolderDoesntExist(path: outputPath)
         }
         
-        prism.getAssets(for: owner, ignoredStyleGuideIds: config?.ignoredStyleGuideIds ?? []) { result in
+        prism.getAssets(for: owner, ignoredStyleGuideIds: config?.ignoredStyleGuides ?? []) { result in
             do {
                 let project = try result.get()
                 

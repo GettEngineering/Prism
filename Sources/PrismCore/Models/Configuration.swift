@@ -28,7 +28,7 @@ public struct Configuration {
     public let reservedTextStyles: [String]
 
     /// A list of ignored Style Guide IDs, that will not be fetched.
-    public let ignoredStyleGuideIds: [String]
+    public let ignoredStyleGuides: [String]
 }
 
 extension Configuration: Codable {
@@ -40,7 +40,7 @@ extension Configuration: Codable {
         self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
         self.reservedTextStyles = (try? container.decode([String].self, forKey: .reservedTextStyles)) ?? []
-        self.ignoredStyleGuideIds = (try? container.decode([String].self, forKey: .ignoredStyleGuideIds)) ?? []
+        self.ignoredStyleGuides = (try? container.decode([String].self, forKey: .ignoredStyleGuides)) ?? []
     }
     
     enum CodingKeys: String, CodingKey {
@@ -50,6 +50,6 @@ extension Configuration: Codable {
         case outputPath = "output_path"
         case reservedColors = "reserved_colors"
         case reservedTextStyles = "reserved_textstyles"
-        case ignoredStyleGuideIds = "ignored_styleguides"
+        case ignoredStyleGuides = "ignored_styleguides"
     }
 }
