@@ -34,11 +34,11 @@ public class Prism {
     ///     e.g. for a Project with 2 linked styleguides, Prism performs 7 API calls
     ///
     /// - parameter owner: Assets owner, e.g. a project or styleguide
-    /// - parameter ignoredStyleGuideIds: Additional style guide id's which should be ignored
+    /// - parameter ignoredStyleGuides: Additional style guide id's which should be ignored
     /// - parameter completion: A completion handler which can result in a successful `Assets`
     ///                         object, or a `ZeplinAPI.Error` error
     public func getAssets(for owner: AssetOwner,
-                          ignoredStyleGuideIds: [String] = [],
+                          ignoredStyleGuides: [String] = [],
                           completion: @escaping (Result<Assets, ZeplinAPI.Error>) -> Void) {
         let group = DispatchGroup()
         var colors = [Color]()
@@ -58,7 +58,7 @@ public class Prism {
         // Get text styles, colors and spacing separately
         // for each styleguide
 
-        let styleguideIDs = allStyleguideIds.filter { id in !ignoredStyleGuideIds.contains(id) }
+        let styleguideIDs = allStyleguideIds.filter { id in !ignoredStyleGuides.contains(id) }
 
         for styleguideID in styleguideIDs {
             group.enter()
