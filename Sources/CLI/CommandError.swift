@@ -14,10 +14,10 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case conflictingOwner
     case missingToken
     case failedDataConversion
-    case templateFolderMissing
     case outputFolderMissing
     case outputFolderDoesntExist(path: String)
-    case noTemplateFiles
+    case missingConfigurationFile(path: String)
+    case invalidConfiguration(path: String)
 
     var description: String {
         switch self {
@@ -31,14 +31,14 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Missing ZEPLIN_TOKEN environment variable"
         case .failedDataConversion:
             return "Failed converting Data to unicode string"
-        case .templateFolderMissing:
-            return "Invalid or missing templates folder. Please provide a valid one via the -t flag or in your config.yml."
         case .outputFolderMissing:
             return "Invalid or missing output folder. Please provide a valid one via the -o flag or in your config.yml."
         case .outputFolderDoesntExist(let path):
             return "Provided output path at '\(path)' doesn't exist"
-        case .noTemplateFiles:
-            return "Can't find template files (*.prism) in provided folder"
+        case .missingConfigurationFile(let path):
+            return "Provided configuration path '\(path)' cannot be found"
+        case .invalidConfiguration(let path):
+            return "Configuration '\(path)' was used, but doesn't seem to be a valid YAML file"
         }
     }
 }

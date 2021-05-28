@@ -29,7 +29,7 @@ public struct Configuration {
     public let reservedTextStyles: [String]
 
     /// Asset Catalog Configuration
-    public let assetCatalog: AssetCatalog
+    public let assetCatalog: AssetCatalog?
 }
 
 public extension Configuration {
@@ -37,14 +37,6 @@ public extension Configuration {
     struct AssetCatalog: Codable {
         /// Name of generated Asset Catalog
         public let name: String?
-
-        /// Path to output asset catalog to
-        public let outputPath: String?
-
-        enum CodingKeys: String, CodingKey {
-            case name
-            case outputPath = "output_path"
-        }
     }
 }
 
@@ -57,7 +49,7 @@ extension Configuration: Codable {
         self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
         self.reservedTextStyles = (try? container.decode([String].self, forKey: .reservedTextStyles)) ?? []
-        self.assetCatalog = try container.decode(AssetCatalog.self, forKey: .assetCatalog)
+        self.assetCatalog = try container.decodeIfPresent(AssetCatalog.self, forKey: .assetCatalog)
     }
 
     public static let prismFolder = ".prism"
@@ -81,6 +73,7 @@ extension Configuration: Codable {
         }
 
         self.projectId = config.projectId
+        self.styleguideId = config.styleguideId
         self.templatesPath = config.templatesPath
         self.outputPath = config.outputPath
         self.reservedColors = config.reservedColors

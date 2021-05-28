@@ -16,8 +16,7 @@ import ZeplinAPI
 struct Generate: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "generate",
-        abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths",
-        subcommands: [GenerateAssetCatalog.self]
+        abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
     )
     
     @Option(name: .shortAndLong, help: "Zeplin Project ID to generate text styles and colors from. Overrides any config files.")
@@ -36,10 +35,9 @@ struct Generate: ParsableCommand {
     var configFile: String?
     
     func run() throws {
-        let prismFolder = ".prism"
         var configPath = configFile
 
-        let defaultConfigPath = "\(prismFolder)/config.yml"
+        let defaultConfigPath = "\(Prism.prismFolder)/config.yml"
         let hasDefaultConfig = FileManager.default.fileExists(atPath: defaultConfigPath)
         if configPath == nil && hasDefaultConfig {
             configPath = defaultConfigPath
@@ -81,76 +79,39 @@ struct Generate: ParsableCommand {
         if ownerProject != nil && ownerStyleguide != nil {
             throw CommandError.conflictingOwner
         }
-
-        let prism = Prism(jwtToken: jwtToken)
-        let sema = DispatchSemaphore(value: 0)
-
-        let rawTemplatesPath = templatesPath ?? config.templatesPath ?? prismFolder
-        let templatesPath = rawTemplatesPath == "/" ? String(rawTemplatesPath.dropLast()) : rawTemplatesPath
         
-        guard let rawOutputPath = outputPath ?? config.outputPath else {
+        let fileManager = FileManager.default
+        
+        guard let rawOutputPath = outputPath ?? config?.outputPath else {
             throw CommandError.outputFolderMissing
         }
-
-        let fileManager = FileManager.default
+        
         let outputPath = (rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath)
-                            .replacingOccurrences(of: "~", with: fileManager.homeDirectoryForCurrentUser.path)
+            .replacingOccurrences(of: "~", with: fileManager.homeDirectoryForCurrentUser.path)
         
         guard fileManager.folderExists(at: outputPath) else {
             throw CommandError.outputFolderDoesntExist(path: outputPath)
         }
         
+        let prism = Prism(jwtToken: jwtToken)
+        let sema = DispatchSemaphore(value: 0)
+        
         prism.getAssets(for: owner) { result in
             do {
-                let project = try result.get()
+                let assets = try result.get()
+                let strategies = [TemplateGenerator.self, AssetCatalogGenerator.self] as [GenerationStrategy.Type]
                 
-                let enumerator = fileManager.enumerator(atPath: templatesPath)
-
-                var isFolder: ObjCBool = false
-                guard fileManager.fileExists(atPath: templatesPath, isDirectory: &isFolder),
-                      isFolder.boolValue else {
-                    throw CommandError.templateFolderMissing
+                for strategy in strategies {
+                    try strategy.generate(to: outputPath,
+                                          command: self,
+                                          from: assets,
+                                          with: config)
                 }
-
-                var templateFiles = [String]()
-
-                while let templateFile = enumerator?.nextObject() as? String {
-                    guard !templateFile.hasPrefix("."),
-                          templateFile.hasSuffix(".prism") else { continue }
-
-                    templateFiles.append("\(templatesPath)/\(templateFile)")
-                }
-
-                guard !templateFiles.isEmpty else {
-                    throw CommandError.noTemplateFiles
-                }
-
-                let baseURL = URL(fileURLWithPath: outputPath)
-                let parser = TemplateParser(project: project, configuration: config)
-
-                for templateFile in templateFiles {
-                    let template = try? String(contentsOfFile: templateFile)
-                    let parsed = try parser.parse(template: template ?? "")
-
-                    let parsedData = parsed.data(using: .utf8) ?? Data()
-                    let filePath = templateFile.droppingPrefix(templatesPath + "/").droppingSuffix(".prism")
-                    let outputURL = baseURL.appendingPathComponent(filePath)
-                    let outputFolder = outputURL.deletingLastPathComponent()
-
-                    // Create path to file if doesn't exist
-                    if !fileManager.fileExists(atPath: outputFolder.path) {
-                        try fileManager.createDirectory(at: outputFolder,
-                                                        withIntermediateDirectories: true,
-                                                        attributes: nil)
-                    }
-
-                    try parsedData.write(to: outputURL)
-                }
-
-                sema.signal()
             } catch let err {
                 terminate(with: "❌ Error: \(err)")
             }
+            
+            sema.signal()
         }
 
         sema.wait()

@@ -13,6 +13,7 @@ import ZeplinAPI
 /// API data from Zeplin and return
 public class Prism {
     private let api: ZeplinAPI
+    public static let prismFolder = ".prism"
 
     public init(jwtToken: String) {
         self.api = ZeplinAPI(jwtToken: jwtToken)
