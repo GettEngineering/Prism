@@ -489,7 +489,8 @@ class TemplateParserSpec: QuickSpec {
                                                                 templatesPath: "./",
                                                                 outputPath: "./",
                                                                 reservedColors: ["blueSky", "clearReddish"],
-                                                                reservedTextStyles: ["body", "largeHeading"])
+                                                                reservedTextStyles: ["body", "largeHeading"],
+                                                                ignoredStyleGuides: [])
                     let parser = TemplateParser(project: project, configuration: configuration)
 
                     expect { try parser.parse(template: "") }
@@ -504,7 +505,8 @@ class TemplateParserSpec: QuickSpec {
                                                                 templatesPath: "./",
                                                                 outputPath: "./",
                                                                 reservedColors: ["blue_sky", "clear_reddish"],
-                                                                reservedTextStyles: ["body", "large_heading"])
+                                                                reservedTextStyles: ["body", "large_heading"],
+                                                                ignoredStyleGuides: [])
                     let parser = TemplateParser(project: project, configuration: configuration)
 
                     expect { try parser.parse(template: "") }

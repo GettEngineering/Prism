@@ -34,9 +34,11 @@ public class Prism {
     ///     e.g. for a Project with 2 linked styleguides, Prism performs 7 API calls
     ///
     /// - parameter owner: Assets owner, e.g. a project or styleguide
+    /// - parameter ignoredStyleGuides: Additional style guide id's which should be ignored
     /// - parameter completion: A completion handler which can result in a successful `Assets`
     ///                         object, or a `ZeplinAPI.Error` error
     public func getAssets(for owner: AssetOwner,
+                          ignoredStyleGuides: [String] = [],
                           completion: @escaping (Result<Assets, ZeplinAPI.Error>) -> Void) {
         let group = DispatchGroup()
         var colors = [Color]()
@@ -49,12 +51,15 @@ public class Prism {
         }()
 
         // Wait for styleguide IDs we wish to query
-        let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        let (allStyleguideIds, styleguideErrors) = getStyleguideIDs(for: owner)
 
         errors.append(contentsOf: styleguideErrors)
 
         // Get text styles, colors and spacing separately
         // for each styleguide
+
+        let styleguideIDs = allStyleguideIds.filter { id in !ignoredStyleGuides.contains(id) }
+
         for styleguideID in styleguideIDs {
             group.enter()
             api.getPagedItems(
