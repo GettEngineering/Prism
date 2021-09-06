@@ -18,22 +18,25 @@ struct Generate: ParsableCommand {
         commandName: "generate",
         abstract: "Generate text style and colors definitions from a set of templates and store the resulting output to the provided paths"
     )
-    
+
     @Option(name: .shortAndLong, help: "Zeplin Project ID to generate text styles and colors from. Overrides any config files.")
     var projectId: Project.ID?
 
     @Option(name: .shortAndLong, help: "Zeplin Styleguide ID to generate text styles and colors from. Overrides any config files.")
     var styleguideId: Styleguide.ID?
-    
+
     @Option(name: .shortAndLong, help: "Path to a folder containing *.prism template files. Overrides any config files.")
     var templatesPath: String?
-    
+
     @Option(name: .shortAndLong, help: "Path to save generated files to. Overrides any config files.")
     var outputPath: String?
-    
+
     @Option(name: .shortAndLong, help: "Path to YAML configuration file")
     var configFile: String?
-    
+
+    @Option(name: .shortAndLong, help: "Zeplin Styleguide IDs to be ignored, comma separated (e.g. a parent styleguide)")
+    var ignoredStyleGuides: String?
+
     func run() throws {
         let prismFolder = ".prism"
         var configPath = configFile
@@ -56,7 +59,7 @@ struct Generate: ParsableCommand {
             }
 
             let decoder = YAMLDecoder()
-            
+
             do {
                 config = try decoder.decode(Configuration.self, from: configString)
             } catch {
@@ -86,7 +89,7 @@ struct Generate: ParsableCommand {
 
         let rawTemplatesPath = templatesPath ?? config?.templatesPath ?? prismFolder
         let templatesPath = rawTemplatesPath == "/" ? String(rawTemplatesPath.dropLast()) : rawTemplatesPath
-        
+
         guard let rawOutputPath = outputPath ?? config?.outputPath else {
             throw CommandError.outputFolderMissing
         }
@@ -94,15 +97,15 @@ struct Generate: ParsableCommand {
         let fileManager = FileManager.default
         let outputPath = (rawOutputPath.last == "/" ? String(rawOutputPath.dropLast()) : rawOutputPath)
                             .replacingOccurrences(of: "~", with: fileManager.homeDirectoryForCurrentUser.path)
-        
+
         guard fileManager.folderExists(at: outputPath) else {
             throw CommandError.outputFolderDoesntExist(path: outputPath)
         }
-        
-        prism.getAssets(for: owner, ignoredStyleGuides: config?.ignoredStyleGuides ?? []) { result in
+
+        prism.getAssets(for: owner, ignoredStyleGuides: config?.ignoredStyleGuides ?? ignoredStyleGuides?.components(separatedBy: ",") ?? []) { result in
             do {
                 let project = try result.get()
-                
+
                 let enumerator = fileManager.enumerator(atPath: templatesPath)
 
                 var isFolder: ObjCBool = false
