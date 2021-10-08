@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import PrismCore
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 class AssetIdentitySpec: QuickSpec {
     let project = try! Prism(jwtToken: "fake").mock(type: .successfulProject).get()
@@ -26,7 +26,7 @@ class AssetIdentitySpec: QuickSpec {
                 "My Color 2",
                 "My Color3",
                 "My-Awesome_Color"
-            ].map(Project.AssetIdentity.init)
+            ].map(AssetIdentity.init)
 
             context("camel case") {
                 it("should return camel-cased identities") {
@@ -41,7 +41,7 @@ class AssetIdentitySpec: QuickSpec {
                         "myAwesomeColor"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { AssetIdentity.Style.camelcase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -59,7 +59,7 @@ class AssetIdentitySpec: QuickSpec {
                         "my_awesome_color"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { AssetIdentity.Style.snakecase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -77,7 +77,7 @@ class AssetIdentitySpec: QuickSpec {
                         "my-awesome-color"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.kebabcase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { AssetIdentity.Style.kebabcase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -95,7 +95,7 @@ class AssetIdentitySpec: QuickSpec {
                         "MyAwesomeColor"
                     ]
 
-                    let processedIdentities = rawIdentities.map { Project.AssetIdentity.Style.pascalcase.identifier(for: $0) }
+                    let processedIdentities = rawIdentities.map { AssetIdentity.Style.pascalcase.identifier(for: $0) }
                     expect(processedIdentities) == expectedIdentities
                 }
             }
@@ -105,7 +105,7 @@ class AssetIdentitySpec: QuickSpec {
             context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["blueSky", "clearReddish", "blue", "green", "mud", "purple", "red", "teal"]
-                    let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.colors.map { AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -114,7 +114,7 @@ class AssetIdentitySpec: QuickSpec {
             context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["blue_sky", "clear_reddish", "blue", "green", "mud", "purple", "red", "teal"]
-                    let proccessedIdentities = self.project.colors.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.colors.map { AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -125,7 +125,7 @@ class AssetIdentitySpec: QuickSpec {
             context("camel case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["baseHeading", "baseSubhead", "body", "body2", "highlight", "largeHeading", "homeSubInnerPrimary300L"]
-                    let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.textStyles.map { AssetIdentity.Style.camelcase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -134,7 +134,7 @@ class AssetIdentitySpec: QuickSpec {
             context("snake case") {
                 it("should return valid identities") {
                     let expectedIdentities = ["base_heading", "base_subhead", "body", "body_2", "highlight", "large_heading", "home_sub_inner_primary_300_l"]
-                    let proccessedIdentities = self.project.textStyles.map { Project.AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
+                    let proccessedIdentities = self.project.textStyles.map { AssetIdentity.Style.snakecase.identifier(for: $0.identity) }
 
                     expect(proccessedIdentities) == expectedIdentities
                 }
@@ -143,9 +143,9 @@ class AssetIdentitySpec: QuickSpec {
         
         describe("empty identity") {
             it("should return empty identities") {
-                let identity = Project.AssetIdentity(name: "")
+                let identity = AssetIdentity(name: "")
                 
-                let all = Project.AssetIdentity.Style.allCases.map { $0.identifier(for: identity) }
+                let all = AssetIdentity.Style.allCases.map { $0.identifier(for: identity) }
                 expect(all.allSatisfy { $0 == "" }).to(beTrue())
             }
         }

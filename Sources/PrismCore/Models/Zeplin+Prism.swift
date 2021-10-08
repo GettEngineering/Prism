@@ -6,7 +6,7 @@
 //  Copyright © 2019 Gett. All rights reserved.
 //
 
-import struct ZeplinAPI.Project
+import struct ZeplinSwift.Project
 import class Foundation.FileManager
 
 public extension Project.Platform {

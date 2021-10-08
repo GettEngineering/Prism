@@ -11,7 +11,7 @@ import Quick
 import Nimble
 import MockDuck
 @testable import PrismCore
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 extension Prism {
     func mock(type: MockType,

@@ -10,7 +10,7 @@ import Foundation
 import ArgumentParser
 import PrismCore
 import Yams
-import ZeplinAPI
+import ZeplinSwift
 
 // MARK: - Initialize command
 struct Initialize: ParsableCommand {
@@ -200,14 +200,6 @@ struct Initialize: ParsableCommand {
         let styleguide = styleguides[projectNumber - 1]
 
         config.append("styleguide_id: \"\(styleguide.id)\"")
-    }
-}
-
-// MARK: - File Manager Helpers
-extension FileManager {
-    func folderExists(at path: String) -> Bool {
-        var isDir: ObjCBool = false
-        return fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
     }
 }
 

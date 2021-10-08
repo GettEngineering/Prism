@@ -6,14 +6,22 @@ let package = Package(
     name: "Prism",
     platforms: [.macOS(.v10_12)],
     products: [
-        .executable(name: "prism",
-                    targets: ["prism"]),
+        .executable(
+            name: "prism",
+            targets: ["prism"]
+        ),
         .library(
             name: "PrismCore",
-            targets: ["PrismCore"]),
+            targets: ["PrismCore"]
+        ),
         .library(
-            name: "ZeplinAPI",
-            targets: ["ZeplinAPI"])
+            name: "ZeplinSwift",
+            targets: ["ZeplinSwift"]
+        ),
+        .library(
+            name: "FigmaSwift",
+            targets: ["FigmaSwift"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1"),
@@ -34,15 +42,23 @@ let package = Package(
         ),
         .target(
             name: "PrismCore",
-            dependencies: ["ZeplinAPI", "Yams"],
+            dependencies: ["ZeplinSwift", "FigmaSwift", "Yams"],
             path: "Sources/PrismCore"),
         .target(
-            name: "ZeplinAPI",
+            name: "ZeplinSwift",
+            dependencies: ["PrismProvider"],
+            path: "Sources/Providers/ZeplinAPI"),
+        .target(
+            name: "FigmaSwift",
+            dependencies: ["PrismProvider"],
+            path: "Sources/Providers/FigmaAPI"),
+        .target(
+            name: "PrismProvider",
             dependencies: [],
-            path: "Sources/ZeplinAPI"),
-       .testTarget(
-           name: "PrismTests",
-           dependencies: ["prism", "Quick", "Nimble", "MockDuck", "Yams", "SnapshotTesting"],
-           path: "Tests")
+            path: "Sources/Providers/PrismProvider")
+    //    .testTarget(
+    //        name: "PrismTests",
+    //        dependencies: ["prism", "Quick", "Nimble", "MockDuck", "Yams", "SnapshotTesting"],
+    //        path: "Tests")
     ]
 )

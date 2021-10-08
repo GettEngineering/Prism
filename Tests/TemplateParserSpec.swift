@@ -11,7 +11,7 @@ import Quick
 import Nimble
 import SnapshotTesting
 @testable import PrismCore
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 class TemplateParserSpec: QuickSpec {
     override func spec() {
@@ -400,7 +400,7 @@ class TemplateParserSpec: QuickSpec {
                 it("should return nil token") {
                     let projectResult = Prism(jwtToken: "fake").mock(type: .successfulProject)
                     let project = try! projectResult.get()
-                    for style in Project.AssetIdentity.Style.allCases.dropFirst() {
+                    for style in AssetIdentity.Style.allCases.dropFirst() {
                         expect { try TemplateParser
                             .Token(rawTextStyleToken: "textStyle.color.identity.\(style.rawValue)",
                                    textStyle: project.textStyles[0],

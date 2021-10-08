@@ -11,7 +11,7 @@ import Quick
 import Nimble
 import SnapshotTesting
 @testable import PrismCore
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 class AssetsSpec: QuickSpec {
     override func spec() {

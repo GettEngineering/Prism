@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 import SnapshotTesting
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 class ZeplinAPISpec: QuickSpec {
     override func spec() {

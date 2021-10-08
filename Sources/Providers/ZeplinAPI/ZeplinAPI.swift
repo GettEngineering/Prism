@@ -10,11 +10,12 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import PrismProvider
 
 // Zeplin's API Interface
-public class ZeplinAPI {
+public class ZeplinAPI: ProviderAPI {
     private let jwtToken: String
-    static let basePath = "https://api.zeplin.dev/v1/"
+    public static let baseURL = URL(string: "https://api.zeplin.dev/v1/")!
 
     /// Maximum number of items per page
     public static let itemsPerPage = 100
@@ -208,15 +209,10 @@ private extension ZeplinAPI {
     func request<Model: Decodable>(model: Model.Type,
                                    from path: String,
                                    completion: @escaping (Result<Model, Error>) -> Void) {
-        let fullPath = ZeplinAPI.basePath + path
-        
-        guard let apiURL = URL(string: fullPath) else {
-            completion(.failure(Error.invalidRequestURL(path: fullPath)))
-            return
-        }
+        let apiURL = Self.baseURL.appendingPathComponent(path)
+        var request = URLRequest(url: apiURL)
+        request.addValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
 
-        let request = URLRequest(url: apiURL, jwtToken: jwtToken)
-        
         URLSession.shared
             .dataTask(with: request) { data, response, _ in
                 if let response = response as? HTTPURLResponse,
@@ -232,7 +228,7 @@ private extension ZeplinAPI {
                     }
                     return
                 }
-                
+
                 do {
                     if let data = data {
                         try completion(.success(Model.decode(from: data,
@@ -247,18 +243,9 @@ private extension ZeplinAPI {
     }
 }
 
-private extension URLRequest {
-    init(url: URL, jwtToken: String) {
-        var request = URLRequest(url: url)
-        request.addValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
-        self = request
-    }
-}
-
 // MARK: - Zeplin API Errors
 extension ZeplinAPI {
     public enum Error: Swift.Error, CustomStringConvertible {
-        case invalidRequestURL(path: String)
         case decodingFailed(type: Decodable.Type, message: String)
         case unknownAPIError(statusCode: Int, url: String, message: String)
         case apiError(message: String)
@@ -269,8 +256,6 @@ extension ZeplinAPI {
         
         public var description: String {
             switch self {
-            case .invalidRequestURL(let path):
-                return "Failed constructing URL from path '\(path)'"
             case let .decodingFailed(type, description):
                 return "Failed decoding \(type): \(description)"
             case let .unknownAPIError(statusCode, url, message):

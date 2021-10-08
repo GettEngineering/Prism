@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ZeplinAPI
+import PrismProvider
 
 extension TemplateParser {
     /// A Token represents an entity within a template that is replaced
@@ -22,14 +22,14 @@ extension TemplateParser {
         case colorAlpha(Float)
         case colorARGB(String)
         case colorRGB(String)
-        case colorIdentity(identity: Project.AssetIdentity,
-                           style: Project.AssetIdentity.Style)
+        case colorIdentity(identity: AssetIdentity,
+                           style: AssetIdentity.Style)
 
         // Text Style
         case textStyleFontName(String)
         case textStyleFontSize(Float)
-        case textStyleIdentity(identity: Project.AssetIdentity,
-                               style: Project.AssetIdentity.Style)
+        case textStyleIdentity(identity: AssetIdentity,
+                               style: AssetIdentity.Style)
         case textStyleFontWeight(Int)
         case textStyleFontStyle(String)
         case textStyleFontStretch(Float)
@@ -39,8 +39,8 @@ extension TemplateParser {
         case textStyleLetterSpacing(Float?)
 
         // Spacing
-        case spacingIdentity(identity: Project.AssetIdentity,
-                             style: Project.AssetIdentity.Style)
+        case spacingIdentity(identity: AssetIdentity,
+                             style: AssetIdentity.Style)
         case spacingValue(Float)
         
         /// Parse a raw color token, such as "color.r", into its
@@ -103,7 +103,7 @@ extension TemplateParser {
             switch textStyleToken {
             case "fontname",
                  "font":
-                self = .textStyleFontName(textStyle.postscriptName)
+                self = .textStyleFontName(textStyle.fontPostscriptName)
             case "fontsize":
                 self = .textStyleFontSize(textStyle.fontSize)
             case "fontweight":
@@ -129,17 +129,11 @@ extension TemplateParser {
                     throw Error.missingColorForTextStyle(textStyle)
                 }
 
-                // Look for a project color matching the Text Style's raw color.
-                // If none exists, throw an error for the entire Text Style as "invalid".
-                //
-                /// Prism does not support Text Styles with unidentified colors.
-                guard let projectColor = colors.first(where: { $0.argbValue == textStyleColor.argbValue }) else {
-                    throw Error.missingColorForTextStyle(textStyle)
-                }
+                let usedColor = colors.first(where: { $0.argbValue == textStyleColor.argbValue }) ?? textStyleColor
 
-                self = try Token(rawColorToken: token, color: projectColor)
+                self = try Token(rawColorToken: token, color: usedColor)
             case "alignment":
-                self = .textStyleAlignment(textStyle.textAlign?.rawValue)
+                self = .textStyleAlignment(textStyle.alignment?.rawValue)
             case "lineheight":
                 self = .textStyleLineHeight(textStyle.lineHeight)
             case "linespacing":

@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Decodable {
+public extension Decodable {
     static func decode(from data: Data,
                        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                        dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .secondsSince1970) throws -> Self {
