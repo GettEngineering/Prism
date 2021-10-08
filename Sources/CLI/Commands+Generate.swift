@@ -10,7 +10,7 @@ import Foundation
 import ArgumentParser
 import PrismCore
 import Yams
-import PrismProvider
+import ProviderCore
 
 // MARK: - Generate command
 struct Generate: ParsableCommand {
@@ -80,7 +80,7 @@ extension AssetProviding {
 
         do {
             let config = try decoder.decode(
-                PrismProvider.Configuration<Self>.self,
+                ProviderCore.Configuration<Self>.self,
                 from: configuration
             )
 

@@ -9,14 +9,25 @@ import Foundation
 
 public extension Figma {
     struct Configuration {
-        /// Figma File Key
-        public let fileKey: String
+        /// Figma File Keys
+        public let files: [String]
     }
 }
 
 // MARK: - Codable
-extension Figma.Configuration: Codable {
+extension Figma.Configuration: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        if let singleFile = try? container.decode(String.self, forKey: .file) {
+            self.files = [singleFile]
+            return
+        }
+
+        self.files = try container.decode(.files)
+    }
+
     enum CodingKeys: String, CodingKey {
-        case fileKey = "file_key"
+        case file, files
     }
 }

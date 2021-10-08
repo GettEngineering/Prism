@@ -68,8 +68,13 @@ extension Result {
     func appendValuesOrErrors<Output>(values: inout [Output], errors: inout [Failure]) {
         switch self {
         case .success(let result):
-            guard let result = result as? [Output] else { return }
-            values.append(contentsOf: result)
+            if let result = result as? [Output] {
+                values.append(contentsOf: result)
+            }
+
+            if let result = result as? Output {
+                values.append(result)
+            }
         case .failure(let error):
             errors.append(error)
         }

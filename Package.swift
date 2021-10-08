@@ -46,16 +46,16 @@ let package = Package(
             path: "Sources/PrismCore"),
         .target(
             name: "ZeplinSwift",
-            dependencies: ["PrismProvider"],
+            dependencies: ["ProviderCore"],
             path: "Sources/Providers/ZeplinAPI"),
         .target(
             name: "FigmaSwift",
-            dependencies: ["PrismProvider"],
+            dependencies: ["ProviderCore"],
             path: "Sources/Providers/FigmaAPI"),
         .target(
-            name: "PrismProvider",
+            name: "ProviderCore",
             dependencies: [],
-            path: "Sources/Providers/PrismProvider")
+            path: "Sources/Providers/ProviderCore")
     //    .testTarget(
     //        name: "PrismTests",
     //        dependencies: ["prism", "Quick", "Nimble", "MockDuck", "Yams", "SnapshotTesting"],

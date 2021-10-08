@@ -60,7 +60,7 @@ public struct AssetIdentity {
     /// The asset's raw name, as provided by the Project
     public let name: String
 
-    init(name: String) {
+    public init(name: String) {
         self.name = name
 
         // Seperate name to words

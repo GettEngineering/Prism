@@ -30,13 +30,13 @@ public struct Configuration<Provider: AssetProviding> {
     }
 }
 
-extension Configuration: Codable {
+extension Configuration: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let providerContainer = try container.nestedContainer(keyedBy: ProviderKeys.self, forKey: .provider)
 
-        let provider = try providerContainer.decode(PrismProvider.AssetProvider.self, forKey: .kind)
+        let provider = try providerContainer.decode(ProviderCore.AssetProvider.self, forKey: .kind)
 
         if provider != Provider.provider {
             throw DecodingError.dataCorrupted(
