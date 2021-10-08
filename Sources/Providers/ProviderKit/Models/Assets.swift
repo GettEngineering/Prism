@@ -7,27 +7,33 @@
 //
 
 import Foundation
-import ZeplinAPI
 
 /// Prism Assets, representing different colors, text styles and spacing tokens.
 public struct Assets: Equatable {
-    /// Assets owner.
-    public let owner: AssetOwner
-
     /// Colors.
-    public let colors: [Color]
+    public let colors: [PrismProvider.Color]
 
     /// Text Styles.
-    public let textStyles: [TextStyle]
+    public let textStyles: [PrismProvider.TextStyle]
 
     /// Spacing tokens.
-    public let spacing: [Spacing]
+    public let spacing: [PrismProvider.Spacing]
+
+    public init(
+        colors: [PrismProvider.Color],
+        textStyles: [PrismProvider.TextStyle],
+        spacing: [PrismProvider.Spacing]
+    ) {
+        self.colors = colors
+        self.textStyles = textStyles
+        self.spacing = spacing
+    }
 }
 
 extension Assets: CustomStringConvertible {
     /// A short description for the project.
     public var description: String {
-        "\(owner) has \(colors.count) colors and \(textStyles.count) text styles"
+        "\(colors.count) colors and \(textStyles.count) text styles"
     }
 }
 
@@ -37,15 +43,13 @@ extension Assets: CustomDebugStringConvertible {
         let colorDesc = colors.map { "    🎨 \($0.name) \($0.identity) => R: \($0.r), G: \($0.g), B: \($0.b), alpha: \($0.a)" }
                               .joined(separator: "\n")
 
-        let textStylesDesc = textStyles.map { "    ✏️  \($0.name) \($0.identity) => font: \($0.postscriptName), size \($0.fontSize)" }
+        let textStylesDesc = textStyles.map { "    ✏️  \($0.name) \($0.identity) => font: \($0.fontPostscriptName), size \($0.fontSize)" }
                                        .joined(separator: "\n")
 
         let spacingDesc = spacing.map { "    ↔️ \($0.name) => \($0.value)" }
                                  .joined(separator: "\n")
         
         return """
-        \(owner)
-
         Colors:
         =========
         \(colorDesc)

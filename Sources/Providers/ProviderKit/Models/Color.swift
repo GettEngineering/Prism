@@ -1,12 +1,27 @@
 //
-//  Color.swift
-//  Prism
+//  File.swift
+//  
 //
-//  Created by Shai Mishali on 3/27/19.
-//  Copyright © 2019 Gett. All rights reserved.
+//  Created by Shai Mishali on 03/10/2021.
 //
 
 import Foundation
+
+public struct Color: RawColorRepresentable, AssetIdentifiable {
+    public let r: Int
+    public let g: Int
+    public let b: Int
+    public let a: Float
+    public let name: String
+
+    public init(r: Int, g: Int, b: Int, a: Float, name: String) {
+        self.r = r
+        self.g = g
+        self.b = b
+        self.a = a
+        self.name = name
+    }
+}
 
 /// Represents a raw color representable that provides
 /// red, green, blue and alpha colors (0-255, 0-255, 0-255, 0.0-1.0).
@@ -29,22 +44,4 @@ public extension RawColorRepresentable {
         let alpha = Int(round(a * 255))
         return String(format: "#%02x%02x%02x%02x", alpha, r, g, b)
     }
-}
-
-/// A color with a name (identity) as well as color values:
-/// red, green, blue and alpha values.
-public struct Color: RawColorRepresentable {
-    public let name: String
-    public let r: Int
-    public let g: Int
-    public let b: Int
-    public let a: Float
-}
-
-/// A raw color with red, green, blue and alpha values.
-public struct RawColor: RawColorRepresentable {
-    public let r: Int
-    public let g: Int
-    public let b: Int
-    public let a: Float
 }

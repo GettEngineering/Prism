@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ZeplinAPI
+import PrismProvider
 
 /// Provides a mechanism to parse and process Prism-flavored
 /// templates into a provided format by extracting tokens
@@ -25,17 +25,17 @@ import ZeplinAPI
 //                                     │   (applied)   ├─┘
 //                                     └───────────────┘
 
-public class TemplateParser {
-    let project: Assets
-    let configuration: Configuration?
+public class TemplateParser<Provider: AssetProviding> {
+    let assets: Assets
+    let configuration: Configuration<Provider>?
 
     /// Initialize a Template Parser object.
     ///
-    /// - parameter project: Prism Project.
+    /// - parameter assets: Prism Assets (Colors, Text Styles, Spacings).
     /// - parameter configuration: Configuration object (Optional).
-    public init(project: Assets,
-                configuration: Configuration? = nil) {
-        self.project = project
+    public init(assets: Assets,
+                configuration: Configuration<Provider>? = nil) {
+        self.assets = assets
         self.configuration = configuration
     }
 
@@ -45,8 +45,8 @@ public class TemplateParser {
         var allReservedIdentities = Set<String>()
 
         if let reservedColors = configuration?.reservedColors {
-            let allColorIdentities = Set(project.colors.flatMap { color in
-                Project.AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
+            let allColorIdentities = Set(assets.colors.flatMap { color in
+                AssetIdentity.Style.allCases.map { $0.identifier(for: color.identity) }
             })
 
             let reservedColorsSet = Set(reservedColors)
@@ -56,8 +56,8 @@ public class TemplateParser {
         }
 
         if let reservedTextStyles = configuration?.reservedTextStyles {
-            let allTextStyleIdentities = Set(project.textStyles.flatMap { textStyle in
-                Project.AssetIdentity.Style.allCases.map { $0.identifier(for: textStyle.identity) }
+            let allTextStyleIdentities = Set(assets.textStyles.flatMap { textStyle in
+                AssetIdentity.Style.allCases.map { $0.identifier(for: textStyle.identity) }
             })
 
             let reservedTextStylesSet = Set(reservedTextStyles)
@@ -118,8 +118,8 @@ public class TemplateParser {
                                               currentLineIdx: currentLineIdx) {
                 switch forBlock.identifier {
                 case "color":
-                    let numberOfColors = project.colors.count
-                    let colorLoop = try project.colors
+                    let numberOfColors = assets.colors.count
+                    let colorLoop = try assets.colors
                                                .enumerated()
                                                .reduce(into: [String]()) { result, colorAndIndex in
                         let (index, color) = colorAndIndex
@@ -131,8 +131,8 @@ public class TemplateParser {
                     
                     output.append(contentsOf: colorLoop)
                 case "textStyle":
-                    let numberOfTextStyles = project.textStyles.count
-                    let textStyleLoop = try project.textStyles
+                    let numberOfTextStyles = assets.textStyles.count
+                    let textStyleLoop = try assets.textStyles
                                                    .enumerated()
                                                    .reduce(into: [String]()) { result, textStyleAndIndex in
                         let (index, textStyle) = textStyleAndIndex
@@ -144,8 +144,8 @@ public class TemplateParser {
 
                     output.append(contentsOf: textStyleLoop)
                 case "spacing":
-                    let numberOfSpacings = project.spacing.count
-                    let spacingLoop = try project.spacing
+                    let numberOfSpacings = assets.spacing.count
+                    let spacingLoop = try assets.spacing
                                                  .enumerated()
                                                  .reduce(into: [String]()) { result, spacingAndIndex in
                         let (index, spacing) = spacingAndIndex
@@ -199,7 +199,7 @@ public class TemplateParser {
                     do {
                         token = try Token(rawTextStyleToken: condition.identifier,
                                           textStyle: textStyle,
-                                          colors: project.colors)
+                                          colors: assets.colors)
                         tokenHasValue = token?.stringValue(transformations: []) != nil
                     } catch Error.missingColorForTextStyle(let style) {
                         // Detect the specific error thrown when a text style
@@ -310,7 +310,7 @@ public class TemplateParser {
             if let color = color {
                 tokens[token] = try Token(rawColorToken: token, color: color).stringValue(transformations: transformations)
             } else if let textStyle = textStyle {
-                tokens[token] = try Token(rawTextStyleToken: token, textStyle: textStyle, colors: project.colors).stringValue(transformations: transformations)
+                tokens[token] = try Token(rawTextStyleToken: token, textStyle: textStyle, colors: assets.colors).stringValue(transformations: transformations)
             } else if let spacing = spacing {
                 tokens[token] = try Token(rawSpacingToken: token, spacing: spacing).stringValue(transformations: transformations)
             }

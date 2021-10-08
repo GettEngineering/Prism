@@ -10,7 +10,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import PrismCore
-@testable import ZeplinAPI
+@testable import ZeplinSwift
 
 class ColorSpec: QuickSpec {
     override func spec() {

@@ -1,23 +1,30 @@
 //
-//  Prism.swift
-//  Prism
+//  File.swift
+//  
 //
-//  Created by Shai Mishali on 3/27/19.
-//  Copyright © 2019 Gett. All rights reserved.
+//  Created by Shai Mishali on 02/10/2021.
 //
 
 import Foundation
-import ZeplinAPI
+import PrismProvider
+import ZeplinSwift
 
-/// Prism is the main class responsible for fetching the raw
-/// API data from Zeplin and return
-public class Prism {
-    private let api: ZeplinAPI
+/// Zeplin Asset Provider (http://zeplin.io)
+public struct Zeplin: AssetProviding {
+    let api: ZeplinSwift.ZeplinAPI
 
-    public init(jwtToken: String) {
-        self.api = ZeplinAPI(jwtToken: jwtToken)
+    public static var provider: AssetProvider { .zeplin }
+
+    public init(api: ZeplinSwift.ZeplinAPI) {
+        self.api = api
     }
-    
+}
+
+public extension Zeplin {
+    typealias Scope = ZeplinSwift.AssetOwner
+}
+
+extension Zeplin {
     /// Get text styles, colors and spacing tokens for a specified project
     /// or styleguide and pack them into a single `Assets` object.
     ///
@@ -36,20 +43,22 @@ public class Prism {
     /// - parameter owner: Assets owner, e.g. a project or styleguide
     /// - parameter completion: A completion handler which can result in a successful `Assets`
     ///                         object, or a `ZeplinAPI.Error` error
-    public func getAssets(for owner: AssetOwner,
-                          completion: @escaping (Result<Assets, ZeplinAPI.Error>) -> Void) {
+    public func getAssets(
+        for scope: Scope,
+        completion: @escaping (Result<Assets, ZeplinAPI.Error>) throws -> Void
+    ) throws {
         let group = DispatchGroup()
-        var colors = [Color]()
-        var textStyles = [TextStyle]()
-        var spacings = [Spacing]()
+        var colors = [ZeplinSwift.Color]()
+        var textStyles = [ZeplinSwift.TextStyle]()
+        var spacings = [ZeplinSwift.Spacing]()
         var errors = [ZeplinAPI.Error]()
         let projectId: String? = {
-            guard case .project(let id) = owner else { return nil }
+            guard case .project(let id) = scope else { return nil }
             return id
         }()
 
         // Wait for styleguide IDs we wish to query
-        let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: owner)
+        let (styleguideIDs, styleguideErrors) = getStyleguideIDs(for: scope)
 
         errors.append(contentsOf: styleguideErrors)
 
@@ -143,34 +152,43 @@ public class Prism {
         /// Otherwise, Prism terminates without waiting for the result to
         /// come back.
         group.wait()
-        
+
         /// Fail if any asset identity is duplicated
         let duplicateColors = colors.map(\.identity.name).duplicates().sorted(by: <)
         let duplicateTextStyles = textStyles.map(\.identity.name).duplicates().sorted(by: <)
         let duplicateSpacings = spacings.map(\.identity.name).duplicates().sorted(by: <)
-        
+
         if !duplicateSpacings.isEmpty {
             errors.append(.duplicateColors(identities: duplicateColors))
         }
-        
+
         if !duplicateTextStyles.isEmpty {
             errors.append(.duplicateTextStyles(identities: duplicateTextStyles))
         }
-        
+
         if !duplicateSpacings.isEmpty {
             errors.append(.duplicateSpacings(identities: duplicateSpacings))
         }
-        
+
         if !errors.isEmpty {
-            completion(.failure(.compoundError(errors: errors)))
+            try completion(.failure(.compoundError(errors: errors)))
         } else {
-            completion(.success(Assets(owner: owner,
-                                       colors: colors.sorted { $0.name < $1.name },
-                                       textStyles: textStyles.sorted { $0.name < $1.name },
-                                       spacing: spacings.sorted(by: { $0.value < $1.value }))))
+            let allColors = colors.map { PrismProvider.Color(zeplinColor: $0) }
+            let allTextStyles = textStyles.map { PrismProvider.TextStyle(zeplinTextStyle: $0) }
+            let allSpacings = spacings.map { PrismProvider.Spacing(zeplinSpacing: $0) }
+            try completion(.success(
+                Assets(
+                    colors: allColors.sorted { $0.name < $1.name },
+                    textStyles: allTextStyles.sorted { $0.name < $1.name },
+                    spacing: allSpacings.sorted(by: { $0.value < $1.value })
+                )
+            ))
         }
     }
+}
 
+// MARK: - Private Helpers
+private extension Zeplin {
     /// Get all styleguide IDs for a provided asset owner (e.g. project or styleguide)
     ///
     /// - note: This is a blocking, synchronous, method.
@@ -199,37 +217,6 @@ public class Prism {
     }
 }
 
-// MARK: - Project assets
-private extension Styleguide {
-    func getParentStyleguides(api: ZeplinAPI,
-                              completion: @escaping (Result<[Styleguide], ZeplinAPI.Error>) -> Void) {
-        func addParent(of: Styleguide,
-                       to: [Styleguide],
-                       api: ZeplinAPI,
-                       completion: @escaping (Result<[Styleguide], ZeplinAPI.Error>) -> Void) {
-            guard let parent = of.parent else {
-                completion(.success(to))
-                return
-            }
-
-            api.getStyleguide(parent) { result in
-                switch result {
-                case .success(let styleguide):
-                    addParent(of: styleguide, to: to + [styleguide], api: api, completion: completion)
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        }
-
-        addParent(of: self,
-                  to: [],
-                  api: api,
-                  completion: completion)
-    }
-}
-
-// MARK: - Private Helpers
 private extension ZeplinAPI {
     /// Perform as many needed requests to `work` to fetch all
     /// paged results of the required reesource
@@ -254,32 +241,5 @@ private extension ZeplinAPI {
                 completion(.failure(error))
             }
         }
-    }
-}
-
-private extension Result {
-    /// On a successful response, append the results into the provided results array pointer.
-    /// On a failed response, append the error into the provided errors array pointer.
-    ///
-    /// - parameter values: Results array pointer
-    /// - parameter errors: Errors array pointer
-    func appendValuesOrErrors<Output>(values: inout [Output], errors: inout [Failure]) {
-        switch self {
-        case .success(let result):
-            guard let result = result as? [Output] else { return }
-            values.append(contentsOf: result)
-        case .failure(let error):
-            errors.append(error)
-        }
-    }
-}
-
-private extension Array where Element: Hashable {
-    /// Return a list of duplicates entires in a `Hashable` array
-    func duplicates() -> Self {
-        let groups = Dictionary(grouping: self, by: { $0 })
-        let duplicateGroups = groups.filter { $1.count > 1 }
-        let duplicates = Array(duplicateGroups.keys)
-        return duplicates
     }
 }
