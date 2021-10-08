@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 
 extension TemplateParser {
     /// A Token represents an entity within a template that is replaced
@@ -218,7 +218,10 @@ extension TemplateParser {
             case let .colorIdentity(identity, style),
                  let .textStyleIdentity(identity, style),
                  let .spacingIdentity(identity, style):
-                baseString = style.identifier(for: identity)
+                // Identifiers have their transformations applied on the identity before
+                // it's being transformed by and casing
+                let transformedName = transformations.reduce(into: style.identifier(for: identity)) { $0 = $1.apply(to: $0) }
+                return style.identifier(for: .init(name: transformedName))
             case .colorAlpha(let alpha):
                 baseString = String(format: "%.2f", alpha)
             case .colorRed(let c),
@@ -248,8 +251,9 @@ extension TemplateParser {
                 baseString = value.roundedToNearest()
             }
 
-            guard let output = baseString else { return nil }
-            return transformations.reduce(into: output) { $0 = $1.apply(to: $0) }
+            return baseString.map { output in
+                transformations.reduce(into: output) { $0 = $1.apply(to: $0) }
+            }
         }
     }
 }

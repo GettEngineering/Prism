@@ -11,18 +11,18 @@ import Foundation
 /// Prism Assets, representing different colors, text styles and spacing tokens.
 public struct Assets: Equatable {
     /// Colors.
-    public let colors: [PrismProvider.Color]
+    public let colors: [ProviderCore.Color]
 
     /// Text Styles.
-    public let textStyles: [PrismProvider.TextStyle]
+    public let textStyles: [ProviderCore.TextStyle]
 
     /// Spacing tokens.
-    public let spacing: [PrismProvider.Spacing]
+    public let spacing: [ProviderCore.Spacing]
 
     public init(
-        colors: [PrismProvider.Color],
-        textStyles: [PrismProvider.TextStyle],
-        spacing: [PrismProvider.Spacing]
+        colors: [ProviderCore.Color],
+        textStyles: [ProviderCore.TextStyle],
+        spacing: [ProviderCore.Spacing]
     ) {
         self.colors = colors
         self.textStyles = textStyles

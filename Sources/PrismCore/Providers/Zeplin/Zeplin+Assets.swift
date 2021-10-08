@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 import ZeplinSwift
 
 // MARK: - Zeplin Model Conformances
@@ -15,7 +15,7 @@ extension ZeplinSwift.RawColor: RawColorRepresentable {}
 extension ZeplinSwift.TextStyle: AssetIdentifiable {}
 extension ZeplinSwift.Spacing: AssetIdentifiable {}
 
-extension PrismProvider.Color {
+extension ProviderCore.Color {
     init(zeplinColor: ZeplinSwift.Color) {
         self.init(
             r: zeplinColor.r,
@@ -37,7 +37,7 @@ extension PrismProvider.Color {
     }
 }
 
-extension PrismProvider.TextStyle.Alignment {
+extension ProviderCore.TextStyle.Alignment {
     init(zeplinAlignment: ZeplinSwift.TextStyle.Alignment) {
         switch zeplinAlignment {
         case .left:
@@ -52,7 +52,7 @@ extension PrismProvider.TextStyle.Alignment {
     }
 }
 
-extension PrismProvider.TextStyle {
+extension ProviderCore.TextStyle {
     init(zeplinTextStyle: ZeplinSwift.TextStyle) {
         self.init(
             name: zeplinTextStyle.name,
@@ -71,7 +71,7 @@ extension PrismProvider.TextStyle {
     }
 }
 
-extension PrismProvider.Spacing {
+extension ProviderCore.Spacing {
     init(zeplinSpacing: ZeplinSwift.Spacing) {
         self.init(
             id: zeplinSpacing.id,

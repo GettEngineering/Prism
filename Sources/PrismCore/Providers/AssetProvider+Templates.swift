@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 
 extension AssetProviding {
     /// Parse all available user templates with the provided assets and configuration.
@@ -16,7 +16,7 @@ extension AssetProviding {
     /// - parameter configuration: The provider's configuration
     static func parseTemplates(
         with assets: Assets,
-        configuration: PrismProvider.Configuration<Self>
+        configuration: ProviderCore.Configuration<Self>
     ) throws {
         // Fetch all templates
         let rawTemplatesPath = configuration.templatesPath ?? ".prism"

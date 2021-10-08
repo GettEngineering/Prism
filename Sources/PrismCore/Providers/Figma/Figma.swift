@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 import FigmaSwift
 
 public struct Figma: AssetProviding {
@@ -21,7 +21,7 @@ public struct Figma: AssetProviding {
 
 public extension Figma {
     enum Scope {
-        case file(key: String)
+        case files(keys: [String])
     }
 }
 
@@ -30,92 +30,99 @@ public extension Figma {
         for scope: Scope,
         completion: @escaping (Result<Assets, FigmaAPI.Error>) throws -> Void
     ) throws {
-        switch scope {
-        case .file(let key):
-            let sema = DispatchSemaphore(value: 0)
-            var finalResult: Result<Assets, FigmaAPI.Error>!
+        // Files is the only available scope
+        guard case .files(let keys) = scope else { return }
+
+        var files = [File]()
+        var errors = [FigmaAPI.Error]()
+        let group = DispatchGroup()
+
+        for key in keys {
+            group.enter()
 
             api.getFile(key: key) { result in
-                defer { sema.signal() }
-                switch result {
-                case .failure(let error):
-                    finalResult = .failure(error)
-                case .success(let file):
-                    var colors = [PrismProvider.Color]()
-                    var textStyles = [PrismProvider.TextStyle]()
+                defer { group.leave() }
+                result.appendValuesOrErrors(values: &files, errors: &errors)
+            }
+        }
 
-                        for (styleId, style) in file.styles {
-                        switch style.type {
-                        case .fill:
-                            if let color = file.children.findColor(with: styleId) {
-                                colors.append(
-                                    .init(
-                                        r: Int(color.r * 255),
-                                        g: Int(color.g * 255),
-                                        b: Int(color.b * 255),
-                                        a: color.a,
-                                        name: style.name
-                                    )
-                                )
-                            }
-                        case .text:
-                            if let (typeStyle, color) = file.children.findTextStyle(with: styleId) {
-                                let alignment: TextStyle.Alignment = {
-                                    switch typeStyle.textAlignHorizontal {
-                                    case .left:
-                                        return .left
-                                    case .right:
-                                        return .right
-                                    case .center:
-                                        return .center
-                                    case .justified:
-                                        return .justified
-                                    }
-                                }()
+        group.wait()
 
-                                textStyles.append(
-                                    .init(
-                                        name: style.name,
-                                        fontFamily: typeStyle.fontFamily,
-                                        fontPostscriptName: typeStyle.fontPostScriptName,
-                                        fontSize: typeStyle.fontSize,
-                                        fontWeight: Int(typeStyle.fontWeight),
-                                        fontStyle: "",
-                                        fontStretch: 0,
-                                        alignment: alignment,
-                                        lineHeight: nil,
-                                        lineSpacing: nil,
-                                        letterSpacing: typeStyle.letterSpacing,
-                                        color: .init(r: Int(color.r * 255),
-                                                     g: Int(color.g * 255),
-                                                     b: Int(color.b * 255),
-                                                     a: color.a,
-                                                     name: "")
-                                    )
-                                )
-                            }
-                        case .effect, .grid:
-                            // Unsupported
-                            continue
-                        }
-                    }
+        guard errors.isEmpty else {
+            try completion(.failure(.compoundError(errors: errors)))
+            return
+        }
 
-                    finalResult = .success(
-                        .init(
-                            colors: colors,
-                            textStyles: textStyles,
-                            spacing: [] // Figma doesn't have spacings
+        var colors = [ProviderCore.Color]()
+        var textStyles = [ProviderCore.TextStyle]()
+        
+        for file in files {
+            for (styleId, style) in file.styles {
+                switch style.type {
+                case .fill:
+                    if let color = file.children.findColor(with: styleId) {
+                        colors.append(
+                            .init(
+                                r: Int(color.r * 255),
+                                g: Int(color.g * 255),
+                                b: Int(color.b * 255),
+                                a: color.a,
+                                name: style.name
+                            )
                         )
-                    )
+                    }
+                case .text:
+                    if let (typeStyle, color) = file.children.findTextStyle(with: styleId) {
+                        let alignment: TextStyle.Alignment = {
+                            switch typeStyle.textAlignHorizontal {
+                            case .left:
+                                return .left
+                            case .right:
+                                return .right
+                            case .center:
+                                return .center
+                            case .justified:
+                                return .justified
+                            }
+                        }()
+
+                        textStyles.append(
+                            .init(
+                                name: style.name,
+                                fontFamily: typeStyle.fontFamily,
+                                fontPostscriptName: typeStyle.fontPostScriptName,
+                                fontSize: typeStyle.fontSize,
+                                fontWeight: Int(typeStyle.fontWeight),
+                                fontStyle: "",
+                                fontStretch: 0,
+                                alignment: alignment,
+                                lineHeight: nil,
+                                lineSpacing: nil,
+                                letterSpacing: typeStyle.letterSpacing,
+                                color: .init(r: Int(color.r * 255),
+                                             g: Int(color.g * 255),
+                                             b: Int(color.b * 255),
+                                             a: color.a,
+                                             name: "")
+                            )
+                        )
+                    }
+                case .effect, .grid:
+                    // Unsupported
+                    continue
                 }
             }
-
-            sema.wait()
-            try completion(finalResult)
         }
+
+        try completion(.success(.init(
+            colors: colors,
+            textStyles: textStyles,
+            spacing: [] // Figma doesn't support spacing tokens
+        )))
     }
 }
 
+// MARK: - Private Helpers
 private extension Array where Element == Node {
     func findColor(with styleId: Style.ID) -> FigmaSwift.Color? {
         guard !isEmpty else { return nil }
@@ -158,6 +165,12 @@ private extension Array where Element == Node {
         return nil
     }
 
+    /// Recursively match the first note which has a TEXT style matching the
+    /// provided style ID. Then, return its type style and associated color info
+    ///
+    /// - paramter styleId: Figma Style ID (i.e. "31:44")
+    ///
+    /// - returns: An optional tuple of a Figma type style and a Color
     func findTextStyle(with styleId: Style.ID) -> (TypeStyle, FigmaSwift.Color)? {
         guard !isEmpty else { return nil }
 

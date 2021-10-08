@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 
 /// Provides a mechanism to parse and process Prism-flavored
 /// templates into a provided format by extracting tokens
@@ -40,7 +40,7 @@ public class TemplateParser<Provider: AssetProviding> {
     }
 
     public func parse(template: String) throws -> String {
-        /// Make sure the project doesn't contain any reserved identities.
+        /// Make sure assets don't contain any reserved identities.
         /// Otherwise, throw an error.
         var allReservedIdentities = Set<String>()
 

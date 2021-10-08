@@ -20,6 +20,12 @@ extension TemplateParser {
         /// Replace a provided string with the second one for a token.
         case replace(String, String)
 
+        /// Remove a provided prefix from the token.
+        case dropPrefix(String)
+
+        /// Remove a provided suffix from the token.
+        case dropSuffix(String)
+
         init(rawValue: String) throws {
             let sanitized = rawValue.trimmingCharacters(in: .whitespaces)
             let fullRange = NSRange(location: 0, length: sanitized.count)
@@ -53,6 +59,10 @@ extension TemplateParser {
                 self = .uppercase
             case ("replace", 2):
                 self = .replace(params[0], params[1])
+            case ("dropPrefix", 1):
+                self = .dropPrefix(params[0])
+            case ("dropSuffix", 1):
+                self = .dropSuffix(params[0])
             default:
                 throw Error.unknownTransformation(action)
             }
@@ -71,6 +81,10 @@ extension TemplateParser {
                 return string.uppercased()
             case let .replace(of, with):
                 return string.replacingOccurrences(of: of, with: with)
+            case .dropPrefix(let prefix):
+                return string.droppingPrefix(prefix)
+            case .dropSuffix(let suffix):
+                return string.droppingSuffix(suffix)
             }
         }
     }

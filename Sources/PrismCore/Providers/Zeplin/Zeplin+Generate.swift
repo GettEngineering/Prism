@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 import ZeplinSwift
 
 public extension Zeplin {
-    static func generate(with configuration: PrismProvider.Configuration<Self>) throws {
+    static func generate(with configuration: ProviderCore.Configuration<Self>) throws {
         guard let jwtToken = ProcessInfo.processInfo.environment["ZEPLIN_TOKEN"] else {
             throw Error.missingToken
         }

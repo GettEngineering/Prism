@@ -10,7 +10,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import PrismProvider
+import ProviderCore
 
 // Zeplin's API Interface
 public class ZeplinAPI: ProviderAPI {
@@ -209,8 +209,8 @@ private extension ZeplinAPI {
     func request<Model: Decodable>(model: Model.Type,
                                    from path: String,
                                    completion: @escaping (Result<Model, Error>) -> Void) {
-        let apiURL = Self.baseURL.appendingPathComponent(path)
-        var request = URLRequest(url: apiURL)
+        let apiURL = Self.baseURL.absoluteString + path
+        var request = URLRequest(url: URL(string: apiURL)!)
         request.addValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
 
         URLSession.shared

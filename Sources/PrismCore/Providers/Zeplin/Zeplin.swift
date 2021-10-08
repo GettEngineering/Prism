@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import PrismProvider
+import ProviderCore
 import ZeplinSwift
 
 /// Zeplin Asset Provider (http://zeplin.io)
@@ -173,9 +173,9 @@ extension Zeplin {
         if !errors.isEmpty {
             try completion(.failure(.compoundError(errors: errors)))
         } else {
-            let allColors = colors.map { PrismProvider.Color(zeplinColor: $0) }
-            let allTextStyles = textStyles.map { PrismProvider.TextStyle(zeplinTextStyle: $0) }
-            let allSpacings = spacings.map { PrismProvider.Spacing(zeplinSpacing: $0) }
+            let allColors = colors.map { ProviderCore.Color(zeplinColor: $0) }
+            let allTextStyles = textStyles.map { ProviderCore.TextStyle(zeplinTextStyle: $0) }
+            let allSpacings = spacings.map { ProviderCore.Spacing(zeplinSpacing: $0) }
             try completion(.success(
                 Assets(
                     colors: allColors.sorted { $0.name < $1.name },

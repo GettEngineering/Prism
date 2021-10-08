@@ -21,7 +21,7 @@ public enum AssetProvider: String, CaseIterable, Codable {
 /// text styles, spacings, and any other assets
 public protocol AssetProviding {
     /// An associated configuration for the provider
-    associatedtype Configuration: Codable
+    associatedtype Configuration: Decodable
 
     /// A scope for fetching assets, for example owner for Zeplin, or file_id for Figma
     associatedtype Scope
@@ -36,7 +36,7 @@ public protocol AssetProviding {
     /// from them, and finally storing them in the correct output location
     ///
     /// - parameter configuration: A provider-specific configuration object
-    static func generate(with configuration: PrismProvider.Configuration<Self>) throws
+    static func generate(with configuration: ProviderCore.Configuration<Self>) throws
 
     /// Fetch Prism assets from the provider, in the provided `Scope`
     ///
