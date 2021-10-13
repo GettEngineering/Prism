@@ -18,7 +18,7 @@ public extension Zeplin {
 }
 
 // MARK: - Codable
-extension Zeplin.Configuration: Decodable {
+extension Zeplin.Configuration: Codable {
     enum CodingKeys: String, CodingKey {
         case projectId = "project_id"
         case styleguideId = "styleguide_id"

@@ -7,8 +7,12 @@
 //
 
 // MARK: - User Input
-struct UserInput {
+public struct UserInput {
     let message: String
+
+    public init(message: String) {
+        self.message = message
+    }
 
     private func getInput() -> String {
         guard let value = readLine() else {
@@ -18,7 +22,7 @@ struct UserInput {
         return value
     }
 
-    func request() -> Bool {
+    public func request() -> Bool {
         print("\(message) [Y/n]: ", terminator: "")
         let input = getInput()
 
@@ -33,13 +37,13 @@ struct UserInput {
         }
     }
 
-    func request() -> String {
+    public func request() -> String {
         print("\(message): ", terminator: "")
         let input = getInput()
         return input
     }
 
-    func request(range: ClosedRange<Int>? = nil) -> Int {
+    public func request(range: ClosedRange<Int>? = nil) -> Int {
         print("\(message): ", terminator: "")
         let input = getInput()
 
@@ -57,7 +61,7 @@ struct UserInput {
         return value
     }
 
-    func request<Option: InputOption>(options: [Option]) -> Option {
+    public func request<Option: InputOption>(options: [Option]) -> Option {
         print("\(message) [\(options.flatMap(\.aliases).joined(separator: "/"))]: ", terminator: "")
         let input = getInput()
 
@@ -69,7 +73,7 @@ struct UserInput {
         return option
     }
 
-    func request<Option: InputOption & CaseIterable>() -> Option {
+    public func request<Option: InputOption & CaseIterable>() -> Option {
         let options = Option.allCases
         print("\(message) [\(options.flatMap(\.aliases).joined(separator: "/"))]: ", terminator: "")
         let input = getInput()
@@ -84,7 +88,6 @@ struct UserInput {
 }
 
 // MARK: - Generic input options
-
-protocol InputOption {
+public protocol InputOption {
     var aliases: [String] { get }
 }

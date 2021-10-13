@@ -15,7 +15,7 @@ public extension Figma {
 }
 
 // MARK: - Codable
-extension Figma.Configuration: Decodable {
+extension Figma.Configuration: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -25,6 +25,17 @@ extension Figma.Configuration: Decodable {
         }
 
         self.files = try container.decode(.files)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        if files.count == 1,
+           let file = files.first {
+            try container.encode(file, forKey: .file)
+        } else {
+            try container.encode(files, forKey: .files)
+        }
     }
 
     enum CodingKeys: String, CodingKey {
