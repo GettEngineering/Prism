@@ -10,6 +10,20 @@ import Foundation
 
 @dynamicMemberLookup
 public struct Configuration<Provider: AssetProviding> {
+    public init(
+        providerConfiguration: Provider.Configuration,
+        templatesPath: String?,
+        outputPath: String?,
+        reservedColors: [String],
+        reservedTextStyles: [String]
+    ) {
+        self.provider = providerConfiguration
+        self.templatesPath = templatesPath
+        self.outputPath = outputPath
+        self.reservedColors = reservedColors
+        self.reservedTextStyles = reservedTextStyles
+    }
+
     /// Service provider for styles and colors
     public let provider: Provider.Configuration
 
@@ -30,10 +44,9 @@ public struct Configuration<Provider: AssetProviding> {
     }
 }
 
-extension Configuration: Decodable {
+extension Configuration: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
         let providerContainer = try container.nestedContainer(keyedBy: ProviderKeys.self, forKey: .provider)
 
         let provider = try providerContainer.decode(ProviderCore.AssetProvider.self, forKey: .kind)
@@ -51,6 +64,26 @@ extension Configuration: Decodable {
         self.outputPath = try? container.decode(String.self, forKey: .outputPath)
         self.reservedColors = (try? container.decode([String].self, forKey: .reservedColors)) ?? []
         self.reservedTextStyles = (try? container.decode([String].self, forKey: .reservedTextStyles)) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(provider, forKey: .provider)
+
+        var providerContainer = container.nestedContainer(keyedBy: ProviderKeys.self, forKey: .provider)
+        try providerContainer.encode(Provider.provider.rawValue, forKey: .kind)
+
+        try container.encodeIfPresent(templatesPath, forKey: .templatesPath)
+        try container.encodeIfPresent(outputPath, forKey: .outputPath)
+
+        if !reservedColors.isEmpty {
+            try container.encode(reservedColors, forKey: .reservedColors)
+        }
+
+        if !reservedTextStyles.isEmpty {
+            try container.encode(reservedTextStyles, forKey: .reservedTextStyles)
+        }
     }
     
     enum CodingKeys: String, CodingKey {
