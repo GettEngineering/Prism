@@ -48,6 +48,30 @@ struct Generate: ParsableCommand {
             throw error
         }
 
+        print("""
+
+                    **.
+                   ****+
+                  *******
+                 *********
+                **********+
+               **********+++
+              *********++++++
+             *******  .++++++=
+            *******     +++====
+           *******       =======-
+          *******         =======-
+         *******   PRISM   ====----
+        *******             =-------
+       ********              :-------
+      ********+=====-----      ----:::
+     ********++=====-----::     -::::::
+    ********++======-----:::     :::::::
+   ********+++======-----::::     :::::...
+
+Generating assets for \(provider.rawValue.capitalized) ...
+""")
+
         do {
             switch provider {
             case .zeplin:
@@ -56,6 +80,8 @@ struct Generate: ParsableCommand {
                 try Figma.attemptGenerating(with: rawConfig)
             }
         }
+
+        print("✅ All done!")
     }
 }
 
