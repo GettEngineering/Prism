@@ -43,6 +43,50 @@ public struct UserInput {
         return input
     }
 
+    public func request(validatingResult: (String) -> String?) -> [String] {
+        print("\(message): ", terminator: "")
+
+        var input = getInput()
+        var values = [String]()
+
+        func validate(_ value: String) -> String? {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty,
+                  let validated = validatingResult(trimmed) else {
+                return nil
+            }
+
+            return validated
+        }
+
+        guard let validated = validate(input) else {
+            print("❌ You must add at least a single valid value.")
+            return request(validatingResult: validatingResult)
+        }
+
+        values.append(validated)
+        print("✅ Added '\(validated)'.")
+
+        repeat {
+            print("Add one more? [Enter to finish]: ", terminator: "")
+            input = getInput()
+
+            // Enter breaks out
+            guard !input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                break
+            }
+
+            if let validated = validate(input) {
+                values.append(validated)
+                print("✅ Added '\(validated)'.")
+            } else {
+                print("❌ Invalid value: '\(input)'")
+            }
+        } while !input.trimmingCharacters(in: .whitespaces).isEmpty
+
+        return values
+    }
+
     public func request(range: ClosedRange<Int>? = nil) -> Int {
         print("\(message): ", terminator: "")
         let input = getInput()
