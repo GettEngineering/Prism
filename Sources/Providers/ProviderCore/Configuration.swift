@@ -70,10 +70,6 @@ extension Configuration: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(provider, forKey: .provider)
-
-        var providerContainer = container.nestedContainer(keyedBy: ProviderKeys.self, forKey: .provider)
-        try providerContainer.encode(Provider.provider.rawValue, forKey: .kind)
-
         try container.encodeIfPresent(templatesPath, forKey: .templatesPath)
         try container.encodeIfPresent(outputPath, forKey: .outputPath)
 
