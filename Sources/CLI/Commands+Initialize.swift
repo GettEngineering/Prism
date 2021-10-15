@@ -79,8 +79,9 @@ struct Initialize: ParsableCommand {
             }
         }
 
-        let encoder = JSONEncoder()
-        let yaml: String
+        let encoder = YAMLEncoder()
+        encoder.options.indent = 2
+        var yaml: String
 
         do {
             switch provider {
@@ -93,7 +94,7 @@ struct Initialize: ParsableCommand {
                     reservedTextStyles: []
                 )
 
-                yaml = String(data: try encoder.encode(config), encoding: .utf8)!
+                yaml = try encoder.encode(config)
             case .figma:
                 let config = Configuration<Figma>(
                     providerConfiguration: try Figma.initialize(),
@@ -103,9 +104,16 @@ struct Initialize: ParsableCommand {
                     reservedTextStyles: []
                 )
 
-                yaml = String(data: try encoder.encode(config), encoding: .utf8)!
+                yaml = try encoder.encode(config)
             }
 
+            // This is a bit of a hack to manually write the provider kind, since the
+            // encoder isn't smart enough to properly encode this sort of generic structure
+            let indent = String(repeating: " ", count: encoder.options.indent)
+            yaml = yaml.replacingOccurrences(
+                of: "provider:",
+                with: "provider:\n\(indent)kind: '\(provider.rawValue)'"
+            )
             print("💾 Saving your configuration...")
             try yaml.write(toFile: configPath, atomically: true, encoding: .utf8)
         } catch {
