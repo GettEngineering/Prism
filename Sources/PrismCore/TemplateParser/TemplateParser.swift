@@ -120,6 +120,7 @@ public class TemplateParser<Provider: AssetProviding> {
                 case "color":
                     let numberOfColors = assets.colors.count
                     let colorLoop = try assets.colors
+                                               .sorted(by: { $0.name < $1.name })
                                                .enumerated()
                                                .reduce(into: [String]()) { result, colorAndIndex in
                         let (index, color) = colorAndIndex
@@ -133,6 +134,7 @@ public class TemplateParser<Provider: AssetProviding> {
                 case "textStyle":
                     let numberOfTextStyles = assets.textStyles.count
                     let textStyleLoop = try assets.textStyles
+                                                   .sorted(by: { $0.name < $1.name })
                                                    .enumerated()
                                                    .reduce(into: [String]()) { result, textStyleAndIndex in
                         let (index, textStyle) = textStyleAndIndex
