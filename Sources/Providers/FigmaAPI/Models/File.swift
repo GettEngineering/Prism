@@ -255,6 +255,17 @@ public extension Node {
     struct Slice: Decodable {
         public let absoluteBoundingBox: Box
         public let size: Size
+
+        enum CodingKeys: String, CodingKey {
+            case absoluteBoundingBox, size
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            self.absoluteBoundingBox = (try? container.decode(.absoluteBoundingBox)) ?? .zero
+            self.size = try container.decodeIfPresent(.size) ?? .zero
+        }
     }
 
     @dynamicMemberLookup
@@ -287,12 +298,12 @@ public extension Node {
     @dynamicMemberLookup
     struct Instance: VectorNodeType, Decodable {
         public let vector: Vector
-        public let componentId: String
+        public let componentId: String?
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.vector = try decoder.singleValueContainer().decode(Vector.self)
-            self.componentId = try container.decode(.componentId)
+            self.componentId = try container.decodeIfPresent(.componentId)
         }
 
         public enum CodingKeys: String, CodingKey {
@@ -341,7 +352,7 @@ public extension Node {
             self.shouldPreserveRatio = try container.decodeIfPresent(.preserveRatio) ?? false
             self.constraints = try container.decode(.constraints)
             self.opacity = try container.decodeIfPresent(.opacity) ?? 1.0
-            self.absoluteBoundingBox = try container.decodeIfPresent(.absoluteBoundingBox) ?? .zero
+            self.absoluteBoundingBox = (try? container.decode(.absoluteBoundingBox)) ?? .zero
             self.size = try container.decodeIfPresent(.size) ?? .zero
             self.clipsContent = try container.decode(.clipsContent)
             self.layoutMode = try container.decodeIfPresent(.layoutMode) ?? .none
@@ -409,7 +420,7 @@ public extension Node {
             self.shouldPreserveRatio = try container.decodeIfPresent(.preserveRatio) ?? false
             self.constraints = try container.decode(.constraints)
             self.opacity = try container.decodeIfPresent(.opacity) ?? 1.0
-            self.absoluteBoundingBox = try container.decodeIfPresent(.absoluteBoundingBox) ?? .zero
+            self.absoluteBoundingBox = (try? container.decode(.absoluteBoundingBox)) ?? .zero
             self.effects = try container.decodeIfPresent(.effects) ?? []
             self.size = try container.decodeIfPresent(.size) ?? .zero
             self.isMask = try container.decodeIfPresent(.isMask) ?? false
@@ -550,7 +561,7 @@ public struct Effect: Decodable {
     public let type: Kind
     public let isVisible: Bool
     public let radius: Float
-    public let color: Color
+    public let color: Color?
     public let blendMode: BlendingMode
     public let offset: Point
     public let spread: Float
@@ -561,9 +572,9 @@ public struct Effect: Decodable {
         self.type = try container.decode(.type)
         self.isVisible = try container.decodeIfPresent(.visible) ?? true
         self.radius = try container.decode(.radius)
-        self.color = try container.decode(.color)
-        self.blendMode = try container.decode(.blendMode)
-        self.offset = try container.decode(.offset)
+        self.color = try container.decodeIfPresent(.color)
+        self.blendMode = try container.decodeIfPresent(.blendMode) ?? .normal
+        self.offset = try container.decodeIfPresent(.offset) ?? .zero
         self.spread = try container.decodeIfPresent(.spread) ?? 0
         self.showShadowBehindNode = try container.decodeIfPresent(.showShadowBehindNode) ?? false
     }
@@ -626,7 +637,7 @@ public struct Paint: Decodable {
     public let opacity: Float
     public let color: Color?
     public let blendingMode: BlendingMode
-    public let gradientHandlePositions: [CGPoint]
+    public let gradientHandlePositions: [Point]
     public let gradientStops: [ColorStop]
     public let scaleMode: ScaleMode
 
