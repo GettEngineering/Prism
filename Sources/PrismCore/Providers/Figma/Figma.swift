@@ -73,10 +73,13 @@ public extension Figma {
                     }
                 case .text:
                     if let (typeStyle, color) = file.children.findTextStyle(with: styleId) {
-                        let alignment: TextStyle.Alignment = {
+                        let alignment: TextStyle.Alignment? = {
                             switch typeStyle.textAlignHorizontal {
                             case .left:
-                                return .left
+                                // Left alignment is the default in Figma, so
+                                // it counts as "the lack of alignment" to align with Zeplin,
+                                // as well as supporting "natural alignment" for RTL/LTR systems
+                                return nil
                             case .right:
                                 return .right
                             case .center:
