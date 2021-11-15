@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  Figma+Generate.swift
+//  Prism
 //
 //  Created by Shai Mishali on 06/10/2021.
+//  Copyright © 2021 Gett. All rights reserved.
 //
 
 import Foundation
