@@ -13,7 +13,7 @@ Synchronizing design teams with engineering teams is a huge challenge.
 
 As teams scale, new growing pains start around how to properly align colors, text styles, spacing and other design details between teams, in a uniform way, from a single source of truth.
 
-Prism was built to solve this very problem! It takes a Zeplin project or styleguide as input, and generates any output code you want from these based on a set of templates in your project, resulting in cross-platform code that is always synchronized from a single source-of-truth (Your project's Zeplin Styleguide or Project).
+Prism was built to solve this very problem! It takes a either Zeplin project/styleguide or a set of Figma files as input, and generates any output code you want from these based on a set of templates in your project, resulting in cross-platform code that is always synchronized from a single source-of-truth (Your design files).
 
 Prism is especially useful when used in your CI/CD process to remove the friction of design handoff and review, and making sure all of your teams are properly synchronized in regards to naming, values, and more.
 
@@ -34,7 +34,8 @@ There are five options to install prism:
 1. **Run directly with SPM**: `swift run prism generate` 
 1. [**Running on Windows**](#running-on-windows-experimental) _(experimental)_
 
-### 🔑 Getting a Zeplin API Token
+
+### 🔑 Getting a Provider API Token
 
 To use Prism, you'll need to generate a Personal Access Token (JWT) to Zeplin's API by going to [https://app.zeplin.io/profile/developer](https://app.zeplin.io/profile/developer) and click the **Create new token** button in the **Personal access tokens** section:
 

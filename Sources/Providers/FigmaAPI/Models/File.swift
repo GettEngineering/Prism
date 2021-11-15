@@ -646,7 +646,15 @@ public struct Paint: Decodable {
         self.type = try container.decode(.type)
         self.isVisible = try container.decodeIfPresent(.visible) ?? true
         self.opacity = try container.decodeIfPresent(.opacity) ?? 1.0
-        self.color = try container.decodeIfPresent(.color)
+
+        // Figma has a known bug where the color opacity is incorrect. This works around
+        // this by using the fill opacity instead, which is equivalent.
+        if let rawColor = try container.decodeIfPresent(Color.self, forKey: .color) {
+            self.color = Color(r: rawColor.r, g: rawColor.g, b: rawColor.b, a: opacity)
+        } else {
+            self.color = nil
+        }
+
         self.blendingMode = try container.decode(.blendMode)
         self.gradientHandlePositions = try container.decodeIfPresent(.gradientHandlePositions) ?? []
         self.gradientStops = try container.decodeIfPresent(.gradientStops) ?? []

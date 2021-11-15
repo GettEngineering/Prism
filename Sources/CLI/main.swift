@@ -9,7 +9,6 @@
 import PrismCore
 import Foundation
 import ArgumentParser
-//import FigmaAPI
 
 struct PrismCLI: ParsableCommand {
     static let configuration: CommandConfiguration = .init(
@@ -22,7 +21,6 @@ struct PrismCLI: ParsableCommand {
 #if canImport(WinSDK)
 // Enable unicode for Windowws, if available
 import WinSDK
-import Yams
 SetConsoleOutputCP(65001)
 #endif
 
