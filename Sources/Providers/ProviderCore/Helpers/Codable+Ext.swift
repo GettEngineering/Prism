@@ -26,3 +26,13 @@ extension Encodable {
         return try encoder.encode(self)
     }
 }
+
+public extension KeyedDecodingContainer {
+    func decodeIfPresent<T>(_ key: KeyedDecodingContainer.Key) throws -> T? where T: Decodable {
+        return try self.decodeIfPresent(T.self, forKey: key)
+    }
+
+    func decode<T>(_ key: KeyedDecodingContainer.Key) throws -> T where T: Decodable {
+        return try self.decode(T.self, forKey: key)
+    }
+}

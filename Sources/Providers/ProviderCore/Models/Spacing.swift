@@ -1,8 +1,9 @@
 //
-//  File.swift
-//  
+//  Spacing.swift
+//  Prism
 //
 //  Created by Shai Mishali on 03/10/2021.
+//  Copyright © 2021 Gett. All rights reserved.
 //
 
 import Foundation
