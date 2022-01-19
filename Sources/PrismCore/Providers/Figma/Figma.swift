@@ -94,7 +94,7 @@ public extension Figma {
                             .init(
                                 name: style.name,
                                 fontFamily: typeStyle.fontFamily,
-                                fontPostscriptName: typeStyle.fontPostScriptName,
+                                fontPostscriptName: typeStyle.fontPostScriptName ?? "",
                                 fontSize: typeStyle.fontSize,
                                 fontWeight: Int(typeStyle.fontWeight),
                                 fontStyle: "",
@@ -111,7 +111,7 @@ public extension Figma {
                             )
                         )
                     }
-                case .effect, .grid:
+                case .effect, .grid, .none:
                     // Unsupported
                     continue
                 }

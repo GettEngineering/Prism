@@ -17,7 +17,7 @@ public extension Node {
 
 public extension Node.Canvas {
     struct FlowStartingPoint: Decodable {
-        let noteId: String
+        let nodeId: String
         let name: String
     }
 }

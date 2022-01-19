@@ -51,7 +51,7 @@ indirect public enum Node: Decodable {
             self = .line(try singleContainer.decode(Line.self), children: children)
         case "ellipse":
             self = .ellipse(try singleContainer.decode(Ellipse.self), children: children)
-        case "regularPolygon":
+        case "regular_polygon":
             self = .regularPolygon(try singleContainer.decode(RegularPolygon.self), children: children)
         case "rectangle":
             self = .rectangle(try singleContainer.decode(Rectangle.self), children: children)
@@ -61,7 +61,7 @@ indirect public enum Node: Decodable {
             self = .slice(try singleContainer.decode(Slice.self), children: children)
         case "component":
             self = .component(try singleContainer.decode(Component.self), children: children)
-        case "componentSet":
+        case "component_set":
             self = .componentSet(try singleContainer.decode(ComponentSet.self), children: children)
         case "instance":
             self = .instance(try singleContainer.decode(Instance.self), children: children)
