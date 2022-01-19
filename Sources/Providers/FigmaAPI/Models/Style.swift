@@ -28,6 +28,7 @@ public extension Style {
         case text
         case effect
         case grid
+        case none
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()

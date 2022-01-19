@@ -10,7 +10,7 @@ import Foundation
 
 public struct TypeStyle: Decodable {
     public let fontFamily: String
-    public let fontPostScriptName: String
+    public let fontPostScriptName: String?
     public let paragraphSpacing: Float
     public let paragraphIndent: Float
     public let italic: Bool
