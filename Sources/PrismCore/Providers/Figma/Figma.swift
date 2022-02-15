@@ -54,7 +54,7 @@ public extension Figma {
             return
         }
 
-        var colors = [ProviderCore.Color]()
+        var colors = Set<ProviderCore.Color>()
         var textStyles = [ProviderCore.TextStyle]()
         
         for file in files {
@@ -62,7 +62,7 @@ public extension Figma {
                 switch style.type {
                 case .fill:
                     if let color = file.children.findColor(with: styleId) {
-                        colors.append(
+                        colors.insert(
                             .init(
                                 r: Int(color.r * 255),
                                 g: Int(color.g * 255),
@@ -119,7 +119,7 @@ public extension Figma {
         }
 
         try completion(.success(.init(
-            colors: colors,
+            colors: Array(colors),
             textStyles: textStyles,
             spacing: [] // Figma doesn't support spacing tokens
         )))

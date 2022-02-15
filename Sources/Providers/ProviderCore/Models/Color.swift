@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Color: RawColorRepresentable, AssetIdentifiable {
+public struct Color: RawColorRepresentable, AssetIdentifiable, Hashable {
     public let r: Int
     public let g: Int
     public let b: Int
