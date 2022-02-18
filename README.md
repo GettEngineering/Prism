@@ -13,7 +13,7 @@ Synchronizing design teams with engineering teams is a huge challenge.
 
 As teams scale, new growing pains start around how to properly align colors, text styles, spacing and other design details between teams, in a uniform way, from a single source of truth.
 
-Prism was built to solve this very problem! It takes a either Zeplin project/styleguide or a set of Figma files as input, and generates any output code you want from these based on a set of templates in your project, resulting in cross-platform code that is always synchronized from a single source-of-truth (Your design files).
+Prism was built to solve this very problem! It takes either Zeplin project/styleguide or a set of Figma files as input, and generates any output code you want from these based on a set of templates in your project, resulting in cross-platform code that is always synchronized from a single source-of-truth (Your design files).
 
 Prism is especially useful when used in your CI/CD process to remove the friction of design handoff and review, and making sure all of your teams are properly synchronized in regards to naming, values, and more.
 
@@ -37,9 +37,26 @@ There are five options to install prism:
 
 ### 🔑 Getting a Provider API Token
 
-To use Prism, you'll need to generate a Personal Access Token (JWT) to Zeplin's API by going to [https://app.zeplin.io/profile/developer](https://app.zeplin.io/profile/developer) and click the **Create new token** button in the **Personal access tokens** section:
+#### Figma
 
-![Generating a Zeplin Personal Access Token](Assets/gh/pat.png "Generating a Zeplin Personal Access Token")
+To use Prism with Figma, you'll need to generate a Personal Access Token (JWT) to Figma's API by going to [https://www.figma.com](https://www.figma.com). Then, go the **Settings** section under your profile:
+
+![Finding the Settings section in Figma](Assets/gh/figma-pat1.png "Finding the Settings section in Figma")
+
+Scroll to the bottom of the **Account** tab, find the **Personal access tokens** section, and create your new token:
+
+![Generating a Figma Personal Access Token](Assets/gh/figma-pat2.png "Generating a Figma Personal Access Token")
+
+You'll need to expose this token to run the `prism` CLI tool. Make sure you have a `FIGMA_TOKEN` environment variable with your token configured. 
+
+When running `prism` in a CI environemnt, we recommend adding `FIGMA_TOKEN` as an Environment Secret.
+
+When using `prism` locally or bootstrapping your project for the first time, you can simply run `export FIGMA_TOKEN='zeplin_personal_token'` before running `prism` locally.
+
+#### Zeplin
+To use Prism with Zeplin, you'll need to generate a Personal Access Token (JWT) to Zeplin's API by going to [https://app.zeplin.io/profile/developer](https://app.zeplin.io/profile/developer) and click the **Create new token** button in the **Personal access tokens** section:
+
+![Generating a Zeplin Personal Access Token](Assets/gh/zeplin-pat.png "Generating a Zeplin Personal Access Token")
 
 You'll need to expose this token to run the `prism` CLI tool. Make sure you have a `ZEPLIN_TOKEN` environment variable with your token configured. 
 
@@ -51,7 +68,7 @@ When using `prism` locally or bootstrapping your project for the first time, you
 
 Inside your project folder, run `prism init`. 
 
-It will guide you through selecting a Zeplin project or styleguide as source along with other useful information for proper code generation. Once `prism init` is successful, you'll find a new `.prism` folder with a `config.yml` file outlining your preferences.
+It will guide you through selecting a Zeplin project/styleguide, or a set of Figma files as source along with other useful information for proper code generation. Once `prism init` is successful, you'll find a new `.prism` folder with a `config.yml` file outlining your preferences.
 
 ### 🎨 Creating Templates
 
@@ -68,18 +85,6 @@ Here are two short example of generating colors code for iOS and Android using P
 **colors.xml.prism**:
 
 ![Color.swift Android Prism Template](Assets/gh/Colors-Android.gif "Color.swift Android Prism Template")
-    
-## Running on Windows (Experimental)
-
-Due to the official release of Swift for Windows, an experimental build of `prism` is now available for Windows.
-
-You'll need to install a few dependencies before running for the first time:
-
-- Install the [Microsoft Visual C++ Redistributable for Visual Studio 2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads).
-- Install the latest [Swift Toolchain for Windows](https://swift.org/download/#releases).
-- Finally, get the **prism.exe** executable from the Releases page. 
-
-> **Note**: Building from source is somewhat more involved. Let me know if you're interested in doing so and I'll do my best to assist.
 
 ## Development
 
