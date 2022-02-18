@@ -23,7 +23,7 @@ jobs:
         name: Prism
   Linux:
     name: "Prism Build (Linux)"
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
