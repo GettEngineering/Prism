@@ -13,8 +13,10 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_12.app
     - name: Generate project
       run: make project
-    - name: Run tests
-      run: set -o pipefail && xcodebuild -project Prism.xcodeproj -scheme prism -enableCodeCoverage YES test | xcpretty -c
+    - name: Build Prism
+      run: set -o pipefail && swift build
+    # - name: Run tests
+    #   run: set -o pipefail && xcodebuild -project Prism.xcodeproj -scheme prism -enableCodeCoverage YES test | xcpretty -c
     - uses: codecov/codecov-action@v1.0.10
       with:
         token: 390d08f3-de89-4a9c-92e2-61c0902e0f88
@@ -26,4 +28,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build and run
-      run: set -o pipefail && swift build --enable-test-discovery
+      run: set -o pipefail && swift build
